@@ -26,6 +26,10 @@ html.fx-on.fx-lens #stage { filter: url(#fx-vhs-lens) saturate(.85) contrast(1.0
 html.fx-on.fx-lens.fx-burst #stage { filter: url(#fx-vhs-burst-lens) saturate(1) contrast(1.1); }
 html.fx-on.fx-lens.fx-calm.fx-burst #stage { filter: url(#fx-vhs-burst-lens) saturate(.85) contrast(1.06); }
 
+/* clear layer over embedded players so the mouse lens keeps working there */
+.fx-shield { position: absolute; inset: 0; z-index: 2; border-radius: inherit; }
+.fx-shield.is-lifted { pointer-events: none; }
+
 /* 2) the overlay, above everything, never catches clicks */
 #fx-overlay {
   position: fixed;

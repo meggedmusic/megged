@@ -199,6 +199,32 @@
     }, { passive: true });
     document.addEventListener("mouseleave", function () { root.classList.remove("fx-lens"); });
 
+    // Embedded players (Spotify, YouTube) swallow mouse moves, so the lens would
+    // stop at their edge. A clear "shield" over each player keeps the lens going;
+    // the first click on a player lifts its shield so the player can be used, and
+    // the shield comes back once the mouse leaves the player.
+    var shieldFor = function (frame) {
+      if (frame._fxShield) return frame._fxShield;
+      var host = frame.parentNode;
+      if (getComputedStyle(host).position === "static") host.style.position = "relative";
+      var sh = document.createElement("div");
+      sh.className = "fx-shield";
+      sh.addEventListener("pointerdown", function () { sh.classList.add("is-lifted"); });
+      host.appendChild(sh);
+      return (frame._fxShield = sh);
+    };
+    window.addEventListener("pointermove", function (e) {
+      if (e.pointerType && e.pointerType !== "mouse") return;
+      var frames = document.querySelectorAll("#stage iframe");
+      for (var i = 0; i < frames.length; i++) {
+        var r = frames[i].getBoundingClientRect();
+        var inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+        var sh = frames[i]._fxShield;
+        if (!sh) { if (!inside) shieldFor(frames[i]); }
+        else if (!inside) sh.classList.remove("is-lifted");
+      }
+    }, { passive: true });
+
     (function flick() {
       if (root.classList.contains("fx-lens")) {
         var seed = String((Math.random() * 999) | 0), freq = "0.00001 " + rnd(0.03, 0.16).toFixed(3);

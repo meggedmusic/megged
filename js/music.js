@@ -15,7 +15,8 @@
 
   // The story of the track (ms in the track). Edit times here.
   //   snow  – no title, soft snow flickering with the hi-hats
-  //   pulse – the title comes back faintly, breathing with the kicks
+  //   weird – strange flickers inside the snow (ghost rabbits, blackouts, tears)
+  //   pulse – the title comes back faintly, flashing faintly on every kick
   //   drop  – clean 4x4: every beat smears the title, rabbits on 2 and 4
   //           (and on every snare in the fill bar at the end of each phrase)
   //   wild  – rabbits on every snare, tears, flashes
@@ -24,8 +25,9 @@
   var STORY = [
     [0,      27700,  "snow"],
     [27700,  50000,  "drop", 0.5, 0.5],
-    [50000,  61600,  "snow"],
-    [61600,  75300,  "pulse"],
+    [50000,  60300,  "snow"],
+    [60300,  61700,  "weird"],           // break inside the break: odd flickers in the snow
+    [61700,  75300,  "pulse"],           // quiet build-up kick: the title flashes faintly on it
     [75300,  96300,  "drop", 0, 1],      // first drop builds up
     [96300,  99300,  "pulse"],
     [99300,  195300, "wild", 0, 1],      // second drop: grows into the full trip
@@ -74,8 +76,13 @@
       controller = c;
       c.addListener("ready", function () { if (wantPlay) { c.seek(START_SEC); c.play(); } });
       c.addListener("playback_update", function (e) {
-        var d = e.data;
-        pos = d.position; at = performance.now();
+        var d = e.data, tNow = performance.now();
+        // Spotify reports the position every so often; follow it smoothly
+        // instead of jumping, so the flashes don't wobble around the beat.
+        var predicted = pos + (tNow - at), err = d.position - predicted;
+        if (!playing || d.isPaused || Math.abs(err) > 250) { pos = d.position; }
+        else { pos = predicted + err * 0.25; }
+        at = tNow;
         if (playing !== !d.isPaused) { playing = !d.isPaused; setBtn(playing); syncMode(playing); }
         if (d.position < 1000 * START_SEC - 2000 || Math.abs(pos - lastPos) > 3000) seekMap(d.position);
         lastPos = pos;
@@ -93,8 +100,30 @@
     setTimeout(function () { if (!playing) setBtn(false); }, 6000);
   });
 
+  // ---- sync tuning: open the site with ?sync, play, and nudge with ← → ------
+  try { var saved = localStorage.getItem("megged-sync"); if (saved !== null) SYNC_MS = +saved || 0; } catch (e) {}
+  var qs = location.search.match(/[?&]sync(?:=(-?\d+))?/);
+  if (qs) {
+    if (qs[1] != null) SYNC_MS = +qs[1];
+    var panel = document.createElement("div");
+    panel.className = "sync-panel";
+    panel.innerHTML = '<button type="button" data-d="-10">−</button><span></span><button type="button" data-d="10">+</button>';
+    document.body.appendChild(panel);
+    var label = panel.querySelector("span");
+    var setSync = function (v) {
+      SYNC_MS = v; label.textContent = "sync " + (v > 0 ? "+" : "") + v + " ms";
+      try { localStorage.setItem("megged-sync", String(v)); } catch (e) {}
+    };
+    setSync(SYNC_MS);
+    panel.addEventListener("click", function (e) { var d = e.target.getAttribute("data-d"); if (d) setSync(SYNC_MS + +d); });
+    window.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") setSync(SYNC_MS + 10);
+      if (e.key === "ArrowLeft") setSync(SYNC_MS - 10);
+    });
+  }
+
   // ---- music → visuals -----------------------------------------------------
-  function now() { return playing ? pos + (performance.now() - at) + SYNC_MS : pos; }
+  function now() { return (playing ? pos + (performance.now() - at) : pos) + SYNC_MS; }
   function seekMap(t) {
     if (!map) return;
     var h = map.hits, i = 0;
@@ -111,7 +140,7 @@
       seekMap(now());
       if (map && now() < START_SEC * 1000 + 2500) tripIn();
     } else {                                 // back to the normal site
-      root.classList.remove("trip", "scene-snow", "scene-pulse", "scene-drop", "scene-wild");
+      root.classList.remove("trip", "scene-snow", "scene-weird", "scene-pulse", "scene-drop", "scene-wild");
       root.style.removeProperty("--txt");
       scene = null; txt = 1; tripT = 0;
     }
@@ -160,17 +189,17 @@
     var build = b0 + (b1 - b0) * Math.min(1, (t - sc[0]) / (sc[1] - sc[0]));
     if (scene !== sc) {
       scene = sc;
-      ["snow", "pulse", "drop", "wild"].forEach(function (n) { root.classList.toggle("scene-" + n, n === kind); });
+      ["snow", "weird", "pulse", "drop", "wild"].forEach(function (n) { root.classList.toggle("scene-" + n, n === kind); });
     }
     var tripping = tripT && performance.now() - tripT < 3000;
 
     // snow: always a little while music plays, stronger when the music is soft
     var e = energy(t), loud = Math.max(e.k, e.s * 0.8, e.h * 0.6);
-    fx.snow(0.025 + (1 - loud) * 0.085 + (kind === "snow" ? 0.025 : 0));
+    fx.snow(0.025 + (1 - loud) * 0.085 + (kind === "snow" || kind === "weird" ? 0.025 : 0));
 
     // title opacity per scene; in "pulse" the kicks make it breathe
-    var base = tripping || kind === "snow" ? 0 : kind === "pulse" ? 0.08 : 1;
-    txt += (base - txt) * (tripping ? 0.04 : kind === "pulse" ? 0.05 : 0.15);
+    var base = tripping || kind === "snow" || kind === "weird" ? 0 : kind === "pulse" ? 0.06 : 1;
+    txt += (base - txt) * (tripping ? 0.04 : kind === "pulse" ? 0.07 : 0.15);
 
     // hits from the analysis
     if (nextHit < h.length && h[nextHit][0] < t - 400) seekMap(t);
@@ -178,7 +207,15 @@
       var hit = h[nextHit++], k = hit[1], st = hit[2];
       if (k === "h") fx.hat(st);
       if (tripping) continue;
-      if (kind === "pulse" && k === "k" && st > 0.75) { txt = Math.min(0.4, txt + 0.28 * st); fx.kick(0.2 * st); }
+      if (kind === "pulse" && k === "k" && st > 0.6) { txt = Math.max(txt, 0.3 * st); fx.kick(0.2 * st); }
+      if (kind === "weird" && st > 0.5 && Math.random() < 0.6) {
+        var r = Math.random();
+        if (r < 0.3) intro.rabbit(40 + 60 * Math.random());           // ghost rabbit (faint, see css)
+        else if (r < 0.5) intro.blink(25 + 40 * Math.random());
+        else if (r < 0.7) fx.tear(0.3 + 0.5 * Math.random());
+        else if (r < 0.85) { txt = 0.15 + 0.2 * Math.random(); }     // the title flickers through
+        else fx.hat(1);
+      }
       if (kind === "drop" && k === "s" && st > 0.6 && fillBar(hit[0])) intro.rabbit(70 + 60 * st);
       if (kind === "wild") {
         if (k === "s" && st > 0.55) { intro.rabbit(60 + 90 * st); if (st > 0.8 && Math.random() < 0.25 + 0.6 * build) fx.tear(st); }

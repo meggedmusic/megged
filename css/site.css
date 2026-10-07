@@ -140,6 +140,16 @@ html.music-on .wordmark {
 }
 html.trip .wordmark { transition: filter 1.2s; filter: blur(3px) drop-shadow(0 0 18px rgba(var(--glow), .4)); }
 html.trip .rabbit { visibility: hidden !important; }
+html.scene-weird .rabbit { opacity: .3; filter: blur(2px) drop-shadow(0 0 20px rgba(var(--glow), .4)); }
+
+/* ?sync tuning panel */
+.sync-panel {
+  position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 2147483001;
+  display: flex; gap: 10px; align-items: center; padding: 6px 10px;
+  background: rgba(0,0,0,.75); border: 1px solid #444; border-radius: 6px;
+  font-family: var(--mono); font-size: 20px; color: var(--white);
+}
+.sync-panel button { font: inherit; color: inherit; background: #222; border: 1px solid #555; border-radius: 4px; width: 34px; cursor: pointer; }
 
 .scroll-cue {
   align-self: end;

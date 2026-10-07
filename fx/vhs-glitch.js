@@ -150,8 +150,9 @@
   function cfg() { return calm ? CONFIG.calm : CONFIG; }
 
   setInterval(function () {
+    if (root.classList.contains("music-on")) return;   // music drives the split instead
     var c = cfg();
-    setSplit("fx-vhs", c.split + rnd(-c.splitJitter, c.splitJitter) + (music.bass || 0) * 9);
+    setSplit("fx-vhs", c.split + rnd(-c.splitJitter, c.splitJitter));
   }, 110);
 
   var turb = svg.querySelectorAll("#fx-vhs-burst feTurbulence[result='t'], #fx-vhs-burst-lens feTurbulence[result='t']");
@@ -215,28 +216,27 @@
   }
 
   // ---- music reactions (called from js/music.js) ----------------------------
-  // level(bass, highs): widen the colour split with the bass, grain with the highs.
-  // pulse(kind, strength): a one-off tear on snares / strong kicks.
-  var music = { bass: 0 }, pulseOff = 0;
+  // While the track plays the picture stays clean white; each kick throws the
+  // orange/blue split wide and it snaps back. level() sets grain from the highs.
+  var KICK = { rest: 0.15, max: 16, decay: 0.72 };   // px at rest, px on a full kick, per-frame falloff
+  var music = { env: 0 }, envRaf = 0;
   var noiseEl = ov.querySelector(".fx-noise");
   function level(bass, highs) {
-    if (bass === null) { music.bass = 0; noiseEl.style.opacity = ""; return; }
-    music.bass = bass;
-    noiseEl.style.opacity = (0.04 + highs * 0.12).toFixed(3);
+    if (bass === null) { noiseEl.style.opacity = ""; return; }
+    noiseEl.style.opacity = (0.03 + highs * 0.08).toFixed(3);
+  }
+  function envTick() {
+    music.env *= KICK.decay;
+    if (music.env < 0.05) music.env = 0;
+    setSplit("fx-vhs", KICK.rest + music.env);
+    envRaf = music.env ? requestAnimationFrame(envTick) : 0;
   }
   function pulse(kind, strength) {
-    if (kind === "h" || strength < 0.6) return;
-    var c = cfg();
-    var seed = String((Math.random() * 999) | 0), freq = "0.00001 " + rnd(0.03, 0.14).toFixed(3);
-    var tearMax = kind === "s" ? c.burstTear[1] : c.burstTear[1] * 0.6;
-    var scale = (c.burstTear[0] + (tearMax - c.burstTear[0]) * strength).toFixed(1);
-    each(turb, function (t) { t.setAttribute("seed", seed); t.setAttribute("baseFrequency", freq); });
-    each(disp, function (d) { d.setAttribute("scale", scale); });
-    setSplit("fx-vhs-burst", c.burstSplit[0] + (c.burstSplit[1] - c.burstSplit[0]) * strength);
-    root.classList.add("fx-burst");
-    clearTimeout(pulseOff);
-    pulseOff = setTimeout(function () { root.classList.remove("fx-burst"); }, 50 + strength * 70);
+    if (kind !== "k") return;
+    music.env = Math.max(music.env, KICK.max * strength);
+    if (!envRaf) envRaf = requestAnimationFrame(envTick);
   }
+  function rest() { music.env = 0; setSplit("fx-vhs", KICK.rest); }
 
-  window.MEGGED_FX = { config: CONFIG, burst: burst, pulse: pulse, level: level, music: music };
+  window.MEGGED_FX = { config: CONFIG, burst: burst, pulse: pulse, level: level, rest: rest, kick: KICK };
 })();

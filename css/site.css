@@ -109,6 +109,18 @@ a:focus-visible { outline: 1px solid var(--white); outline-offset: 4px; }
   .play-btn { transform: translateY(calc(clamp(250px, 48vw, 820px) * 26 / 163 / 2 + 44px)); }
 }
 
+/* quiet part of the track: no flashes, the title melts into old-TV snow */
+html.music-quiet .rabbit { visibility: hidden !important; }
+html.music-quiet .wordmark {
+  visibility: visible !important;
+  opacity: .5;
+  filter: blur(2.5px) drop-shadow(16px 0 5px rgba(255,255,255,.35)) drop-shadow(-16px 0 5px rgba(255,255,255,.35)) drop-shadow(0 0 30px rgba(var(--glow), .3));
+  animation: snow-drift .23s steps(2) infinite;
+  transition: opacity .6s, filter .6s;
+}
+html.music-quiet .fx-noise { opacity: .42 !important; transition: opacity .6s; }
+@keyframes snow-drift { 0% { transform: translateX(-3px); } 50% { transform: translateX(4px) skewX(-2deg); } }
+
 .scroll-cue {
   align-self: end;
   margin-bottom: 22px;
@@ -191,6 +203,18 @@ a:focus-visible { outline: 1px solid var(--white); outline-offset: 4px; }
 @media (max-width: 640px) {
   .play-btn { transform: translateY(calc(clamp(250px, 48vw, 820px) * 26 / 163 / 2 + 44px)); }
 }
+
+/* quiet part of the track: no flashes, the title melts into old-TV snow */
+html.music-quiet .rabbit { visibility: hidden !important; }
+html.music-quiet .wordmark {
+  visibility: visible !important;
+  opacity: .5;
+  filter: blur(2.5px) drop-shadow(16px 0 5px rgba(255,255,255,.35)) drop-shadow(-16px 0 5px rgba(255,255,255,.35)) drop-shadow(0 0 30px rgba(var(--glow), .3));
+  animation: snow-drift .23s steps(2) infinite;
+  transition: opacity .6s, filter .6s;
+}
+html.music-quiet .fx-noise { opacity: .42 !important; transition: opacity .6s; }
+@keyframes snow-drift { 0% { transform: translateX(-3px); } 50% { transform: translateX(4px) skewX(-2deg); } }
 
 .scroll-cue { animation: none; }
   #stage { scroll-behavior: auto; }

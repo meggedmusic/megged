@@ -47,9 +47,21 @@ def main(path, out="data/track-map.json"):
         e = (e - np.percentile(e, 5)) / (np.percentile(e, 98) - np.percentile(e, 5) + 1e-9)
         energy[name[0]] = [int(v) for v in np.clip(e[::2] * 99, 0, 99)]  # every ~46 ms
     hits.sort()
-    data = {"hop_ms": round(2 * dt * 1000, 3), "hits": hits, "energy": energy}
+    # quiet / atmospheric parts: little low end for a while (no beat)
+    hop = 2 * dt
+    low = uniform_filter1d(np.array(energy["k"], float), int(3 / hop))
+    quiet, start = [], None
+    for i, v in enumerate(np.append(low, 99)):
+        if v < 50 and start is None: start = i
+        elif v >= 50 and start is not None:
+            if quiet and start * hop - quiet[-1][1] / 1000 < 3: quiet[-1][1] = int(i * hop * 1000)
+            else: quiet.append([int(start * hop * 1000), int(i * hop * 1000)])
+            start = None
+    quiet = [q for q in quiet if q[1] - q[0] >= 6000]
+    data = {"hop_ms": round(hop * 1000, 3), "hits": hits, "energy": energy, "quiet": quiet}
     json.dump(data, open(out, "w"), separators=(",", ":"))
     for k in "ksh": print(k, sum(1 for h in hits if h[1] == k), "hits")
+    print("quiet parts (s):", [(q[0] / 1000, q[1] / 1000) for q in quiet])
     print("duration", round(len(x) / SR, 1), "s ->", out)
 
 if __name__ == "__main__":

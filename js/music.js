@@ -13,12 +13,13 @@
   // ------------------------------------------------------------------------
 
   var btn = document.getElementById("play-btn");
-  var host = document.querySelector("#spotify .spotify");
+  var host = document.getElementById("spotify-track");   // small player for this track;
+                                                          // the artist player below stays
   if (!btn || !host) return;
 
   var controller = null, api = null, wantPlay = false;
   var pos = 0, at = 0, playing = false;     // last known position from Spotify
-  var map = null, nextHit = 0, lastE = -1;
+  var map = null, nextHit = 0, lastE = -1, quiet = false;
 
   fetch(MAP_URL).then(function (r) { return r.ok ? r.json() : null; })
     .then(function (m) { map = m; }).catch(function () {});
@@ -47,7 +48,8 @@
     var el = document.createElement("div");
     host.innerHTML = "";
     host.appendChild(el);
-    api.createController(el, { uri: TRACK, width: "100%", height: 352, startAt: START_SEC, theme: "dark" }, function (c) {
+    host.hidden = false;
+    api.createController(el, { uri: TRACK, width: "100%", height: 152, startAt: START_SEC, theme: "dark" }, function (c) {
       controller = c;
       c.addListener("ready", function () { if (wantPlay) { c.seek(START_SEC); c.play(); } });
       c.addListener("playback_update", function (e) {
@@ -81,8 +83,9 @@
 
   function syncMode(on) {
     document.documentElement.classList.toggle("music-on", on);
+    if (!on) { quiet = false; document.documentElement.classList.remove("music-quiet"); }
     if (window.MEGGED_INTRO) window.MEGGED_INTRO.sync(on && !!map);
-    if (on) seekMap(now());
+    if (on) { seekMap(now()); if (window.MEGGED_FX && window.MEGGED_FX.rest) window.MEGGED_FX.rest(); }
     else if (window.MEGGED_FX && window.MEGGED_FX.level) window.MEGGED_FX.level(null);
   }
 
@@ -90,11 +93,15 @@
     requestAnimationFrame(tick);
     if (!playing || !map) return;
     var t = now(), h = map.hits, intro = window.MEGGED_INTRO, fx = window.MEGGED_FX;
+    // quiet / atmospheric parts (no beat): everything calms down into TV snow
+    var q = (map.quiet || []).some(function (r) { return t >= r[0] - 2000 && t < r[1]; });
+    if (q !== quiet) { quiet = q; document.documentElement.classList.toggle("music-quiet", q); if (q && intro) intro.sync(false), intro.sync(true); }
     if (nextHit < h.length && h[nextHit][0] < t - 400) seekMap(t);   // jumped ahead
     while (nextHit < h.length && h[nextHit][0] <= t) {
       var hit = h[nextHit++];
+      if (quiet) continue;
       if (intro) intro.hit(hit[1], hit[2]);
-      if (fx && fx.pulse) fx.pulse(hit[1], hit[2]);
+      if (fx && fx.pulse && hit[2] > 0.5) fx.pulse(hit[1], hit[2]);
     }
     var k = Math.floor(t / map.hop_ms);
     if (k !== lastE && fx && fx.level) {

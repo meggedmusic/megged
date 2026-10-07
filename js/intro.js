@@ -79,7 +79,13 @@
   loop();
 
   // ---- music sync (called from js/music.js while the track plays) -----------
-  var synced = false, holdTimer = 0;
+  var synced = false, holdTimer = 0, lastFrame = -1;
+  function nextFrame() {                 // random, never the same rabbit twice in a row
+    var i;
+    do { i = (Math.random() * frames.length) | 0; } while (i === lastFrame && frames.length > 1);
+    lastFrame = i;
+    return frames[i];
+  }
   function settle(ms) {
     clearTimeout(holdTimer);
     holdTimer = setTimeout(function () { show("text"); }, ms);
@@ -87,13 +93,9 @@
   window.MEGGED_INTRO = {
     sync: function (on) { synced = on && !reduce; if (!synced) show("text"); },
     hit: function (kind, strength) {
-      if (!synced) return;
-      if (kind === "k" && strength > 0.7) {           // kick → rabbit frame
-        show(strength > 0.85 ? "rabbit" : "both", pick(frames));
-        settle(70 + strength * 110);
-      } else if (kind === "s" && strength > 0.75) {  // snare → blackout blink
-        show("black"); settle(45);
-      }
+      if (!synced || kind !== "s" || strength < 0.7) return;   // snare → a rabbit
+      show("rabbit", nextFrame());
+      settle(110 + strength * 90);
     }
   };
 

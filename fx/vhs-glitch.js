@@ -225,7 +225,7 @@
     noiseEl.style.opacity = (0.04 + highs * 0.12).toFixed(3);
   }
   function pulse(kind, strength) {
-    if (kind === "h" || strength < 0.35) return;
+    if (kind === "h" || strength < 0.6) return;
     var c = cfg();
     var seed = String((Math.random() * 999) | 0), freq = "0.00001 " + rnd(0.03, 0.14).toFixed(3);
     var tearMax = kind === "s" ? c.burstTear[1] : c.burstTear[1] * 0.6;

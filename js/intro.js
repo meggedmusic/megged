@@ -88,10 +88,10 @@
     sync: function (on) { synced = on && !reduce; if (!synced) show("text"); },
     hit: function (kind, strength) {
       if (!synced) return;
-      if (kind === "k" && strength > 0.3) {           // kick → rabbit frame
-        show(strength > 0.75 ? "rabbit" : "both", pick(frames));
+      if (kind === "k" && strength > 0.7) {           // kick → rabbit frame
+        show(strength > 0.85 ? "rabbit" : "both", pick(frames));
         settle(70 + strength * 110);
-      } else if (kind === "s" && strength > 0.45) {   // snare → blackout blink
+      } else if (kind === "s" && strength > 0.75) {  // snare → blackout blink
         show("black"); settle(45);
       }
     }

@@ -31,13 +31,18 @@ def main(path, out="data/track-map.json"):
         thr = uniform_filter1d(flux, 43) * 1.6 + flux.std() * 0.3      # adaptive threshold (~1s)
         peaks = (flux == maximum_filter1d(flux, 7)) & (flux > thr)
         gap = {"kick": 0.12, "snare": 0.12, "hat": 0.06}[name]
-        last = -1
-        top = np.percentile(flux[peaks], 95) if peaks.any() else 1
-        for i in np.flatnonzero(peaks):
+        cand = np.flatnonzero(peaks)
+        top = np.percentile(flux[cand], 95) if len(cand) else 1
+        win = int(3 / dt)                        # loudness of nearby hits (±3 s), so quiet
+        last = -1                                # sections still get strong flashes
+        for i in cand:
             t = i * dt
             if t - last < gap: continue
             last = t
-            hits.append([int(round(t * 1000)), name[0], round(float(min(1, flux[i] / top)), 2)])
+            near = flux[cand[(cand > i - win) & (cand < i + win)]]
+            local = np.percentile(near, 90) if len(near) else top
+            st = 0.6 * min(1, flux[i] / local) + 0.4 * min(1, flux[i] / top)
+            hits.append([int(round(t * 1000)), name[0], round(float(st), 2)])
         e = uniform_filter1d(band, 4)
         e = (e - np.percentile(e, 5)) / (np.percentile(e, 98) - np.percentile(e, 5) + 1e-9)
         energy[name[0]] = [int(v) for v in np.clip(e[::2] * 99, 0, 99)]  # every ~46 ms

@@ -1,5 +1,6 @@
 /* MEGGED — play button next to the title.
-   Plays a track in a small Spotify player from START_SEC and turns the site into
+   Plays a track in a small Spotify player from START_SEC (or our own copy in
+   audio/ when Spotify only gives a preview) and turns the site into
    a "trip" that follows the track: data/track-map.json (made by
    tools/analyze_track.py from the track file) gives the kicks, snares, hats and
    loudness; STORY below says what happens in each part of the track.
@@ -12,6 +13,9 @@
   var START_SEC = 50;
   var MAP_URL = "data/track-map.json";
   var SYNC_MS = 0;          // + makes the flashes come earlier, - later (tune with ?sync)
+  // Our own copy of the track, cut to start at START_SEC. Used when Spotify
+  // only gives a 30-second preview (not logged in, e.g. any iPhone) or never starts.
+  var LOCAL_URL = "audio/crispy-pork-skin.mp3";
 
   // The story of the track (ms in the track). Edit times here.
   //   snow    – no title, soft snow flickering with the hi-hats; now and then
@@ -69,13 +73,8 @@
     var s = document.createElement("script");
     s.src = "https://open.spotify.com/embed/iframe-api/v1";
     s.async = true;
-    s.onerror = fallback;
+    s.onerror = function () { switchToLocal(); };
     document.body.appendChild(s);
-  }
-
-  // If anything fails, just open the track on Spotify at the same spot.
-  function fallback() {
-    window.open("https://open.spotify.com/track/" + TRACK.split(":").pop() + "#" + START_SEC, "_blank", "noopener");
   }
 
   function create() {
@@ -87,6 +86,7 @@
       controller = c;
       c.addListener("ready", function () { if (wantPlay) { c.seek(START_SEC); c.play(); } });
       c.addListener("playback_update", function (e) {
+        if (useLocal) return;
         var d = e.data, tNow = performance.now();
         // Spotify reports the position every so often; follow it smoothly
         // instead of jumping, so the flashes don't wobble around the beat.
@@ -98,7 +98,8 @@
         // iPhone): Spotify plays only a 30-second preview clip from somewhere
         // else in the song, so the visuals can't follow it. Leave the site calm
         // and point to the full song instead.
-        if (!preview && d.duration > 0 && d.duration < 60000) { preview = true; showPreviewNote(); if (playing) syncMode(false); }
+        if (!preview && d.duration > 0 && d.duration < 60000) { preview = true; switchToLocal(); return; }
+        if (!preview && d.duration >= 60000 && !d.isPaused) dropLocal();   // full song: Spotify it is
         if (playing !== !d.isPaused) { playing = !d.isPaused; setBtn(playing); syncMode(playing && !preview); }
         if (preview) return;
         if (d.position < 1000 * START_SEC - 2000 || Math.abs(pos - lastPos) > 3000) seekMap(d.position);
@@ -108,22 +109,63 @@
   }
   var lastPos = 0, preview = false;
 
-  function showPreviewNote() {
+  // ---- our own player (when Spotify can't play the whole song) --------------
+  var local = null, useLocal = false, ct = 0, ctAt = 0;
+  function primeLocal() {
+    // Started (muted) inside the click, so phones let us play it later on.
+    local = new Audio(LOCAL_URL);
+    local.preload = "auto"; local.muted = true;
+    var pr = local.play();
+    if (pr && pr.then) pr.then(function () { if (local && !useLocal) local.pause(); }, function () {});
+    local.addEventListener("play", function () { if (useLocal) localState(true); });
+    local.addEventListener("pause", function () { if (useLocal) localState(false); });
+    local.addEventListener("ended", function () { if (useLocal) localState(false); });
+    local.addEventListener("seeked", function () { if (useLocal) seekMap(now()); });
+  }
+  function localState(on) {
+    ct = local.currentTime; ctAt = performance.now();
+    if (playing === on) return;
+    playing = on; setBtn(on); syncMode(on);
+  }
+  function dropLocal() {
+    if (!local || useLocal) return;
+    local.pause(); local.removeAttribute("src"); local.load(); local = null;
+  }
+  function switchToLocal() {
+    if (useLocal || !local) return;
+    useLocal = true;
+    try { controller && controller.pause(); } catch (e) {}
+    if (playing) { playing = false; syncMode(false); }
+    host.hidden = true;
+    showFullNote();
+    local.pause(); local.currentTime = 0; local.muted = false;
+    var pr = local.play();
+    if (pr && pr.catch) pr.catch(function () { setBtn(false); });
+  }
+  function localNow() {              // currentTime moves in steps; fill the gaps
+    var t = local.currentTime;
+    if (t !== ct) { ct = t; ctAt = performance.now(); }
+    var extra = playing ? Math.min(300, performance.now() - ctAt) : 0;
+    return START_SEC * 1000 + ct * 1000 + extra;
+  }
+  function showFullNote() {
     if (document.getElementById("preview-note")) return;
     var p = document.createElement("p");
     p.id = "preview-note"; p.className = "preview-note";
-    p.innerHTML = 'Spotify only plays a 30-second preview here. <a href="https://open.spotify.com/track/' +
-      TRACK.split(":").pop() + '" target="_blank" rel="noopener">Listen to the full song on Spotify</a>';
+    p.innerHTML = '<a href="https://open.spotify.com/track/' + TRACK.split(":").pop() +
+      '" target="_blank" rel="noopener">Listen to Crispy Pork Skin on Spotify</a>';
     host.parentNode.insertBefore(p, host.nextSibling);
   }
 
   btn.addEventListener("click", function () {
+    if (useLocal) { if (local.paused) local.play(); else local.pause(); return; }
     if (controller) { controller.togglePlay(); return; }
     wantPlay = true;
     setBtn(true);
-    loadApi(function () { try { create(); } catch (e) { fallback(); } });
-    // if Spotify never starts (blocked, offline), stop pretending
-    setTimeout(function () { if (!playing) setBtn(false); }, 6000);
+    primeLocal();
+    loadApi(function () { try { create(); } catch (e) { switchToLocal(); } });
+    // if Spotify never starts (blocked, offline), play our own copy
+    setTimeout(function () { if (!playing && !useLocal) switchToLocal(); }, 5000);
   });
 
   // ---- sync tuning: open the site with ?sync, play, and nudge with ← → ------
@@ -149,7 +191,10 @@
   }
 
   // ---- music → visuals -----------------------------------------------------
-  function now() { return (playing ? pos + (performance.now() - at) : pos) + SYNC_MS; }
+  function now() {
+    if (useLocal) return localNow();
+    return (playing ? pos + (performance.now() - at) : pos) + SYNC_MS;
+  }
   function seekMap(t) {
     if (!map) return;
     var h = map.hits, i = 0;
@@ -219,7 +264,7 @@
 
   (function tick() {
     requestAnimationFrame(tick);
-    if (!playing || !map || preview) return;
+    if (!playing || !map || (preview && !useLocal)) return;
     var root = document.documentElement, intro = window.MEGGED_INTRO, rfx = window.MEGGED_RFX;
     var fx = window.MEGGED_FX && window.MEGGED_FX.music;
     if (!fx || !intro || !rfx) return;

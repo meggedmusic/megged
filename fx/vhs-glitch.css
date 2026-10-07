@@ -21,6 +21,10 @@ html.fx-calm { --fx-noise: .035; --fx-tracking: .02; --fx-flicker: .015; }
 html.fx-on #stage { filter: url(#fx-vhs) saturate(.85) contrast(1.06); }
 html.fx-on.fx-burst #stage { filter: url(#fx-vhs-burst) saturate(1) contrast(1.1); }
 html.fx-on.fx-calm.fx-burst #stage { filter: url(#fx-vhs-burst) saturate(.85) contrast(1.06); }
+/* same, plus the mouse glitch lens (only while the mouse is moving) */
+html.fx-on.fx-lens #stage { filter: url(#fx-vhs-lens) saturate(.85) contrast(1.06); }
+html.fx-on.fx-lens.fx-burst #stage { filter: url(#fx-vhs-burst-lens) saturate(1) contrast(1.1); }
+html.fx-on.fx-lens.fx-calm.fx-burst #stage { filter: url(#fx-vhs-burst-lens) saturate(.85) contrast(1.06); }
 
 /* 2) the overlay, above everything, never catches clicks */
 #fx-overlay {

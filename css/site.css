@@ -263,3 +263,5 @@ html.music-quiet .fx-noise { opacity: .42 !important; transition: opacity .6s; }
 html.scene-finale .hero > .wordmark,
 html.scene-finale .hero > .rabbit { scale: var(--zoom, 1); }
 @media (prefers-reduced-motion: reduce) { .strobe { display: none; } }
+.preview-note { margin: .6rem auto 0; max-width: 40rem; font-size: .8rem; opacity: .7; text-align: center; }
+.preview-note a { color: inherit; }

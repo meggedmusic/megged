@@ -94,13 +94,28 @@
         if (!playing || d.isPaused || Math.abs(err) > 250) { pos = d.position; }
         else { pos = predicted + err * 0.25; }
         at = tNow;
-        if (playing !== !d.isPaused) { playing = !d.isPaused; setBtn(playing); syncMode(playing); }
+        // Not signed in to Spotify in this browser (always the case in Safari on
+        // iPhone): Spotify plays only a 30-second preview clip from somewhere
+        // else in the song, so the visuals can't follow it. Leave the site calm
+        // and point to the full song instead.
+        if (!preview && d.duration > 0 && d.duration < 60000) { preview = true; showPreviewNote(); if (playing) syncMode(false); }
+        if (playing !== !d.isPaused) { playing = !d.isPaused; setBtn(playing); syncMode(playing && !preview); }
+        if (preview) return;
         if (d.position < 1000 * START_SEC - 2000 || Math.abs(pos - lastPos) > 3000) seekMap(d.position);
         lastPos = pos;
       });
     });
   }
-  var lastPos = 0;
+  var lastPos = 0, preview = false;
+
+  function showPreviewNote() {
+    if (document.getElementById("preview-note")) return;
+    var p = document.createElement("p");
+    p.id = "preview-note"; p.className = "preview-note";
+    p.innerHTML = 'Spotify only plays a 30-second preview here. <a href="https://open.spotify.com/track/' +
+      TRACK.split(":").pop() + '" target="_blank" rel="noopener">Listen to the full song on Spotify</a>';
+    host.parentNode.insertBefore(p, host.nextSibling);
+  }
 
   btn.addEventListener("click", function () {
     if (controller) { controller.togglePlay(); return; }
@@ -204,7 +219,7 @@
 
   (function tick() {
     requestAnimationFrame(tick);
-    if (!playing || !map) return;
+    if (!playing || !map || preview) return;
     var root = document.documentElement, intro = window.MEGGED_INTRO, rfx = window.MEGGED_RFX;
     var fx = window.MEGGED_FX && window.MEGGED_FX.music;
     if (!fx || !intro || !rfx) return;

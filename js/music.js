@@ -16,6 +16,10 @@
   // Our own copy of the track, cut to start at START_SEC. Used when Spotify
   // only gives a 30-second preview (not logged in, e.g. any iPhone) or never starts.
   var LOCAL_URL = "audio/crispy-pork-skin.mp3";
+  // On phones the live visuals are too heavy, so they play as a ready-made video
+  // (rendered from this same code, with the track inside it, from START_SEC).
+  var PHONE_VIDEO = "video/crispy-pork-skin-phone.mp4";
+  var isPhone = window.matchMedia && matchMedia("(hover: none) and (pointer: coarse)").matches;
 
   // The story of the track (ms in the track). Edit times here.
   //   snow    – no title, soft snow flickering with the hi-hats; now and then
@@ -157,7 +161,28 @@
     host.parentNode.insertBefore(p, host.nextSibling);
   }
 
+  // ---- phones: the ready-made video ------------------------------------------
+  var vid = null;
+  function phoneClick() {
+    var root = document.documentElement;
+    if (!vid) {
+      vid = document.createElement("video");
+      vid.className = "music-video"; vid.src = PHONE_VIDEO;
+      vid.playsInline = true; vid.setAttribute("playsinline", ""); vid.preload = "auto";
+      btn.parentNode.insertBefore(vid, btn);
+      var on = function (yes) { root.classList.toggle("video-on", yes); setBtn(yes); };
+      vid.addEventListener("playing", function () { on(true); });
+      vid.addEventListener("pause", function () { on(false); });
+      vid.addEventListener("ended", function () { on(false); vid.currentTime = 0; });
+      vid.addEventListener("error", function () { on(false); isPhone = false; btn.click(); });
+      showFullNote();
+    }
+    if (vid.paused) { setBtn(true); var pr = vid.play(); if (pr && pr.catch) pr.catch(function () { setBtn(false); }); }
+    else vid.pause();
+  }
+
   btn.addEventListener("click", function () {
+    if (isPhone) { phoneClick(); return; }
     if (useLocal) { if (local.paused) local.play(); else local.pause(); return; }
     if (controller) { controller.togglePlay(); return; }
     wantPlay = true;

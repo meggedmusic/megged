@@ -265,3 +265,9 @@ html.scene-finale .hero > .rabbit { scale: var(--zoom, 1); }
 @media (prefers-reduced-motion: reduce) { .strobe { display: none; } }
 .preview-note { margin: .6rem auto 0; max-width: 40rem; font-size: .8rem; opacity: .7; text-align: center; }
 .preview-note a { color: inherit; }
+/* phones: the music visuals play as a video over the hero */
+.music-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; background: #121212; opacity: 0; transition: opacity .25s; pointer-events: none; }
+html.video-on .music-video { opacity: 1; }
+html.video-on #stage { filter: none !important; }
+html.video-on #fx-overlay { display: none; }
+html.video-on .hero .wordmark, html.video-on .hero .rabbit { visibility: hidden !important; }

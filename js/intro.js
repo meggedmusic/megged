@@ -6,8 +6,8 @@
 
   // ---- EDIT HERE ---------------------------------------------------------
   // YouTube video IDs (the part after "v=" in the link). Empty → placeholders.
-  var YOUTUBE_IDS = [];
-  var PLACEHOLDER_SLOTS = 2;
+  var YOUTUBE_IDS = ["edRcUFGl2QU"];
+  var PLACEHOLDER_SLOTS = 0;
 
   var FRAME_SETS = [                    // flashing frames, all in /frames
     { prefix: "rabbit-", count: 20 },   // cut from the video

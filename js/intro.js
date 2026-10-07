@@ -84,9 +84,16 @@
       YOUTUBE_IDS.forEach(function (id) {
         var d = document.createElement("div");
         d.className = "video";
-        d.innerHTML = '<iframe loading="lazy" src="https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) +
-          '" title="MEGGED on YouTube" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+        d.innerHTML = '<iframe src="https://www.youtube.com/embed/' + encodeURIComponent(id) + '?rel=0&playsinline=1' +
+          '" title="MEGGED on YouTube" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
         box.appendChild(d);
+        // fallback link in case the video owner blocks playback on other sites
+        var a = document.createElement("a");
+        a.className = "video-link";
+        a.href = "https://www.youtube.com/watch?v=" + encodeURIComponent(id);
+        a.target = "_blank"; a.rel = "noopener";
+        a.textContent = "Watch on YouTube";
+        box.appendChild(a);
       });
     } else {
       for (var p = 0; p < PLACEHOLDER_SLOTS; p++) {

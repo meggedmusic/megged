@@ -131,11 +131,6 @@ a:focus-visible { outline: 1px solid var(--white); outline-offset: 4px; }
 .video-link:hover { color: var(--white); }
 .video { position: relative; aspect-ratio: 16 / 9; max-width: 100%; background: #191919; border: 1px solid #2a2a2a; }
 .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-.yt-facade { position: absolute; inset: 0; padding: 0; border: 0; background: #000; cursor: pointer; display: grid; place-items: center; }
-.yt-facade img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .85; transition: opacity .2s; }
-.yt-facade:hover img { opacity: 1; }
-.yt-play { position: relative; width: 0; height: 0; border-style: solid; border-width: 26px 0 26px 44px; border-color: transparent transparent transparent var(--white);
-  filter: drop-shadow(0 0 6px rgba(var(--glow), .9)) drop-shadow(0 0 22px rgba(var(--glow), .5)); }
 .video.placeholder {
   display: grid; place-items: center;
   font-family: var(--mono); font-size: 20px; letter-spacing: .08em; color: var(--dim);

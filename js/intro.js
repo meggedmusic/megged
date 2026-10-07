@@ -82,19 +82,10 @@
   if (box) {
     if (YOUTUBE_IDS.length) {
       YOUTUBE_IDS.forEach(function (id) {
-        // Thumbnail first, the real player loads on click (plays right away).
         var d = document.createElement("div");
         d.className = "video";
-        var btn = document.createElement("button");
-        btn.className = "yt-facade";
-        btn.setAttribute("aria-label", "Play MEGGED on YouTube");
-        btn.innerHTML = '<img alt="" src="https://i.ytimg.com/vi/' + encodeURIComponent(id) + '/maxresdefault.jpg"><span class="yt-play"></span>';
-        btn.querySelector("img").onerror = function () { this.onerror = null; this.src = "https://i.ytimg.com/vi/" + encodeURIComponent(id) + "/hqdefault.jpg"; };
-        btn.addEventListener("click", function () {
-          d.innerHTML = '<iframe src="https://www.youtube.com/embed/' + encodeURIComponent(id) + '?rel=0&playsinline=1&autoplay=1' +
-            '" title="MEGGED on YouTube" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
-        });
-        d.appendChild(btn);
+        d.innerHTML = '<iframe src="https://www.youtube.com/embed/' + encodeURIComponent(id) + '?rel=0&playsinline=1' +
+          '" title="MEGGED on YouTube" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
         box.appendChild(d);
         // fallback link in case the video owner blocks playback on other sites
         var a = document.createElement("a");

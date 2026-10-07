@@ -131,8 +131,31 @@
     cv.width = w; cv.height = h;
     imgData = ctx.createImageData(w, h); px = imgData.data;
   }
+  // snow glitch: for a moment the snow itself breaks into big streaks and blocks
+  var snowGlitchUntil = 0;
   function grain() {
+    var w = cv.width, h = cv.height;
     for (var i = 0; i < px.length; i += 4) { var v = (Math.random() * 255) | 0; px[i] = px[i+1] = px[i+2] = v; px[i+3] = 255; }
+    if (performance.now() < snowGlitchUntil) {
+      var bands = 2 + (Math.random() * 5) | 0;
+      for (var b = 0; b < bands; b++) {
+        var y0 = (Math.random() * h) | 0, bh = 2 + (Math.random() * h * 0.18) | 0;
+        var mode = Math.random(), cell = 4 + (Math.random() * 18) | 0, shift = ((Math.random() - 0.5) * w * 0.6) | 0;
+        for (var y = y0; y < Math.min(h, y0 + bh); y++) {
+          for (var x = 0; x < w; x++) {
+            var sx, sy = y, v2;
+            if (mode < 0.4) { sx = (((x / cell) | 0) * cell); sy = ((y / cell) | 0) * cell; }   // big blocks
+            else if (mode < 0.75) { sx = (x - (x % (cell * 3))); }                              // horizontal streaks
+            else { sx = (x + shift + w) % w; }                                                   // band slips sideways
+            var j = (Math.min(h - 1, sy) * w + sx) * 4;
+            v2 = px[j];
+            if (mode >= 0.4 && mode < 0.75) v2 = Math.min(255, v2 * 1.6);
+            var o = (y * w + x) * 4;
+            px[o] = px[o+1] = px[o+2] = v2;
+          }
+        }
+      }
+    }
     ctx.putImageData(imgData, 0, 0);
   }
   grain();
@@ -225,14 +248,15 @@
   // tear(s): one-off horizontal tear. hat(s): quick flicker of the snow.
   // snow(level): steady snow strength. All decay every frame while music plays.
   var KICK = { rest: 0.1, max: 22, decay: 0.74 };
-  var m = { env: 0, hat: 0, snow: 0, on: false }, raf = 0, tearOff = 0;
+  var m = { env: 0, hat: 0, snow: 0, gl: 0, on: false }, raf = 0, tearOff = 0;
   var noiseEl = ov.querySelector(".fx-noise");
   function frameTick() {
     m.env *= KICK.decay; if (m.env < 0.05) m.env = 0;
     m.hat *= 0.72;      if (m.hat < 0.004) m.hat = 0;
     setSplit("fx-vhs", KICK.rest + m.env);
     root.style.setProperty("--sm", (m.env / KICK.max).toFixed(3));
-    noiseEl.style.opacity = Math.min(0.6, m.snow + m.hat).toFixed(3);
+    var gl = performance.now() < snowGlitchUntil ? m.gl : 0;
+    noiseEl.style.opacity = Math.min(0.6, m.snow + m.hat + gl).toFixed(3);
     raf = m.on ? requestAnimationFrame(frameTick) : 0;
   }
   var music = {
@@ -248,6 +272,10 @@
     kick: function (s) { m.env = Math.max(m.env, KICK.max * s); },
     hat: function (s) { m.hat = Math.max(m.hat, (0.03 + 0.09 * s) * (0.5 + Math.random())); },
     snow: function (level) { m.snow = level; },
+    snowGlitch: function (ms, level) {
+      snowGlitchUntil = performance.now() + ms;
+      m.gl = level || 0.22;
+    },
     tear: function (s) {
       var c = CONFIG, seed = String((Math.random() * 999) | 0), freq = "0.00001 " + rnd(0.03, 0.14).toFixed(3);
       var scale = (c.burstTear[0] + (c.burstTear[1] - c.burstTear[0]) * s).toFixed(1);

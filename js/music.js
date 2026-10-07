@@ -14,23 +14,34 @@
   var SYNC_MS = 0;          // + makes the flashes come earlier, - later (tune with ?sync)
 
   // The story of the track (ms in the track). Edit times here.
-  //   snow  – no title, soft snow flickering with the hi-hats
-  //   weird – strange flickers inside the snow (ghost rabbits, blackouts, tears)
-  //   pulse – the title comes back faintly, flashing faintly on every kick
-  //   drop  – clean 4x4: every beat smears the title, rabbits on 2 and 4
-  //           (and on every snare in the fill bar at the end of each phrase)
-  //   wild  – rabbits on every snare, tears, flashes
-  //   the two numbers after a scene = how intense it starts and ends (0..1)
+  //   snow    – no title, soft snow flickering with the hi-hats; now and then
+  //             the snow itself breaks into big glitches
+  //   weird   – break inside the break: odd flickers in the snow
+  //   pulse   – the title flashes faintly on every kick
+  //   rabbits – first drop: a rabbit stays on screen and things happen to it on
+  //             each beat (grows, neon, particles, waves, blocks, distortion);
+  //             the title only peeks in on the first beat of each bar
+  //   wild    – second drop: fast frame swaps and flashes; a heavy glitch run
+  //             at the end of every 4-bar phrase
+  //   mirror  – rabbits mirrored left and right, swapping on the beat
+  //   strobe  – frames swap every 16th, white strobe on each bar
+  //   freeze  – one bar of stillness before the finale
+  //   finale  – the title comes back hard on every beat, rabbits melt, zoom
+  //   the two numbers after a part = how intense it starts and ends (0..1)
   var GRID = { bpm: 160, firstBeat: 33, barStart: 1 };   // beat n is "1" when n % 4 === barStart
   var STORY = [
     [0,      27700,  "snow"],
-    [27700,  50000,  "drop", 0.5, 0.5],
+    [27700,  50000,  "wild", 0.3, 0.5],
     [50000,  60300,  "snow"],
-    [60300,  61700,  "weird"],           // break inside the break: odd flickers in the snow
-    [61700,  75300,  "pulse"],           // quiet build-up kick: the title flashes faintly on it
-    [75300,  96300,  "drop", 0, 1],      // first drop builds up
+    [60300,  61700,  "weird"],
+    [61700,  75300,  "pulse"],
+    [75300,  96300,  "rabbits", 0.3, 1],
     [96300,  99300,  "pulse"],
-    [99300,  195300, "wild", 0, 1],      // second drop: grows into the full trip
+    [99300,  123300, "wild", 0.4, 0.8],
+    [123300, 147300, "mirror", 0.5, 0.9],
+    [147300, 169800, "strobe", 0.7, 1],
+    [169800, 171300, "freeze"],
+    [171300, 195300, "finale", 0.6, 1],
     [195300, 999999, "snow"]
   ];
   // ------------------------------------------------------------------------
@@ -140,8 +151,13 @@
       seekMap(now());
       if (map && now() < START_SEC * 1000 + 2500) tripIn();
     } else {                                 // back to the normal site
-      root.classList.remove("trip", "scene-snow", "scene-weird", "scene-pulse", "scene-drop", "scene-wild");
+      root.classList.remove("trip");
+      SCENES.forEach(function (n) { root.classList.remove("scene-" + n); });
       root.style.removeProperty("--txt");
+      root.style.removeProperty("--zoom");
+      if (window.MEGGED_INTRO && window.MEGGED_INTRO.ghosts) window.MEGGED_INTRO.ghosts(false);
+      if (window.MEGGED_RFX) window.MEGGED_RFX.clear();
+      lastEighth = -1; lastSixteenth = -1;
       scene = null; txt = 1; tripT = 0;
     }
   }
@@ -172,32 +188,42 @@
     var k = Math.floor(t / map.hop_ms), e = map.energy;
     return { k: (e.k[k] || 0) / 99, s: (e.s[k] || 0) / 99, h: (e.h[k] || 0) / 99 };
   }
-  // last bar of each 8-bar phrase = fills: follow every snare there
-  function fillBar(t) {
-    var beat = Math.floor((t - GRID.firstBeat) / (60000 / GRID.bpm)) - GRID.barStart;
-    return ((Math.floor(beat / 4) % 8) + 8) % 8 === 7;
+  function pickOf(a) { return a[(Math.random() * a.length) | 0]; }
+  var SCENES = ["snow", "weird", "pulse", "rabbits", "wild", "mirror", "strobe", "freeze", "finale"];
+  var nextSnowGlitch = 0, lastEighth = -1, lastSixteenth = -1;
+
+  function enterScene(kind, intro, fx) {
+    var root = document.documentElement;
+    SCENES.forEach(function (n) { root.classList.toggle("scene-" + n, n === kind); });
+    intro.ghosts(kind === "mirror");
+    if (kind === "rabbits" || kind === "mirror" || kind === "finale") intro.hold(true);
+    else intro.rest("text");
+    if (kind === "freeze") { txt = 1; fx.kick(0); }
+    if (window.MEGGED_RFX) window.MEGGED_RFX.clear();
   }
 
   (function tick() {
     requestAnimationFrame(tick);
     if (!playing || !map) return;
-    var root = document.documentElement, intro = window.MEGGED_INTRO;
+    var root = document.documentElement, intro = window.MEGGED_INTRO, rfx = window.MEGGED_RFX;
     var fx = window.MEGGED_FX && window.MEGGED_FX.music;
-    if (!fx || !intro) return;
-    var t = now(), h = map.hits, sc = sceneAt(t), kind = sc[2];
+    if (!fx || !intro || !rfx) return;
+    var t = now(), h = map.hits, sc = sceneAt(t), kind = sc[2], tNow = performance.now();
     var b0 = sc[3] == null ? 1 : sc[3], b1 = sc[4] == null ? b0 : sc[4];
     var build = b0 + (b1 - b0) * Math.min(1, (t - sc[0]) / (sc[1] - sc[0]));
-    if (scene !== sc) {
-      scene = sc;
-      ["snow", "weird", "pulse", "drop", "wild"].forEach(function (n) { root.classList.toggle("scene-" + n, n === kind); });
-    }
-    var tripping = tripT && performance.now() - tripT < 3000;
+    var tripping = tripT && tNow - tripT < 3000;
+    if (scene !== sc && !tripping) { scene = sc; enterScene(kind, intro, fx); }
 
     // snow: always a little while music plays, stronger when the music is soft
     var e = energy(t), loud = Math.max(e.k, e.s * 0.8, e.h * 0.6);
-    fx.snow(0.025 + (1 - loud) * 0.085 + (kind === "snow" || kind === "weird" ? 0.025 : 0));
+    var calm = kind === "snow" || kind === "weird" || kind === "pulse";
+    fx.snow(kind === "freeze" ? 0.02 : 0.025 + (1 - loud) * 0.085 + (kind === "snow" || kind === "weird" ? 0.025 : 0));
+    if (calm && !tripping && tNow > nextSnowGlitch) {        // snow breaks into big glitches now and then
+      if (nextSnowGlitch) fx.snowGlitch(150 + Math.random() * 350, 0.12 + Math.random() * 0.14);
+      nextSnowGlitch = tNow + (kind === "weird" ? 300 + Math.random() * 600 : 1500 + Math.random() * 3000);
+    }
 
-    // title opacity per scene; in "pulse" the kicks make it breathe
+    // title opacity per part
     var base = tripping || kind === "snow" || kind === "weird" ? 0 : kind === "pulse" ? 0.06 : 1;
     txt += (base - txt) * (tripping ? 0.04 : kind === "pulse" ? 0.07 : 0.15);
 
@@ -214,29 +240,91 @@
         else if (r < 0.5) intro.blink(25 + 40 * Math.random());
         else if (r < 0.7) fx.tear(0.3 + 0.5 * Math.random());
         else if (r < 0.85) { txt = 0.15 + 0.2 * Math.random(); }     // the title flickers through
-        else fx.hat(1);
+        else fx.snowGlitch(120, 0.25);
       }
-      if (kind === "drop" && k === "s" && st > 0.6 && fillBar(hit[0])) intro.rabbit(70 + 60 * st);
-      if (kind === "wild") {
-        if (k === "s" && st > 0.55) { intro.rabbit(60 + 90 * st); if (st > 0.8 && Math.random() < 0.25 + 0.6 * build) fx.tear(st); }
-        if (k === "k" && st > 0.85 && Math.random() < build * 0.5) intro.both(55);
-        if (k === "h" && st > 0.9 && Math.random() < build * 0.3) intro.blink(30);
-      }
+      if (kind === "wild" && k === "s" && st > 0.6 && Math.random() < 0.5 + 0.5 * build) intro.rabbit(50 + 80 * st);
     }
 
-    // the 4x4 beat grid for "drop" and "wild"
-    var n = Math.floor((t - GRID.firstBeat) / (60000 / GRID.bpm));
+    // the beat grid (4x4) drives everything from the first drop on
+    var bt = 60000 / GRID.bpm, rel = t - GRID.firstBeat;
+    var n = Math.floor(rel / bt), n8 = Math.floor(rel / (bt / 2)), n16 = Math.floor(rel / (bt / 4));
+    var beat = ((n - GRID.barStart) % 4 + 4) % 4;                     // 0..3 = beats 1..4
+    var bar = Math.floor((n - GRID.barStart) / 4), phraseEnd = ((bar % 4) + 4) % 4 === 3;
+    var grid = !tripping && !calm && kind !== "freeze" && e.k > 0.2;
+
     if (n !== lastBeat) {
       var fresh = n === lastBeat + 1;
       lastBeat = n;
-      if (fresh && !tripping && (kind === "drop" || kind === "wild") && e.k > 0.25) {
-        var beat = ((n - GRID.barStart) % 4 + 4) % 4;          // 0..3 = beats 1..4
-        var power = kind === "wild" ? 0.75 + 0.25 * build : 0.5 + 0.4 * build;
-        fx.kick(power * (beat === 0 ? 1 : 0.85));
-        if (beat === 1 || beat === 3) intro.rabbit(kind === "wild" ? 120 : 140);
-        if (kind === "wild" && beat === 0 && Math.random() < build) fx.tear(0.4 + 0.5 * build);
-      }
+      if (fresh && grid) onBeat(kind, beat, bar, phraseEnd, build, intro, fx, rfx);
     }
+    if (n8 !== lastEighth) {
+      var fresh8 = n8 === lastEighth + 1;
+      lastEighth = n8;
+      if (fresh8 && grid) onEighth(kind, n8 % 2 === 1, phraseEnd, build, intro, fx, rfx);
+    }
+    if (n16 !== lastSixteenth) {
+      var fresh16 = n16 === lastSixteenth + 1;
+      lastSixteenth = n16;
+      if (fresh16 && grid && kind === "strobe" && Math.random() < 0.5 + 0.5 * build) intro.rabbit(bt / 4 - 10);
+    }
+    if (kind === "finale") root.style.setProperty("--zoom", (1 + 0.18 * build + 0.05 * Math.sin(rel / bt * Math.PI)).toFixed(3));
+    else root.style.removeProperty("--zoom");
     root.style.setProperty("--txt", txt.toFixed(3));
   })();
+
+  var SOFT = ["grow", "neon", "waves"], HARD = ["particles", "blocks", "distort"];
+
+  function onBeat(kind, beat, bar, phraseEnd, build, intro, fx, rfx) {
+    if (kind === "rabbits") {                     // first drop: one rabbit, things happen to it
+      fx.kick(0.3 + 0.3 * build);
+      if (beat === 0) {
+        if (bar % 2 === 0) intro.hold(true);      // a new rabbit every 2 bars
+        intro.title(90);                          // the title only peeks in on beat 1
+        rfx.play(pickOf(SOFT), 320, 0.5 + 0.5 * build);
+      } else if (beat === 2) rfx.play(pickOf(SOFT), 300, 0.5 + 0.5 * build);
+      else rfx.play(pickOf(HARD), 300, 0.45 + 0.55 * build);   // 2 and 4 (snare)
+    } else if (kind === "wild") {                 // second drop
+      fx.kick(0.75 + 0.25 * build);
+      if (beat === 1 || beat === 3) intro.rabbit(140);
+      else if (Math.random() < 0.4) intro.both(70);
+      if (beat === 0 && Math.random() < build) fx.tear(0.4 + 0.5 * build);
+    } else if (kind === "mirror") {
+      fx.kick(0.6 + 0.3 * build);
+      intro.hold(beat === 0 || beat === 2);
+      rfx.play(beat % 2 ? pickOf(HARD) : pickOf(SOFT), 280, 0.6 + 0.4 * build);
+      if (beat === 0) intro.title(80);
+    } else if (kind === "strobe") {
+      fx.kick(0.9);
+      if (beat === 0) { strobe(); fx.tear(0.8); }
+      if (beat === 2) intro.both(90);
+    } else if (kind === "finale") {               // the title comes back hard on every beat
+      fx.kick(1);
+      intro.title(beat === 0 ? 200 : 140);
+      if (beat === 0) intro.hold(true);
+      rfx.play(beat % 2 ? pickOf(HARD) : "waves", 330, 0.7 + 0.3 * build);
+      if (beat === 3) fx.tear(0.5 + 0.5 * build);
+    }
+  }
+
+  function onEighth(kind, offbeat, phraseEnd, build, intro, fx, rfx) {
+    // end of every 4-bar phrase: a heavy glitch run
+    if (phraseEnd && (kind === "wild" || kind === "mirror" || kind === "strobe")) {
+      rfx.play(pickOf(HARD), 180, 1);
+      if (offbeat) { intro.rabbit(150); fx.tear(0.7 + 0.3 * Math.random()); }
+      else fx.snowGlitch(120, 0.25);
+      return;
+    }
+    if (kind === "wild" && offbeat && Math.random() < 0.35 + 0.5 * build) intro.rabbit(90);   // fast frame swaps
+    if (kind === "wild" && Math.random() < 0.15 * build) intro.blink(30);
+    if (kind === "rabbits" && offbeat && phraseEnd && Math.random() < 0.5) rfx.play("blocks", 150, 0.8);
+  }
+
+  function strobe() {
+    var hero = document.querySelector(".hero");
+    if (!hero) return;
+    var d = document.createElement("div");
+    d.className = "strobe";
+    hero.appendChild(d);
+    setTimeout(function () { d.remove(); }, 120);
+  }
 })();

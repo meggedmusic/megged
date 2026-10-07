@@ -249,3 +249,17 @@ html.music-quiet .fx-noise { opacity: .42 !important; transition: opacity .6s; }
 .scroll-cue { animation: none; }
   #stage { scroll-behavior: auto; }
 }
+
+/* ---------- music story: mirror ghosts, strobe, finale zoom ---------- */
+.rabbit-ghost { opacity: .45; pointer-events: none; filter: blur(1px) drop-shadow(0 0 30px rgba(var(--glow-cool), .35)); }
+.rabbit-ghost.ghost-l { transform: translateX(-58%) scaleX(-1); }
+.rabbit-ghost.ghost-r { transform: translateX(58%) scaleX(-1); }
+.strobe {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: #fff; mix-blend-mode: screen;
+  animation: strobe-out 120ms linear forwards;
+}
+@keyframes strobe-out { from { opacity: .55; } to { opacity: 0; } }
+html.scene-finale .hero > .wordmark,
+html.scene-finale .hero > .rabbit { scale: var(--zoom, 1); }
+@media (prefers-reduced-motion: reduce) { .strobe { display: none; } }

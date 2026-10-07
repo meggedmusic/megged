@@ -13,7 +13,6 @@
     { prefix: "rabbit-", count: 20 },   // cut from the video
     { prefix: "cover-", count: 15 }     // cut from the "The In-Between" cover
   ];
-  var TEXT_ONLY_MS = 2000;              // first phase: text alone
   // ------------------------------------------------------------------------
 
   var text = document.getElementById("intro-text");
@@ -33,47 +32,30 @@
   function pick(arr) { return arr[(Math.random() * arr.length) | 0]; }
   function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
+  var ghosts = [];                       // mirrored side copies (music "mirror" part)
   function show(state, frame) {
     // state: "text" | "rabbit" | "both" | "black"
     text.classList.toggle("is-off", state === "rabbit" || state === "black");
     if (frame) img.src = frame;
-    img.classList.toggle("is-on", state === "rabbit" || state === "both");
+    var on = state === "rabbit" || state === "both";
+    img.classList.toggle("is-on", on);
+    ghosts.forEach(function (g) { if (frame) g.src = frame; g.classList.toggle("is-on", on); });
   }
 
-  async function flickerText(total) {
-    var end = performance.now() + total;
-    show("text");
-    while (performance.now() < end) {
-      await wait(rnd(180, 520));
-      if (performance.now() >= end) break;
-      show("black"); await wait(rnd(35, 90));
-      show("text");
-    }
-  }
-
-  async function rabbitBurst() {
-    var n = (rnd(2, 7)) | 0;
-    for (var k = 0; k < n; k++) {
-      show("rabbit", pick(frames));
-      await wait(rnd(55, 150));
-      if (Math.random() < 0.3) { show("black"); await wait(rnd(25, 70)); }
-      if (Math.random() < 0.15) { show("both"); await wait(rnd(40, 80)); }
-    }
-  }
-
+  // Before the music starts: the title flickering a little, and once in a
+  // while a single rabbit flash as a hint of what the play button does.
   async function loop() {
-    await flickerText(TEXT_ONLY_MS);
-    if (reduce) { // gentle version: slow alternation, no strobing
-      for (;;) { show("rabbit", pick(frames)); await wait(1600); show("text"); await wait(2400); }
-    }
     for (;;) {
-      if (synced) { await wait(100); continue; }   // music is driving the flashes
-      await rabbitBurst();
-      var r = Math.random();
-      if (r < 0.45) { show("text"); await wait(rnd(70, 200)); }          // text flash
-      else if (r < 0.75) { await flickerText(rnd(500, 1300)); }          // text holds
-      else { show("rabbit", pick(frames)); await wait(rnd(250, 600)); }  // rabbit holds
-      if (Math.random() < 0.25) { show("black"); await wait(rnd(40, 120)); }
+      if (synced) { await wait(100); continue; }   // music is driving the picture
+      show("text");
+      await wait(reduce ? 4000 : rnd(900, 3200));
+      if (synced || reduce) continue;
+      if (Math.random() < 0.12) {                    // rare one-frame rabbit hint
+        show("rabbit", pick(frames)); await wait(rnd(45, 80)); show("text");
+        continue;
+      }
+      var n = Math.random() < 0.3 ? 2 : 1;
+      for (var k = 0; k < n; k++) { show("black"); await wait(rnd(35, 90)); show("text"); await wait(rnd(60, 140)); }
     }
   }
   loop();
@@ -86,15 +68,35 @@
     lastFrame = i;
     return frames[i];
   }
+  var resting = "text";                  // what to fall back to after a flash
   function settle(ms) {
     clearTimeout(holdTimer);
-    holdTimer = setTimeout(function () { show("text"); }, ms);
+    holdTimer = setTimeout(function () { show(resting); }, ms);
   }
   window.MEGGED_INTRO = {
-    sync: function (on) { synced = on && !reduce; if (!synced) show("text"); },
+    sync: function (on) {
+      synced = on && !reduce; resting = "text";
+      if (!synced) { clearTimeout(holdTimer); show("text"); this.ghosts(false); }
+    },
     rabbit: function (ms) { if (!synced) return; show("rabbit", nextFrame()); settle(ms); },
     both: function (ms) { if (!synced) return; show("both", nextFrame()); settle(ms); },
-    blink: function (ms) { if (!synced) return; show("black"); settle(ms); }
+    blink: function (ms) { if (!synced) return; show("black"); settle(ms); },
+    // keep a rabbit on screen (new = swap to another frame); rest("text") ends it
+    hold: function (isNew) { if (!synced) return; clearTimeout(holdTimer); resting = "rabbit"; show("rabbit", isNew ? nextFrame() : null); },
+    rest: function (state) { resting = state || "text"; clearTimeout(holdTimer); show(resting); },
+    // title flashes in over the held rabbit for a moment
+    title: function (ms) { if (!synced) return; show(resting === "rabbit" ? "both" : "text"); settle(ms); },
+    ghosts: function (on) {
+      if (on && !ghosts.length) {
+        ["l", "r"].forEach(function (k) {
+          var g = document.createElement("img");
+          g.className = "rabbit rabbit-ghost ghost-" + k; g.alt = ""; g.setAttribute("aria-hidden", "true");
+          g.src = img.src; if (img.classList.contains("is-on")) g.classList.add("is-on");
+          img.parentNode.insertBefore(g, img);
+          ghosts.push(g);
+        });
+      } else if (!on) { ghosts.forEach(function (g) { g.remove(); }); ghosts = []; }
+    }
   };
 
   // ---- YouTube --------------------------------------------------------------

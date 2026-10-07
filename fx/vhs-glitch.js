@@ -151,7 +151,7 @@
 
   setInterval(function () {
     var c = cfg();
-    setSplit("fx-vhs", c.split + rnd(-c.splitJitter, c.splitJitter));
+    setSplit("fx-vhs", c.split + rnd(-c.splitJitter, c.splitJitter) + (music.bass || 0) * 9);
   }, 110);
 
   var turb = svg.querySelectorAll("#fx-vhs-burst feTurbulence[result='t'], #fx-vhs-burst-lens feTurbulence[result='t']");
@@ -159,6 +159,7 @@
   function each(list, fn) { for (var i = 0; i < list.length; i++) fn(list[i]); }
 
   function burst() {
+    if (root.classList.contains("music-on")) { setTimeout(burst, 1000); return; }
     var c = cfg();
     var seed = String((Math.random() * 999) | 0), freq = "0.00001 " + rnd(0.02, 0.12).toFixed(3);
     var scale = rnd(c.burstTear[0], c.burstTear[1]).toFixed(1);
@@ -213,5 +214,29 @@
     })();
   }
 
-  window.MEGGED_FX = { config: CONFIG, burst: burst };
+  // ---- music reactions (called from js/music.js) ----------------------------
+  // level(bass, highs): widen the colour split with the bass, grain with the highs.
+  // pulse(kind, strength): a one-off tear on snares / strong kicks.
+  var music = { bass: 0 }, pulseOff = 0;
+  var noiseEl = ov.querySelector(".fx-noise");
+  function level(bass, highs) {
+    if (bass === null) { music.bass = 0; noiseEl.style.opacity = ""; return; }
+    music.bass = bass;
+    noiseEl.style.opacity = (0.04 + highs * 0.12).toFixed(3);
+  }
+  function pulse(kind, strength) {
+    if (kind === "h" || strength < 0.35) return;
+    var c = cfg();
+    var seed = String((Math.random() * 999) | 0), freq = "0.00001 " + rnd(0.03, 0.14).toFixed(3);
+    var tearMax = kind === "s" ? c.burstTear[1] : c.burstTear[1] * 0.6;
+    var scale = (c.burstTear[0] + (tearMax - c.burstTear[0]) * strength).toFixed(1);
+    each(turb, function (t) { t.setAttribute("seed", seed); t.setAttribute("baseFrequency", freq); });
+    each(disp, function (d) { d.setAttribute("scale", scale); });
+    setSplit("fx-vhs-burst", c.burstSplit[0] + (c.burstSplit[1] - c.burstSplit[0]) * strength);
+    root.classList.add("fx-burst");
+    clearTimeout(pulseOff);
+    pulseOff = setTimeout(function () { root.classList.remove("fx-burst"); }, 50 + strength * 70);
+  }
+
+  window.MEGGED_FX = { config: CONFIG, burst: burst, pulse: pulse, level: level, music: music };
 })();

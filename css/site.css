@@ -91,6 +91,24 @@ a:focus-visible { outline: 1px solid var(--white); outline-offset: 4px; }
 .is-off { visibility: hidden !important; }
 .is-on  { visibility: visible !important; }
 
+/* play button: sits just right of the wordmark (below it on narrow screens) */
+.play-btn {
+  z-index: 2;
+  width: 44px; height: 44px;
+  padding: 0; border: 0; background: none; cursor: pointer;
+  color: var(--white);
+  transform: translateX(calc(clamp(250px, 48vw, 820px) / 2 + 48px));
+  filter: drop-shadow(0 0 3px rgba(var(--glow), .9)) drop-shadow(0 0 16px rgba(var(--glow), .45));
+  opacity: .9; transition: opacity .15s;
+}
+.play-btn:hover { opacity: 1; }
+.play-btn svg { width: 26px; height: 31px; fill: currentColor; margin: auto; display: block; }
+.play-btn .i-pause, .play-btn.is-playing .i-play { display: none; }
+.play-btn.is-playing .i-pause { display: block; }
+@media (max-width: 640px) {
+  .play-btn { transform: translateY(calc(clamp(250px, 48vw, 820px) * 26 / 163 / 2 + 44px)); }
+}
+
 .scroll-cue {
   align-self: end;
   margin-bottom: 22px;
@@ -156,6 +174,24 @@ a:focus-visible { outline: 1px solid var(--white); outline-offset: 4px; }
 .tech a:hover { color: var(--white); }
 
 @media (prefers-reduced-motion: reduce) {
-  .scroll-cue { animation: none; }
+  /* play button: sits just right of the wordmark (below it on narrow screens) */
+.play-btn {
+  z-index: 2;
+  width: 44px; height: 44px;
+  padding: 0; border: 0; background: none; cursor: pointer;
+  color: var(--white);
+  transform: translateX(calc(clamp(250px, 48vw, 820px) / 2 + 48px));
+  filter: drop-shadow(0 0 3px rgba(var(--glow), .9)) drop-shadow(0 0 16px rgba(var(--glow), .45));
+  opacity: .9; transition: opacity .15s;
+}
+.play-btn:hover { opacity: 1; }
+.play-btn svg { width: 26px; height: 31px; fill: currentColor; margin: auto; display: block; }
+.play-btn .i-pause, .play-btn.is-playing .i-play { display: none; }
+.play-btn.is-playing .i-pause { display: block; }
+@media (max-width: 640px) {
+  .play-btn { transform: translateY(calc(clamp(250px, 48vw, 820px) * 26 / 163 / 2 + 44px)); }
+}
+
+.scroll-cue { animation: none; }
   #stage { scroll-behavior: auto; }
 }

@@ -67,6 +67,7 @@
       for (;;) { show("rabbit", pick(frames)); await wait(1600); show("text"); await wait(2400); }
     }
     for (;;) {
+      if (synced) { await wait(100); continue; }   // music is driving the flashes
       await rabbitBurst();
       var r = Math.random();
       if (r < 0.45) { show("text"); await wait(rnd(70, 200)); }          // text flash
@@ -76,6 +77,25 @@
     }
   }
   loop();
+
+  // ---- music sync (called from js/music.js while the track plays) -----------
+  var synced = false, holdTimer = 0;
+  function settle(ms) {
+    clearTimeout(holdTimer);
+    holdTimer = setTimeout(function () { show("text"); }, ms);
+  }
+  window.MEGGED_INTRO = {
+    sync: function (on) { synced = on && !reduce; if (!synced) show("text"); },
+    hit: function (kind, strength) {
+      if (!synced) return;
+      if (kind === "k" && strength > 0.3) {           // kick → rabbit frame
+        show(strength > 0.75 ? "rabbit" : "both", pick(frames));
+        settle(70 + strength * 110);
+      } else if (kind === "s" && strength > 0.45) {   // snare → blackout blink
+        show("black"); settle(45);
+      }
+    }
+  };
 
   // ---- YouTube --------------------------------------------------------------
   var box = document.getElementById("videos");

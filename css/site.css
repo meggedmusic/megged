@@ -109,17 +109,37 @@ a:focus-visible { outline: 1px solid var(--white); outline-offset: 4px; }
   .play-btn { transform: translateY(calc(clamp(250px, 48vw, 820px) * 26 / 163 / 2 + 44px)); }
 }
 
-/* quiet part of the track: no flashes, the title melts into old-TV snow */
-html.music-quiet .rabbit { visibility: hidden !important; }
-html.music-quiet .wordmark {
-  visibility: visible !important;
-  opacity: .5;
-  filter: blur(2.5px) drop-shadow(16px 0 5px rgba(255,255,255,.35)) drop-shadow(-16px 0 5px rgba(255,255,255,.35)) drop-shadow(0 0 30px rgba(var(--glow), .3));
-  animation: snow-drift .23s steps(2) infinite;
-  transition: opacity .6s, filter .6s;
+/* ---------- while the track plays (js/music.js) ---------- */
+/* --txt: title opacity per part of the track; --sm: kick smear 0..1 */
+html.music-on .wordmark {
+  opacity: var(--txt, 1);
+  filter: drop-shadow(0 0 2px rgba(var(--glow), .55)) drop-shadow(0 0 18px rgba(var(--glow), .4))
+          drop-shadow(calc(var(--sm, 0) * 26px) calc(var(--sm, 0) * -10px) calc(var(--sm, 0) * 4px) rgba(232, 100, 58, .85))
+          drop-shadow(calc(var(--sm, 0) * -26px) calc(var(--sm, 0) * 10px) calc(var(--sm, 0) * 4px) rgba(61, 107, 255, .85));
 }
-html.music-quiet .fx-noise { opacity: .42 !important; transition: opacity .6s; }
-@keyframes snow-drift { 0% { transform: translateX(-3px); } 50% { transform: translateX(4px) skewX(-2deg); } }
+
+/* trip-in: orange and blue copies of the title peel apart along an arc */
+.trip-copy {
+  width: clamp(250px, 48vw, 820px);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  will-change: transform, opacity, filter;
+}
+.trip-copy svg { display: block; width: 100%; height: auto; }
+.trip-a { color: rgb(232, 100, 58); transform-origin: 50% 700%; animation: trip-a 3.2s cubic-bezier(.55, 0, .25, 1) forwards; }
+.trip-b { color: rgb(61, 107, 255); transform-origin: 50% -600%; animation: trip-b 3.2s cubic-bezier(.55, 0, .25, 1) forwards; }
+@keyframes trip-a {
+  0%   { transform: none; opacity: .95; filter: blur(0); }
+  25%  { transform: rotate(-2deg) translate(-2vw, -1vh) skewX(-8deg) scaleX(1.15); opacity: .95; filter: blur(.5px); }
+  100% { transform: rotate(-16deg) translate(-70vw, -6vh) skewX(-35deg) scaleX(3); opacity: 0; filter: blur(10px); }
+}
+@keyframes trip-b {
+  0%   { transform: none; opacity: .95; filter: blur(0); }
+  25%  { transform: rotate(-2deg) translate(2vw, 1vh) skewX(-8deg) scaleX(1.15); opacity: .95; filter: blur(.5px); }
+  100% { transform: rotate(-16deg) translate(70vw, 6vh) skewX(-35deg) scaleX(3); opacity: 0; filter: blur(10px); }
+}
+html.trip .wordmark { transition: filter 1.2s; filter: blur(3px) drop-shadow(0 0 18px rgba(var(--glow), .4)); }
+html.trip .rabbit { visibility: hidden !important; }
 
 .scroll-cue {
   align-self: end;

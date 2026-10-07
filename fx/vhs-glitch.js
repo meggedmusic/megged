@@ -126,6 +126,11 @@
   var cv = ov.querySelector(".fx-noise"), ctx = cv.getContext("2d");
   cv.width = 160; cv.height = 90;
   var imgData = ctx.createImageData(cv.width, cv.height), px = imgData.data;
+  function noiseRes(w, h) {             // finer snow while music plays
+    if (cv.width === w) return;
+    cv.width = w; cv.height = h;
+    imgData = ctx.createImageData(w, h); px = imgData.data;
+  }
   function grain() {
     for (var i = 0; i < px.length; i += 4) { var v = (Math.random() * 255) | 0; px[i] = px[i+1] = px[i+2] = v; px[i+3] = 255; }
     ctx.putImageData(imgData, 0, 0);
@@ -215,28 +220,45 @@
     })();
   }
 
-  // ---- music reactions (called from js/music.js) ----------------------------
-  // While the track plays the picture stays clean white; each kick throws the
-  // orange/blue split wide and it snaps back. level() sets grain from the highs.
-  var KICK = { rest: 0.15, max: 16, decay: 0.72 };   // px at rest, px on a full kick, per-frame falloff
-  var music = { env: 0 }, envRaf = 0;
+  // ---- music reactions (driven by js/music.js) -------------------------------
+  // kick(s): orange/blue split + diagonal smear of the title, snapping back.
+  // tear(s): one-off horizontal tear. hat(s): quick flicker of the snow.
+  // snow(level): steady snow strength. All decay every frame while music plays.
+  var KICK = { rest: 0.1, max: 22, decay: 0.74 };
+  var m = { env: 0, hat: 0, snow: 0, on: false }, raf = 0, tearOff = 0;
   var noiseEl = ov.querySelector(".fx-noise");
-  function level(bass, highs) {
-    if (bass === null) { noiseEl.style.opacity = ""; return; }
-    noiseEl.style.opacity = (0.03 + highs * 0.08).toFixed(3);
+  function frameTick() {
+    m.env *= KICK.decay; if (m.env < 0.05) m.env = 0;
+    m.hat *= 0.72;      if (m.hat < 0.004) m.hat = 0;
+    setSplit("fx-vhs", KICK.rest + m.env);
+    root.style.setProperty("--sm", (m.env / KICK.max).toFixed(3));
+    noiseEl.style.opacity = Math.min(0.6, m.snow + m.hat).toFixed(3);
+    raf = m.on ? requestAnimationFrame(frameTick) : 0;
   }
-  function envTick() {
-    music.env *= KICK.decay;
-    if (music.env < 0.05) music.env = 0;
-    setSplit("fx-vhs", KICK.rest + music.env);
-    envRaf = music.env ? requestAnimationFrame(envTick) : 0;
-  }
-  function pulse(kind, strength) {
-    if (kind !== "k") return;
-    music.env = Math.max(music.env, KICK.max * strength);
-    if (!envRaf) envRaf = requestAnimationFrame(envTick);
-  }
-  function rest() { music.env = 0; setSplit("fx-vhs", KICK.rest); }
+  var music = {
+    start: function () {
+      m.on = true; noiseRes(320, 180);
+      if (!raf) raf = requestAnimationFrame(frameTick);
+    },
+    stop: function () {
+      m.on = false; m.env = m.hat = 0; noiseRes(160, 90);
+      noiseEl.style.opacity = ""; root.style.removeProperty("--sm");
+      root.classList.remove("fx-burst");
+    },
+    kick: function (s) { m.env = Math.max(m.env, KICK.max * s); },
+    hat: function (s) { m.hat = Math.max(m.hat, (0.03 + 0.09 * s) * (0.5 + Math.random())); },
+    snow: function (level) { m.snow = level; },
+    tear: function (s) {
+      var c = CONFIG, seed = String((Math.random() * 999) | 0), freq = "0.00001 " + rnd(0.03, 0.14).toFixed(3);
+      var scale = (c.burstTear[0] + (c.burstTear[1] - c.burstTear[0]) * s).toFixed(1);
+      each(turb, function (t) { t.setAttribute("seed", seed); t.setAttribute("baseFrequency", freq); });
+      each(disp, function (d) { d.setAttribute("scale", scale); });
+      setSplit("fx-vhs-burst", c.burstSplit[0] + (c.burstSplit[1] - c.burstSplit[0]) * s);
+      root.classList.add("fx-burst");
+      clearTimeout(tearOff);
+      tearOff = setTimeout(function () { root.classList.remove("fx-burst"); }, 50 + s * 80);
+    }
+  };
 
-  window.MEGGED_FX = { config: CONFIG, burst: burst, pulse: pulse, level: level, rest: rest, kick: KICK };
+  window.MEGGED_FX = { config: CONFIG, burst: burst, music: music, kickConfig: KICK };
 })();

@@ -1,7 +1,9 @@
 /* MEGGED — play button next to the title.
-   Plays a track in the Spotify player from START_SEC, and drives the rabbit
-   flashes + glitch from data/track-map.json (made by tools/analyze_track.py
-   from the track file, so the site reacts to kicks, snares, hats and bass). */
+   Plays a track in a small Spotify player from START_SEC and turns the site into
+   a "trip" that follows the track: data/track-map.json (made by
+   tools/analyze_track.py from the track file) gives the kicks, snares, hats and
+   loudness; STORY below says what happens in each part of the track.
+   Pausing brings the site back to normal. */
 (function () {
   "use strict";
 
@@ -10,6 +12,25 @@
   var START_SEC = 50;
   var MAP_URL = "data/track-map.json";
   var SYNC_MS = 0;          // nudge if flashes feel early (+) or late (-)
+
+  // The story of the track (ms in the track). Edit times here.
+  //   snow  – no title, soft snow flickering with the hi-hats
+  //   pulse – the title comes back faintly, breathing with the kicks
+  //   drop  – clean 4x4: every beat smears the title, rabbits on 2 and 4
+  //           (and on every snare in the fill bar at the end of each phrase)
+  //   wild  – rabbits on every snare, tears, flashes
+  //   the two numbers after a scene = how intense it starts and ends (0..1)
+  var GRID = { bpm: 160, firstBeat: 33, barStart: 1 };   // beat n is "1" when n % 4 === barStart
+  var STORY = [
+    [0,      27700,  "snow"],
+    [27700,  50000,  "drop", 0.5, 0.5],
+    [50000,  61600,  "snow"],
+    [61600,  75300,  "pulse"],
+    [75300,  96300,  "drop", 0, 1],      // first drop builds up
+    [96300,  99300,  "pulse"],
+    [99300,  195300, "wild", 0, 1],      // second drop: grows into the full trip
+    [195300, 999999, "snow"]
+  ];
   // ------------------------------------------------------------------------
 
   var btn = document.getElementById("play-btn");
@@ -19,7 +40,7 @@
 
   var controller = null, api = null, wantPlay = false;
   var pos = 0, at = 0, playing = false;     // last known position from Spotify
-  var map = null, nextHit = 0, lastE = -1, quiet = false;
+  var map = null, nextHit = 0, lastBeat = -1, scene = null, txt = 1, tripT = 0;
 
   fetch(MAP_URL).then(function (r) { return r.ok ? r.json() : null; })
     .then(function (m) { map = m; }).catch(function () {});
@@ -82,32 +103,103 @@
   }
 
   function syncMode(on) {
-    document.documentElement.classList.toggle("music-on", on);
-    if (!on) { quiet = false; document.documentElement.classList.remove("music-quiet"); }
-    if (window.MEGGED_INTRO) window.MEGGED_INTRO.sync(on && !!map);
-    if (on) { seekMap(now()); if (window.MEGGED_FX && window.MEGGED_FX.rest) window.MEGGED_FX.rest(); }
-    else if (window.MEGGED_FX && window.MEGGED_FX.level) window.MEGGED_FX.level(null);
+    var root = document.documentElement, fx = window.MEGGED_FX, intro = window.MEGGED_INTRO;
+    root.classList.toggle("music-on", on);
+    if (intro) intro.sync(on && !!map);
+    if (fx && fx.music) fx.music[on ? "start" : "stop"]();
+    if (on) {
+      seekMap(now());
+      if (map && now() < START_SEC * 1000 + 2500) tripIn();
+    } else {                                 // back to the normal site
+      root.classList.remove("trip", "scene-snow", "scene-pulse", "scene-drop", "scene-wild");
+      root.style.removeProperty("--txt");
+      scene = null; txt = 1; tripT = 0;
+    }
+  }
+
+  // "Trip-in" as the track starts: the title splits into its orange and blue
+  // copies, which smear apart diagonally along an arc and slide out of frame.
+  function tripIn() {
+    var hero = document.querySelector(".hero"), word = document.getElementById("intro-text");
+    if (!hero || !word) return;
+    tripT = performance.now();
+    ["a", "b"].forEach(function (k) {
+      var c = document.createElement("div");
+      c.className = "trip-copy trip-" + k;
+      c.setAttribute("aria-hidden", "true");
+      c.innerHTML = word.querySelector("svg").outerHTML;
+      hero.appendChild(c);
+      setTimeout(function () { c.remove(); }, 3400);
+    });
+    document.documentElement.classList.add("trip");
+    setTimeout(function () { document.documentElement.classList.remove("trip"); }, 3400);
+  }
+
+  function sceneAt(t) {
+    for (var i = 0; i < STORY.length; i++) if (t >= STORY[i][0] && t < STORY[i][1]) return STORY[i];
+    return STORY[STORY.length - 1];
+  }
+  function energy(t) {
+    var k = Math.floor(t / map.hop_ms), e = map.energy;
+    return { k: (e.k[k] || 0) / 99, s: (e.s[k] || 0) / 99, h: (e.h[k] || 0) / 99 };
+  }
+  // last bar of each 8-bar phrase = fills: follow every snare there
+  function fillBar(t) {
+    var beat = Math.floor((t - GRID.firstBeat) / (60000 / GRID.bpm)) - GRID.barStart;
+    return ((Math.floor(beat / 4) % 8) + 8) % 8 === 7;
   }
 
   (function tick() {
     requestAnimationFrame(tick);
     if (!playing || !map) return;
-    var t = now(), h = map.hits, intro = window.MEGGED_INTRO, fx = window.MEGGED_FX;
-    // quiet / atmospheric parts (no beat): everything calms down into TV snow
-    var q = (map.quiet || []).some(function (r) { return t >= r[0] - 2000 && t < r[1]; });
-    if (q !== quiet) { quiet = q; document.documentElement.classList.toggle("music-quiet", q); if (q && intro) intro.sync(false), intro.sync(true); }
-    if (nextHit < h.length && h[nextHit][0] < t - 400) seekMap(t);   // jumped ahead
+    var root = document.documentElement, intro = window.MEGGED_INTRO;
+    var fx = window.MEGGED_FX && window.MEGGED_FX.music;
+    if (!fx || !intro) return;
+    var t = now(), h = map.hits, sc = sceneAt(t), kind = sc[2];
+    var b0 = sc[3] == null ? 1 : sc[3], b1 = sc[4] == null ? b0 : sc[4];
+    var build = b0 + (b1 - b0) * Math.min(1, (t - sc[0]) / (sc[1] - sc[0]));
+    if (scene !== sc) {
+      scene = sc;
+      ["snow", "pulse", "drop", "wild"].forEach(function (n) { root.classList.toggle("scene-" + n, n === kind); });
+    }
+    var tripping = tripT && performance.now() - tripT < 3000;
+
+    // snow: always a little while music plays, stronger when the music is soft
+    var e = energy(t), loud = Math.max(e.k, e.s * 0.8, e.h * 0.6);
+    fx.snow(0.025 + (1 - loud) * 0.085 + (kind === "snow" ? 0.025 : 0));
+
+    // title opacity per scene; in "pulse" the kicks make it breathe
+    var base = tripping || kind === "snow" ? 0 : kind === "pulse" ? 0.08 : 1;
+    txt += (base - txt) * (tripping ? 0.04 : kind === "pulse" ? 0.05 : 0.15);
+
+    // hits from the analysis
+    if (nextHit < h.length && h[nextHit][0] < t - 400) seekMap(t);
     while (nextHit < h.length && h[nextHit][0] <= t) {
-      var hit = h[nextHit++];
-      if (quiet) continue;
-      if (intro) intro.hit(hit[1], hit[2]);
-      if (fx && fx.pulse && hit[2] > 0.5) fx.pulse(hit[1], hit[2]);
+      var hit = h[nextHit++], k = hit[1], st = hit[2];
+      if (k === "h") fx.hat(st);
+      if (tripping) continue;
+      if (kind === "pulse" && k === "k" && st > 0.75) { txt = Math.min(0.4, txt + 0.28 * st); fx.kick(0.2 * st); }
+      if (kind === "drop" && k === "s" && st > 0.6 && fillBar(hit[0])) intro.rabbit(70 + 60 * st);
+      if (kind === "wild") {
+        if (k === "s" && st > 0.55) { intro.rabbit(60 + 90 * st); if (st > 0.8 && Math.random() < 0.25 + 0.6 * build) fx.tear(st); }
+        if (k === "k" && st > 0.85 && Math.random() < build * 0.5) intro.both(55);
+        if (k === "h" && st > 0.9 && Math.random() < build * 0.3) intro.blink(30);
+      }
     }
-    var k = Math.floor(t / map.hop_ms);
-    if (k !== lastE && fx && fx.level) {
-      lastE = k;
-      var e = map.energy;
-      fx.level((e.k[k] || 0) / 99, (e.h[k] || 0) / 99);
+
+    // the 4x4 beat grid for "drop" and "wild"
+    var n = Math.floor((t - GRID.firstBeat) / (60000 / GRID.bpm));
+    if (n !== lastBeat) {
+      var fresh = n === lastBeat + 1;
+      lastBeat = n;
+      if (fresh && !tripping && (kind === "drop" || kind === "wild") && e.k > 0.25) {
+        var beat = ((n - GRID.barStart) % 4 + 4) % 4;          // 0..3 = beats 1..4
+        var power = kind === "wild" ? 0.75 + 0.25 * build : 0.5 + 0.4 * build;
+        fx.kick(power * (beat === 0 ? 1 : 0.85));
+        if (beat === 1 || beat === 3) intro.rabbit(kind === "wild" ? 120 : 140);
+        if (kind === "wild" && beat === 0 && Math.random() < build) fx.tear(0.4 + 0.5 * build);
+      }
     }
+    root.style.setProperty("--txt", txt.toFixed(3));
   })();
 })();

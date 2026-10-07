@@ -92,11 +92,9 @@
   }
   window.MEGGED_INTRO = {
     sync: function (on) { synced = on && !reduce; if (!synced) show("text"); },
-    hit: function (kind, strength) {
-      if (!synced || kind !== "s" || strength < 0.7) return;   // snare → a rabbit
-      show("rabbit", nextFrame());
-      settle(110 + strength * 90);
-    }
+    rabbit: function (ms) { if (!synced) return; show("rabbit", nextFrame()); settle(ms); },
+    both: function (ms) { if (!synced) return; show("both", nextFrame()); settle(ms); },
+    blink: function (ms) { if (!synced) return; show("black"); settle(ms); }
   };
 
   // ---- YouTube --------------------------------------------------------------

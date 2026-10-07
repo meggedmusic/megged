@@ -11,7 +11,7 @@
   var TRACK = "spotify:track:6NOK785Q1ievSvNIDroN6S";
   var START_SEC = 50;
   var MAP_URL = "data/track-map.json";
-  var SYNC_MS = 0;          // nudge if flashes feel early (+) or late (-)
+  var SYNC_MS = 0;          // + makes the flashes come earlier, - later (tune with ?sync)
 
   // The story of the track (ms in the track). Edit times here.
   //   snow  – no title, soft snow flickering with the hi-hats

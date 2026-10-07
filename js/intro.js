@@ -42,16 +42,21 @@
     ghosts.forEach(function (g) { if (frame) g.src = frame; g.classList.toggle("is-on", on); });
   }
 
-  // Before the music starts: the title flickering a little, and once in a
-  // while a single rabbit flash as a hint of what the play button does.
+  // Before the music starts: the title flickering a little, and often rabbits
+  // flashing over it, as a hint of what the play button does.
   async function loop() {
     for (;;) {
       if (synced) { await wait(100); continue; }   // music is driving the picture
       show("text");
-      await wait(reduce ? 4000 : rnd(900, 3200));
+      await wait(reduce ? 4000 : rnd(600, 2200));
       if (synced || reduce) continue;
-      if (Math.random() < 0.12) {                    // rare one-frame rabbit hint
-        show("rabbit", pick(frames)); await wait(rnd(45, 80)); show("text");
+      var r = Math.random();
+      if (r < 0.6) {                                // rabbits flashing over the title
+        var m = Math.random() < 0.35 ? 2 + ((Math.random() * 2) | 0) : 1;
+        for (var j = 0; j < m; j++) {
+          show(Math.random() < 0.6 ? "both" : "rabbit", pick(frames)); await wait(rnd(60, 140));
+          show("text"); if (j < m - 1) await wait(rnd(50, 120));
+        }
         continue;
       }
       var n = Math.random() < 0.3 ? 2 : 1;

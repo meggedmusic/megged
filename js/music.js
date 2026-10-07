@@ -18,8 +18,8 @@
   //             the snow itself breaks into big glitches
   //   weird   – break inside the break: odd flickers in the snow
   //   pulse   – the title flashes faintly on every kick
-  //   rabbits – first drop: a rabbit stays on screen and things happen to it on
-  //             each beat (grows, neon, particles, waves, blocks, distortion);
+  //   rabbits – first drop: a new rabbit on every beat, white flash on the
+  //             snares (2 and 4), and things happen to it on each beat (grows, neon, particles, waves, blocks, distortion);
   //             the title only peeks in on the first beat of each bar
   //   wild    – second drop: fast frame swaps and flashes; a heavy glitch run
   //             at the end of every 4-bar phrase
@@ -277,12 +277,12 @@
   function onBeat(kind, beat, bar, phraseEnd, build, intro, fx, rfx) {
     if (kind === "rabbits") {                     // first drop: one rabbit, things happen to it
       fx.kick(0.3 + 0.3 * build);
+      intro.hold(true);                           // a new rabbit on every beat, never longer
       if (beat === 0) {
-        if (bar % 2 === 0) intro.hold(true);      // a new rabbit every 2 bars
         intro.title(90);                          // the title only peeks in on beat 1
         rfx.play(pickOf(SOFT), 320, 0.5 + 0.5 * build);
       } else if (beat === 2) rfx.play(pickOf(SOFT), 300, 0.5 + 0.5 * build);
-      else rfx.play(pickOf(HARD), 300, 0.45 + 0.55 * build);   // 2 and 4 (snare)
+      else { strobe(); rfx.play(pickOf(HARD), 300, 0.45 + 0.55 * build); }   // 2 and 4 (snare): white flash
     } else if (kind === "wild") {                 // second drop
       fx.kick(0.75 + 0.25 * build);
       if (beat === 1 || beat === 3) intro.rabbit(140);

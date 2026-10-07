@@ -1,0 +1,74 @@
+/* =====================================================================
+   MEGGED FX LAYER — VHS + orange/blue glitch
+   Sits ON TOP of everything inside #stage. Nothing in the content is styled
+   here, so anything added to the page later gets the same look automatically.
+   Turn the whole layer off:  add ?fx=off to the URL, or delete the two fx/ lines
+   in index.html. Tune values below, or in fx/vhs-glitch.js → CONFIG.
+   ===================================================================== */
+:root {
+  --fx-scanlines: .22;   /* darkness of the scan lines            */
+  --fx-noise: .055;       /* tape grain                            */
+  --fx-vignette: .6;     /* dark corners                          */
+  --fx-tracking: .045;    /* rolling tracking band                 */
+  --fx-flicker: .035;    /* overall brightness wobble             */
+  --fx-orange: 232, 100, 58;   /* cover's orange-red fringe */
+  --fx-blue: 61, 107, 255;     /* cover's blue fringe       */
+}
+/* calmer overlay while reading (see CONFIG.calm in the JS) */
+html.fx-calm { --fx-noise: .035; --fx-tracking: .02; --fx-flicker: .015; }
+
+/* 1) colour split + tape wobble on the whole page (SVG filter built in JS) */
+html.fx-on #stage { filter: url(#fx-vhs) saturate(.85) contrast(1.06); }
+html.fx-on.fx-burst #stage { filter: url(#fx-vhs-burst) saturate(1) contrast(1.1); }
+html.fx-on.fx-calm.fx-burst #stage { filter: url(#fx-vhs-burst) saturate(.85) contrast(1.06); }
+
+/* 2) the overlay, above everything, never catches clicks */
+#fx-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  pointer-events: none;
+  overflow: hidden;
+}
+#fx-overlay > * { position: absolute; inset: 0; pointer-events: none; }
+
+.fx-scan {
+  background: repeating-linear-gradient(to bottom,
+    rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px,
+    rgba(0,0,0,var(--fx-scanlines)) 2px, rgba(0,0,0,var(--fx-scanlines)) 3px);
+}
+.fx-noise {
+  width: 100%; height: 100%;
+  opacity: var(--fx-noise);
+  mix-blend-mode: screen;
+  image-rendering: pixelated;
+}
+.fx-tracking {
+  height: 14vh; inset: auto 0 auto 0; top: -20vh;
+  background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,var(--fx-tracking)) 45%, rgba(255,255,255,0));
+  filter: blur(1px);
+  animation: fx-track 7.5s linear infinite;
+}
+.fx-edges { display: none; }   /* coloured edge bleed: off (kept the page from going purple) */
+.fx-vignette {
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(0,0,0,var(--fx-vignette)) 100%);
+}
+.fx-flicker {
+  background: #fff;
+  opacity: 0;
+  mix-blend-mode: overlay;
+  animation: fx-flicker .16s steps(2) infinite;
+}
+
+@keyframes fx-track {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(140vh); }
+}
+@keyframes fx-flicker {
+  0%   { opacity: 0; }
+  50%  { opacity: var(--fx-flicker); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-tracking, .fx-flicker { animation: none; }
+}

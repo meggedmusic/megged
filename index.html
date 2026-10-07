@@ -1,344 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" dir="ltr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MEGGED</title>
-<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --yellow: #FFEE00;
-    --purple: #3B1F6A;
-    --blue: #5B3FA8;
-    --light-purple: #9B7FD4;
-    --white: #F5F0FF;
-    --dark: #0D0A1A;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--dark);
-    color: var(--white);
-    font-family: 'Space Mono', monospace;
-    overflow-x: hidden;
-    cursor: crosshair;
-  }
-
-  /* HERO */
-  .hero {
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    overflow: hidden;
-    background: linear-gradient(160deg, #1a0a3a 0%, #0D0A1A 60%);
-  }
-
-  .hero-bg {
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 60% 80% at 70% 40%, rgba(91,63,168,0.45) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 50% at 20% 80%, rgba(59,31,106,0.6) 0%, transparent 60%);
-    z-index: 0;
-  }
-
-  /* Smoke-like animated blobs */
-  .blob {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.18;
-    animation: drift 12s ease-in-out infinite alternate;
-    z-index: 0;
-  }
-  .blob1 { width: 500px; height: 500px; background: #7B5ADF; top: -100px; right: -100px; animation-duration: 14s; }
-  .blob2 { width: 350px; height: 350px; background: #FFEE00; bottom: 200px; left: -80px; opacity: 0.08; animation-duration: 18s; animation-delay: -4s; }
-  .blob3 { width: 300px; height: 300px; background: #3B1F6A; top: 40%; left: 40%; animation-duration: 10s; animation-delay: -7s; }
-
-  @keyframes drift {
-    from { transform: translate(0, 0) scale(1); }
-    to { transform: translate(30px, -40px) scale(1.08); }
-  }
-
-  /* Noise texture overlay */
-  .noise {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    opacity: 0.04;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    background-size: 200px 200px;
-    pointer-events: none;
-  }
-
-  /* Social icons top */
-  .social-bar {
-    position: absolute;
-    top: 36px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 28px;
-    z-index: 10;
-    animation: fadeDown 1s ease 0.2s both;
-  }
-
-  @keyframes fadeDown {
-    from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-    to { opacity: 1; transform: translateX(-50%) translateY(0); }
-  }
-
-  .social-bar a {
-    color: var(--white);
-    opacity: 0.75;
-    text-decoration: none;
-    font-size: 22px;
-    transition: opacity 0.2s, transform 0.2s;
-    display: flex;
-    align-items: center;
-  }
-  .social-bar a:hover { opacity: 1; transform: scale(1.2); }
-
-  /* SVG icons inline */
-  .icon { width: 24px; height: 24px; fill: currentColor; }
-
-  /* Hero content */
-  .hero-content {
-    position: relative;
-    z-index: 5;
-    padding: 0 48px 64px;
-    max-width: 900px;
-    animation: fadeUp 1s ease 0.4s both;
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(40px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .hero-title {
-    font-family: 'Black Ops One', cursive;
-    font-size: clamp(88px, 18vw, 220px);
-    line-height: 0.88;
-    letter-spacing: -0.02em;
-    color: transparent;
-    -webkit-text-stroke: 2px var(--white);
-    /* Chrome/Safari metallic feel */
-    background: linear-gradient(170deg, #ffffff 0%, #c0a8ff 40%, #ffffff 60%, #8060e0 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: none;
-    position: relative;
-    z-index: 2;
-  }
-
-  .hero-bio {
-    margin-top: 32px;
-    font-size: 15px;
-    line-height: 1.7;
-    color: rgba(245,240,255,0.85);
-    max-width: 480px;
-    border-left: 3px solid var(--yellow);
-    padding-left: 20px;
-  }
-
-  /* Yellow strip */
-  .yellow-strip {
-    background: var(--yellow);
-    color: var(--dark);
-    padding: 56px 48px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 40px;
-    flex-wrap: wrap;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .yellow-strip::before {
-    content: 'MEGGED MEGGED MEGGED MEGGED MEGGED MEGGED ';
-    position: absolute;
-    top: 50%;
-    left: -100%;
-    transform: translateY(-50%);
-    font-family: 'Black Ops One', cursive;
-    font-size: 90px;
-    opacity: 0.07;
-    white-space: nowrap;
-    animation: marqueeText 20s linear infinite;
-    pointer-events: none;
-    letter-spacing: -0.02em;
-  }
-
-  @keyframes marqueeText {
-    from { left: -100%; }
-    to { left: 100%; }
-  }
-
-  .contact-block {
-    z-index: 1;
-  }
-
-  .contact-label {
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    opacity: 0.6;
-    margin-bottom: 8px;
-  }
-
-  .contact-block a {
-    display: block;
-    font-family: 'Black Ops One', cursive;
-    font-size: clamp(18px, 3vw, 28px);
-    color: var(--dark);
-    text-decoration: none;
-    transition: opacity 0.2s;
-  }
-  .contact-block a:hover { opacity: 0.6; }
-
-  .book-btn {
-    background: var(--dark);
-    color: var(--yellow);
-    font-family: 'Black Ops One', cursive;
-    font-size: 18px;
-    letter-spacing: 0.05em;
-    padding: 18px 44px;
-    border: none;
-    cursor: crosshair;
-    position: relative;
-    z-index: 1;
-    transition: transform 0.15s, box-shadow 0.15s;
-    text-decoration: none;
-    display: inline-block;
-  }
-  .book-btn:hover {
-    transform: translate(-3px, -3px);
-    box-shadow: 6px 6px 0 var(--dark);
-    background: var(--purple);
-  }
-
-  /* Tags strip */
-  .tags {
-    background: var(--dark);
-    padding: 28px 48px;
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    border-top: 1px solid rgba(255,255,255,0.06);
-  }
-
-  .tag {
-    border: 1px solid rgba(245,240,255,0.25);
-    padding: 8px 20px;
-    font-size: 12px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--light-purple);
-    transition: border-color 0.2s, color 0.2s;
-  }
-  .tag:hover { border-color: var(--yellow); color: var(--yellow); }
-
-  /* Footer */
-  footer {
-    background: var(--dark);
-    border-top: 1px solid rgba(255,255,255,0.06);
-    padding: 24px 48px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-    font-size: 12px;
-    color: rgba(245,240,255,0.3);
-    letter-spacing: 0.1em;
-  }
-
-  footer span { font-family: 'Black Ops One', cursive; color: var(--yellow); opacity: 0.7; }
-
-  @media (max-width: 600px) {
-    .hero-content { padding: 0 24px 48px; }
-    .yellow-strip { padding: 40px 24px; }
-    .tags, footer { padding: 24px; }
-    .social-bar { gap: 18px; }
-  }
-</style>
+<meta name="description" content="MEGGED — electronic music producer and DJ blending bass music, breaks and IDM.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&display=swap">
+<link rel="preload" href="fonts/tiny5.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/site.css">
+<!-- FX LAYER (VHS + glitch). Separate from the content; edit/disable it in fx/ only. -->
+<link rel="stylesheet" href="fx/vhs-glitch.css">
 </head>
 <body>
 
-<section class="hero">
-  <div class="hero-bg"></div>
-  <div class="blob blob1"></div>
-  <div class="blob blob2"></div>
-  <div class="blob blob3"></div>
-  <div class="noise"></div>
+<!-- ============ CONTENT (everything inside #stage gets the FX) ============ -->
+<div id="stage">
 
-  <!-- Social bar -->
-  <nav class="social-bar">
-    <!-- Apple Music -->
-    <a href="#" title="Apple Music">
-      <svg class="icon" viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+  <!-- Platform icons, same order + links as the EPK -->
+  <nav class="platforms" aria-label="MEGGED on music platforms">
+    <a href="https://music.apple.com/us/artist/megged/1509966236" target="_blank" rel="noopener" aria-label="Apple Music">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>
     </a>
-    <!-- Linktree-like star -->
-    <a href="#" title="Links">
-      <svg class="icon" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+    <a href="https://linktr.ee/yoavmegged" target="_blank" rel="noopener" aria-label="Linktree">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13.73635 5.85251 4.00467-4.11665 2.3248 2.3808-4.20064 4.00466h5.9085v3.30473h-5.9365l4.22865 4.10766-2.3248 2.3338L12.0005 12.099l-5.74052 5.76852-2.3248-2.3248 4.22864-4.10766h-5.9375V8.12132h5.9085L3.93417 4.11666l2.3248-2.3808 4.00468 4.11665V0h3.4727zm-3.4727 10.30614h3.4727V24h-3.4727z"/></svg>
     </a>
-    <!-- SoundCloud -->
-    <a href="#" title="SoundCloud">
-      <svg class="icon" viewBox="0 0 24 24"><path d="M1.175 12.225c-.014 0-.027.002-.04.003.004-.14.013-.28.028-.419-.015.139-.024.28-.028.419A6.337 6.337 0 000 15.8c0 3.422 2.776 6.2 6.2 6.2h11.4c2.43 0 4.4-1.97 4.4-4.4 0-2.43-1.97-4.4-4.4-4.4h-.2c.06-.33.1-.67.1-1.02 0-3.15-2.55-5.7-5.7-5.7-2.38 0-4.42 1.46-5.28 3.545A3.094 3.094 0 004.275 9.1c-1.71 0-3.1 1.39-3.1 3.1 0 .008.001.016.001.025z"/></svg>
+    <a href="https://soundcloud.com/yoavmegged" target="_blank" rel="noopener" aria-label="SoundCloud" class="wide">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.999 14.165c-.052 1.796-1.612 3.169-3.4 3.169h-8.18a.68.68 0 0 1-.675-.683V7.862a.747.747 0 0 1 .452-.724s.75-.513 2.333-.513a5.364 5.364 0 0 1 2.763.755 5.433 5.433 0 0 1 2.57 3.54c.282-.08.574-.121.868-.12.884 0 1.730.358 2.347.992s.948 1.490.922 2.373ZM10.721 8.421c.247 2.980.427 5.697 0 8.672a.264.264 0 0 1-.53 0c-.395-2.946-.22-5.718 0-8.672a.264.264 0 0 1 .53 0ZM9.072 9.448c.285 2.659.37 4.986-.006 7.655a.277.277 0 0 1-.55 0c-.331-2.63-.256-5.02 0-7.655a.277.277 0 0 1 .556 0Zm-1.663-.257c.27 2.726.39 5.171 0 7.904a.266.266 0 0 1-.532 0c-.38-2.69-.257-5.21 0-7.904a.266.266 0 0 1 .532 0Zm-1.647.77a26.108 26.108 0 0 1-.008 7.147.272.272 0 0 1-.542 0 27.955 27.955 0 0 1 0-7.147.275.275 0 0 1 .55 0Zm-1.670 1.769c.421 1.865.228 3.5-.029 5.388a.257.257 0 0 1-.514 0c-.21-1.858-.398-3.549 0-5.389a.272.272 0 0 1 .543 0Zm-1.655-.273c.388 1.897.26 3.508-.01 5.412-.026.28-.514.283-.54 0-.244-1.878-.347-3.54-.01-5.412a.283.283 0 0 1 .56 0Zm-1.668.911c.4 1.268.257 2.292-.026 3.572a.257.257 0 0 1-.514 0c-.241-1.262-.354-2.312-.023-3.572a.283.283 0 0 1 .563 0Z"/></svg>
     </a>
-    <!-- Instagram -->
-    <a href="#" title="Instagram">
-      <svg class="icon" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+    <a href="https://www.instagram.com/meggedofficial/" target="_blank" rel="noopener" aria-label="Instagram">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg>
     </a>
-    <!-- Spotify -->
-    <a href="#" title="Spotify">
-      <svg class="icon" viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+    <a href="https://open.spotify.com/artist/0GJLWMgnYsW79jIrqwYmCx" target="_blank" rel="noopener" aria-label="Spotify">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.020-.12-1.140-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.720 12.840c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
     </a>
   </nav>
 
-  <div class="hero-content">
-    <h1 class="hero-title">MEGGED</h1>
-    <p class="hero-bio">
-      Electronic music producer and DJ blending bass music, breaks and IDM.
-      Producing since 2012 — innovative sound design with colorful, melodic elements
-      and playful sample work. Performing at major festivals and clubs worldwide.
-    </p>
-  </div>
-</section>
+  <!-- 1. HERO: MEGGED text + flickering rabbit frames cut from the video -->
+  <header class="hero" id="top">
+    <!-- custom pixel wordmark (img/megged-wordmark.svg), drawn to match the cover -->
+    <h1 class="wordmark" id="intro-text"><span class="sr-only">MEGGED</span><svg aria-hidden="true" focusable="false" viewBox="0 0 163 26" shape-rendering="crispEdges" xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTpiZjAyYzEzNC00ZmFmLTRkMWEtYTdkMC0wNTFkNDA5MmUzZTIAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaG0diap6dHxpRotu8s6zVXYAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDpjNWQyNDBhOC1iMDQ0LTQ1NTItOTgxZC0wZjc0MDdlOTBjZjBscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNoMuZZD7il1ntK8mmKpSm9kQAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggbRf7rwteRHgFIXPr3cmaM2FlhZzsJNfMOB67ApMy4SGkZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaG1jniFBZmLnQZObj9Zz3y8AAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCCHqAP1y84URxjMLxdp2COVXmSeuZJP5unRNIgnR1OXkWRuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBiZZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOmJmMDJjMTM0LTRmYWYtNGQxYS1hN2QwLTA1MWQ0MDkyZTNlMi9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjcwZmIwMzNiLTE5YWItNGE1OC1hZGIzLTUzNjc1ZWYxMzU0N3JjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCBtF/uvC15EeAUhc+vdyZozYWWFnOwk18w4HrsCkzLhIaJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFgg8509LnUO37erU1P7w2peajiaXDQwB79HDju4lfIoAfeiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggD03htJZhalHri9+bFwIG2FFPu7vBYIxscNgq7kQv6MR0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQH8zU1+FTJqKukwhy9HDlI3w0j3+Pw/lJj1OFvZ5UtqfNyG/Tt37kPXPyRo+PDAogE4hTYQSf0icAzvqpJfk48c=</c2pa:manifest></metadata><path fill="currentColor" d="M0 0h7v1h-7zM20 0h7v1h-7zM31 0h21v1h-21zM65 0h9v1h-9zM95 0h9v1h-9zM115 0h21v1h-21zM140 0h14v1h-14zM0 1h8v1h-8zM20 1h7v1h-7zM31 1h21v1h-21zM62 1h15v1h-15zM92 1h15v1h-15zM115 1h21v1h-21zM140 1h17v1h-17zM0 2h8v1h-8zM19 2h8v1h-8zM31 2h21v1h-21zM60 2h18v1h-18zM90 2h18v1h-18zM115 2h21v1h-21zM140 2h19v1h-19zM0 3h8v1h-8zM19 3h8v1h-8zM31 3h21v1h-21zM59 3h20v1h-20zM89 3h20v1h-20zM115 3h21v1h-21zM140 3h20v1h-20zM0 4h9v1h-9zM18 4h9v1h-9zM31 4h6v1h-6zM58 4h8v1h-8zM72 4h8v1h-8zM88 4h8v1h-8zM102 4h8v1h-8zM115 4h6v1h-6zM140 4h6v1h-6zM153 4h8v1h-8zM0 5h4v1h-4zM5 5h4v1h-4zM18 5h4v1h-4zM23 5h4v1h-4zM31 5h6v1h-6zM57 5h7v1h-7zM74 5h7v1h-7zM87 5h7v1h-7zM104 5h7v1h-7zM115 5h6v1h-6zM140 5h6v1h-6zM155 5h7v1h-7zM0 6h4v1h-4zM5 6h4v1h-4zM18 6h4v1h-4zM23 6h4v1h-4zM31 6h6v1h-6zM57 6h6v1h-6zM75 6h6v1h-6zM87 6h6v1h-6zM105 6h6v1h-6zM115 6h6v1h-6zM140 6h6v1h-6zM156 6h6v1h-6zM0 7h4v1h-4zM5 7h5v1h-5zM17 7h5v1h-5zM23 7h4v1h-4zM31 7h6v1h-6zM56 7h6v1h-6zM76 7h2v1h-2zM86 7h6v1h-6zM106 7h2v1h-2zM115 7h6v1h-6zM140 7h6v1h-6zM157 7h6v1h-6zM0 8h4v1h-4zM5 8h5v1h-5zM17 8h10v1h-10zM31 8h6v1h-6zM56 8h6v1h-6zM86 8h6v1h-6zM115 8h6v1h-6zM140 8h6v1h-6zM157 8h6v1h-6zM0 9h5v1h-5zM6 9h4v1h-4zM17 9h4v1h-4zM22 9h5v1h-5zM31 9h6v1h-6zM56 9h5v1h-5zM86 9h5v1h-5zM115 9h6v1h-6zM140 9h6v1h-6zM158 9h5v1h-5zM0 10h5v1h-5zM6 10h5v1h-5zM16 10h5v1h-5zM22 10h5v1h-5zM31 10h20v1h-20zM56 10h5v1h-5zM86 10h5v1h-5zM115 10h20v1h-20zM140 10h6v1h-6zM158 10h5v1h-5zM0 11h5v1h-5zM6 11h5v1h-5zM16 11h5v1h-5zM22 11h5v1h-5zM31 11h20v1h-20zM56 11h5v1h-5zM86 11h5v1h-5zM115 11h20v1h-20zM140 11h6v1h-6zM158 11h5v1h-5zM0 12h5v1h-5zM7 12h4v1h-4zM16 12h4v1h-4zM22 12h5v1h-5zM31 12h20v1h-20zM56 12h5v1h-5zM70 12h12v1h-12zM86 12h5v1h-5zM100 12h12v1h-12zM115 12h20v1h-20zM140 12h6v1h-6zM158 12h5v1h-5zM0 13h5v1h-5zM7 13h5v1h-5zM15 13h5v1h-5zM22 13h5v1h-5zM31 13h20v1h-20zM56 13h5v1h-5zM70 13h12v1h-12zM86 13h5v1h-5zM100 13h12v1h-12zM115 13h20v1h-20zM140 13h6v1h-6zM158 13h5v1h-5zM0 14h5v1h-5zM7 14h5v1h-5zM15 14h5v1h-5zM22 14h5v1h-5zM31 14h6v1h-6zM56 14h5v1h-5zM70 14h12v1h-12zM86 14h5v1h-5zM100 14h12v1h-12zM115 14h6v1h-6zM140 14h6v1h-6zM158 14h5v1h-5zM0 15h5v1h-5zM8 15h4v1h-4zM15 15h4v1h-4zM22 15h5v1h-5zM31 15h6v1h-6zM56 15h5v1h-5zM70 15h12v1h-12zM86 15h5v1h-5zM100 15h12v1h-12zM115 15h6v1h-6zM140 15h6v1h-6zM158 15h5v1h-5zM0 16h5v1h-5zM8 16h5v1h-5zM14 16h5v1h-5zM22 16h5v1h-5zM31 16h6v1h-6zM56 16h6v1h-6zM77 16h5v1h-5zM86 16h6v1h-6zM107 16h5v1h-5zM115 16h6v1h-6zM140 16h6v1h-6zM157 16h6v1h-6zM0 17h5v1h-5zM8 17h5v1h-5zM14 17h5v1h-5zM22 17h5v1h-5zM31 17h6v1h-6zM56 17h6v1h-6zM77 17h5v1h-5zM86 17h6v1h-6zM107 17h5v1h-5zM115 17h6v1h-6zM140 17h6v1h-6zM157 17h6v1h-6zM0 18h5v1h-5zM9 18h4v1h-4zM14 18h4v1h-4zM22 18h5v1h-5zM31 18h6v1h-6zM56 18h6v1h-6zM77 18h5v1h-5zM86 18h6v1h-6zM107 18h5v1h-5zM115 18h6v1h-6zM140 18h6v1h-6zM157 18h5v1h-5zM0 19h5v1h-5zM9 19h9v1h-9zM22 19h5v1h-5zM31 19h6v1h-6zM57 19h6v1h-6zM77 19h5v1h-5zM87 19h6v1h-6zM107 19h5v1h-5zM115 19h6v1h-6zM140 19h6v1h-6zM156 19h6v1h-6zM0 20h5v1h-5zM10 20h8v1h-8zM22 20h5v1h-5zM31 20h6v1h-6zM57 20h7v1h-7zM75 20h7v1h-7zM87 20h7v1h-7zM105 20h7v1h-7zM115 20h6v1h-6zM140 20h6v1h-6zM155 20h6v1h-6zM0 21h5v1h-5zM10 21h7v1h-7zM22 21h5v1h-5zM31 21h6v1h-6zM58 21h8v1h-8zM73 21h9v1h-9zM88 21h8v1h-8zM103 21h9v1h-9zM115 21h6v1h-6zM140 21h6v1h-6zM153 21h8v1h-8zM0 22h5v1h-5zM10 22h7v1h-7zM22 22h5v1h-5zM31 22h22v1h-22zM59 22h21v1h-21zM89 22h21v1h-21zM115 22h22v1h-22zM140 22h20v1h-20zM0 23h5v1h-5zM11 23h5v1h-5zM22 23h5v1h-5zM31 23h22v1h-22zM60 23h19v1h-19zM90 23h19v1h-19zM115 23h22v1h-22zM140 23h19v1h-19zM0 24h5v1h-5zM11 24h5v1h-5zM22 24h5v1h-5zM31 24h22v1h-22zM62 24h15v1h-15zM92 24h15v1h-15zM115 24h22v1h-22zM140 24h17v1h-17zM0 25h5v1h-5zM11 25h5v1h-5zM22 25h5v1h-5zM31 25h22v1h-22zM64 25h10v1h-10zM94 25h10v1h-10zM115 25h22v1h-22zM140 25h15v1h-15z"/></svg></h1>
+    <img class="rabbit" id="intro-frame" alt="" aria-hidden="true">
+    <a class="scroll-cue" href="#about" aria-label="Scroll down">&#8595;</a>
+  </header>
 
-<!-- Yellow contact strip -->
-<section class="yellow-strip">
-  <div class="contact-block">
-    <div class="contact-label">Phone</div>
+  <!-- 2. EPK TEXT -->
+  <section class="about" id="about" data-fx="calm">
+    <p>MEGGED is an electronic music producer and DJ blending bass music, breaks and IDM.</p>
+    <p>Producing since 2012, his sound combines innovative sound design with colorful, melodic elements and playful sample work.</p>
+    <p>He performs at major festivals and clubs, delivering high-energy sets built around rhythm, precision and original productions.</p>
+  </section>
+
+  <!-- 3. MEDIA: YouTube + Spotify -->
+  <section class="media" id="listen" data-fx="calm">
+    <!-- YouTube videos are added from js/intro.js → YOUTUBE_IDS -->
+    <div class="videos" id="videos"></div>
+
+    <div class="spotify">
+      <iframe title="MEGGED on Spotify" src="https://open.spotify.com/embed/artist/0GJLWMgnYsW79jIrqwYmCx?utm_source=generator&amp;theme=0" width="100%" height="380" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+  </section>
+
+  <!-- 4. TECHNICAL DETAILS (as in the EPK) -->
+  <footer class="tech" id="contact" data-fx="calm">
     <a href="tel:+972546654764">+972-54-6654764</a>
-  </div>
-  <div class="contact-block">
-    <div class="contact-label">Email</div>
     <a href="mailto:yoav.megged@gmail.com">yoav.megged@gmail.com</a>
-  </div>
-  <a class="book-btn" href="mailto:yoav.megged@gmail.com">BOOK NOW</a>
-</section>
+  </footer>
 
-<!-- Genre tags -->
-<div class="tags">
-  <div class="tag">Bass Music</div>
-  <div class="tag">Breaks</div>
-  <div class="tag">IDM</div>
-  <div class="tag">Live DJ</div>
-  <div class="tag">Producer</div>
-  <div class="tag">Since 2012</div>
 </div>
+<!-- ============ /CONTENT ============ -->
 
-<footer>
-  <span>MEGGED</span>
-  <div>© 2025 — All rights reserved</div>
-</footer>
-
+<script src="js/intro.js"></script>
+<!-- FX LAYER script: builds the overlay + SVG glitch filter on top of #stage -->
+<script src="fx/vhs-glitch.js"></script>
 </body>
 </html>

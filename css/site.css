@@ -118,27 +118,15 @@ html.music-on .wordmark {
           drop-shadow(calc(var(--sm, 0) * -26px) calc(var(--sm, 0) * 10px) calc(var(--sm, 0) * 4px) rgba(61, 107, 255, .85));
 }
 
-/* trip-in: orange and blue copies of the title peel apart along an arc */
-.trip-copy {
-  width: clamp(250px, 48vw, 820px);
-  pointer-events: none;
-  mix-blend-mode: screen;
-  will-change: transform, opacity, filter;
-}
-.trip-copy svg { display: block; width: 100%; height: auto; }
-.trip-a { color: rgb(232, 100, 58); transform-origin: 50% 700%; animation: trip-a 3.2s cubic-bezier(.55, 0, .25, 1) forwards; }
-.trip-b { color: rgb(61, 107, 255); transform-origin: 50% -600%; animation: trip-b 3.2s cubic-bezier(.55, 0, .25, 1) forwards; }
-@keyframes trip-a {
-  0%   { transform: none; opacity: .95; filter: blur(0); }
-  25%  { transform: rotate(-2deg) translate(-2vw, -1vh) skewX(-8deg) scaleX(1.15); opacity: .95; filter: blur(.5px); }
-  100% { transform: rotate(-16deg) translate(-70vw, -6vh) skewX(-35deg) scaleX(3); opacity: 0; filter: blur(10px); }
-}
-@keyframes trip-b {
-  0%   { transform: none; opacity: .95; filter: blur(0); }
-  25%  { transform: rotate(-2deg) translate(2vw, 1vh) skewX(-8deg) scaleX(1.15); opacity: .95; filter: blur(.5px); }
-  100% { transform: rotate(-16deg) translate(70vw, 6vh) skewX(-35deg) scaleX(3); opacity: 0; filter: blur(10px); }
-}
-html.trip .wordmark { transition: filter 1.2s; filter: blur(3px) drop-shadow(0 0 18px rgba(var(--glow), .4)); }
+/* trip-in: the title tears apart like a VHS losing its signal (js/music.js tripIn) */
+.trip-glitch { position: relative; width: clamp(250px, 48vw, 820px); pointer-events: none; will-change: transform, filter, opacity; }
+.trip-band { position: absolute; inset: 0; mix-blend-mode: screen; will-change: transform; }
+.trip-band:first-child { position: relative; }
+.trip-band svg { display: block; width: 100%; height: auto; }
+.trip-o { color: rgb(232, 100, 58); }
+.trip-w { color: #fff; }
+.trip-b { color: rgb(61, 107, 255); }
+html.trip .wordmark { visibility: hidden !important; }
 html.trip .rabbit { visibility: hidden !important; }
 html.scene-weird .rabbit { opacity: .3; filter: blur(2px) drop-shadow(0 0 20px rgba(var(--glow), .4)); }
 
@@ -259,7 +247,7 @@ html.music-quiet .fx-noise { opacity: .42 !important; transition: opacity .6s; }
   background: #fff; mix-blend-mode: screen;
   animation: strobe-out 120ms linear forwards;
 }
-@keyframes strobe-out { from { opacity: .55; } to { opacity: 0; } }
+@keyframes strobe-out { from { opacity: var(--so, .55); } to { opacity: 0; } }
 html.scene-finale .hero > .wordmark,
 html.scene-finale .hero > .rabbit { scale: var(--zoom, 1); }
 @media (prefers-reduced-motion: reduce) { .strobe { display: none; } }

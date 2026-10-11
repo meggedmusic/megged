@@ -10,7 +10,7 @@
 
   // ---- EDIT HERE ---------------------------------------------------------
   var TRACK = "spotify:track:6NOK785Q1ievSvNIDroN6S";
-  var START_SEC = 50;
+  var START_SEC = 58;
   var MAP_URL = "data/track-map.json";
   var SYNC_MS = 0;          // + makes the flashes come earlier, - later (tune with ?sync)
   // Our own copy of the track, cut to start at START_SEC. Used when Spotify
@@ -249,20 +249,54 @@
 
   // "Trip-in" as the track starts: the title splits into its orange and blue
   // copies, which smear apart diagonally along an arc and slide out of frame.
+  // "Trip-in" as the track starts, like a VHS losing its signal: the title is
+  // cut into horizontal bands that slide apart (tracking error) with the
+  // orange/blue colour fringes tearing loose, the picture rolls (V-hold), the
+  // bands smear and echo, then it all collapses into one bright CRT line.
   function tripIn() {
     var hero = document.querySelector(".hero"), word = document.getElementById("intro-text");
     if (!hero || !word) return;
+    var root = document.documentElement, svg = word.querySelector("svg").outerHTML;
+    var BANDS = 13, DUR = 3200, box = document.createElement("div");
+    box.className = "trip-glitch"; box.setAttribute("aria-hidden", "true");
+    var layers = [["o", 1], ["w", 0], ["b", -1]], bands = [];
+    for (var i = 0; i < BANDS; i++) {
+      var y0 = (i / BANDS) * 100, y1 = ((i + 1) / BANDS) * 100;
+      layers.forEach(function (L) {
+        var d = document.createElement("div");
+        d.className = "trip-band trip-" + L[0];
+        d.style.clipPath = "inset(" + y0.toFixed(2) + "% 0 " + (100 - y1).toFixed(2) + "% 0)";
+        d.innerHTML = svg;
+        box.appendChild(d);
+        bands.push({ el: d, i: i, side: L[1], seed: Math.random() * 6.28, kick: 0 });
+      });
+    }
+    hero.appendChild(box);
     tripT = performance.now();
-    ["a", "b"].forEach(function (k) {
-      var c = document.createElement("div");
-      c.className = "trip-copy trip-" + k;
-      c.setAttribute("aria-hidden", "true");
-      c.innerHTML = word.querySelector("svg").outerHTML;
-      hero.appendChild(c);
-      setTimeout(function () { c.remove(); }, 3400);
-    });
-    document.documentElement.classList.add("trip");
-    setTimeout(function () { document.documentElement.classList.remove("trip"); }, 3400);
+    root.classList.add("trip");
+    var vw = window.innerWidth / 100;
+    (function frame() {
+      var p = (performance.now() - tripT) / DUR;
+      if (p >= 1) { box.remove(); root.classList.remove("trip"); return; }
+      requestAnimationFrame(frame);
+      var grow = Math.pow(Math.min(1, p / 0.75), 1.6);             // how lost the signal is
+      var roll = p < 0.12 ? 0 : p < 0.32 ? -Math.pow((p - 0.12) / 0.2, 2) * 140 : 0;   // V-hold slip (%)
+      var collapse = p < 0.78 ? 0 : (p - 0.78) / 0.22;                // CRT turning into a line
+      var chroma = 2 + grow * 3.2 * vw;
+      bands.forEach(function (b) {
+        if (Math.random() < 0.02 + grow * 0.06) b.kick = (Math.random() - 0.5) * 60 * vw * grow;   // a band tears loose
+        b.kick *= 0.86;
+        var wave = Math.sin(b.i * 0.85 + p * 18 + b.seed * 0.15) * grow * 9 * vw;
+        var x = wave + b.kick + b.side * chroma * (0.6 + 0.4 * Math.sin(p * 30 + b.i));
+        var sx = 1 + grow * (0.25 + 0.5 * Math.abs(Math.sin(b.i + p * 7)));      // bands smear sideways
+        b.el.style.transform = "translate(" + x.toFixed(1) + "px," + roll.toFixed(1) + "%) scaleX(" + sx.toFixed(3) + ")";
+        b.el.style.opacity = (b.side ? 0.9 : 1 - grow * 0.5).toFixed(2);
+      });
+      box.style.transform = collapse ? "scale(" + (1 + collapse * 0.9).toFixed(3) + "," + Math.max(0.01, 1 - collapse * 1.1).toFixed(3) + ")" : "";
+      box.style.filter = "blur(" + (grow * 1.2).toFixed(2) + "px) brightness(" + (1 + collapse * 2.5).toFixed(2) + ")" +
+        (grow > 0.3 ? " drop-shadow(" + (-chroma * 2).toFixed(0) + "px 0 0 rgba(255,255,255,.18)) drop-shadow(" + (chroma * 3).toFixed(0) + "px 0 0 rgba(255,255,255,.08))" : "");
+      box.style.opacity = collapse > 0.75 ? ((1 - collapse) * 4).toFixed(2) : "1";
+    })();
   }
 
   function sceneAt(t) {
@@ -341,6 +375,13 @@
       var fresh = n === lastBeat + 1;
       lastBeat = n;
       if (fresh && grid) onBeat(kind, beat, bar, phraseEnd, build, intro, fx, rfx);
+      // the quiet start: a full-screen flash on every bar, growing towards the
+      // first drop; the last two bars before the drop flash on every beat
+      if (fresh && calm && !tripping) {
+        var prog = (t - sc[0]) / (sc[1] - sc[0]), left = sc[1] - t;
+        if (kind === "pulse" && left < 8 * bt) { if (beat === 0 || left < 4 * bt + 60) flash(0.25 + 0.35 * prog, 160); }
+        else if (beat === 0) flash(kind === "pulse" ? 0.12 + 0.3 * prog : 0.1, 200);
+      }
     }
     if (n8 !== lastEighth) {
       var fresh8 = n8 === lastEighth + 1;
@@ -404,12 +445,15 @@
     if (kind === "rabbits" && offbeat && phraseEnd && Math.random() < 0.5) rfx.play("blocks", 150, 0.8);
   }
 
-  function strobe() {
+  function strobe() { flash(0.55, 120); }
+  function flash(op, ms) {           // white flash over the whole screen
     var hero = document.querySelector(".hero");
     if (!hero) return;
     var d = document.createElement("div");
     d.className = "strobe";
+    d.style.setProperty("--so", op.toFixed(2));
+    d.style.animationDuration = ms + "ms";
     hero.appendChild(d);
-    setTimeout(function () { d.remove(); }, 120);
+    setTimeout(function () { d.remove(); }, ms);
   }
 })();

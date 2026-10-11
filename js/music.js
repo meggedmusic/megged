@@ -17,7 +17,7 @@
   // only gives a 30-second preview (not logged in, e.g. any iPhone) or never starts.
   var LOCAL_URL = "audio/crispy-pork-skin.mp3";
   // On phones the live visuals are too heavy, so they play as a ready-made video
-  // (rendered from this same code, with the track inside it, from START_SEC).
+  // (rendered from this same code by tools/render_video.js, with the track inside it, from START_SEC).
   var PHONE_VIDEO = "video/crispy-pork-skin-phone.mp4";
   var isPhone = window.matchMedia && matchMedia("(hover: none) and (pointer: coarse)").matches;
 

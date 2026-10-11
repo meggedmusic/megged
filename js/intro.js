@@ -33,13 +33,45 @@
   function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
   var ghosts = [];                       // mirrored side copies (music "mirror" part)
+  var curState = "text";
   function show(state, frame) {
     // state: "text" | "rabbit" | "both" | "black"
+    if (synced && (state === "rabbit" || state === "both") && !frame && spent)
+      state = state === "both" ? "text" : "black";      // this rabbit already had its moment
+    curState = state;
     text.classList.toggle("is-off", state === "rabbit" || state === "black");
     if (frame) img.src = frame;
     var on = state === "rabbit" || state === "both";
+    if (synced && (frame || !on)) { endLife(); spent = !frame; }
     img.classList.toggle("is-on", on);
     ghosts.forEach(function (g) { if (frame) g.src = frame; g.classList.toggle("is-on", on); });
+    if (synced && on && frame) startLife();
+  }
+
+  // While the music plays no rabbit stays longer than an eighth note, so the
+  // eye never gets to study it. Each one leaves its own way: some are gone
+  // almost at once, some fade, some glitch out.
+  var EIGHTH = 60000 / 160 / 2, lifeTimer = 0, exitTimer = 0, spent = false;
+  var EXITS = ["cut", "cut", "fade", "fade", "slice", "squash", "tear", "blocks", "particles", "distort"];
+  var EXIT_MS = { cut: 0, fade: 110, slice: 90, squash: 100, tear: 90, blocks: 110, particles: 110, distort: 100 };
+  var EXIT_CLASSES = ["rx-fade", "rx-slice", "rx-squash", "rx-tear"];
+  function each(fn) { fn(img); ghosts.forEach(fn); }
+  function endLife() {
+    clearTimeout(lifeTimer); clearTimeout(exitTimer);
+    each(function (el) { EXIT_CLASSES.forEach(function (c) { el.classList.remove(c); }); });
+  }
+  function startLife() {
+    var how = pick(EXITS), ms = EXIT_MS[how];             // gone by the next eighth, exit included
+    var life = Math.random() < 0.25 ? rnd(35, 80) : EIGHTH - ms - rnd(10, 35);   // sometimes just a blip
+    lifeTimer = setTimeout(function () {
+      if (how === "blocks" || how === "particles" || how === "distort") { if (window.MEGGED_RFX) MEGGED_RFX.play(how, ms, 1); }
+      else if (how !== "cut") each(function (el) { el.classList.add("rx-" + how); });
+      exitTimer = setTimeout(function () {
+        var after = resting === "text" || curState === "both" ? "text" : "black";
+        show(after);
+        if (window.MEGGED_RFX) MEGGED_RFX.clear();
+      }, ms);
+    }, life);
   }
 
   // Before the music starts: the title flickering a little, and often rabbits
@@ -81,7 +113,7 @@
   window.MEGGED_INTRO = {
     sync: function (on) {
       synced = on && !reduce; resting = "text";
-      if (!synced) { clearTimeout(holdTimer); show("text"); this.ghosts(false); }
+      if (!synced) { clearTimeout(holdTimer); endLife(); spent = false; show("text"); this.ghosts(false); }
     },
     rabbit: function (ms) { if (!synced) return; show("rabbit", nextFrame()); settle(ms); },
     both: function (ms) { if (!synced) return; show("both", nextFrame()); settle(ms); },

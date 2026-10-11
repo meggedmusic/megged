@@ -7,7 +7,7 @@
    ===================================================================== */
 :root {
   --fx-scanlines: .22;   /* darkness of the scan lines            */
-  --fx-noise: .055;       /* tape grain                            */
+  --fx-noise: .03;       /* tape grain (soft, so the rest of the site reads) */
   --fx-vignette: .6;     /* dark corners                          */
   --fx-tracking: .045;    /* rolling tracking band                 */
   --fx-flicker: .035;    /* overall brightness wobble             */
@@ -15,7 +15,7 @@
   --fx-blue: 61, 107, 255;     /* cover's blue fringe       */
 }
 /* calmer overlay while reading (see CONFIG.calm in the JS) */
-html.fx-calm { --fx-noise: .035; --fx-tracking: .02; --fx-flicker: .015; }
+html.fx-calm { --fx-noise: .02; --fx-tracking: .02; --fx-flicker: .015; }
 
 /* 1) colour split + tape wobble on the whole page (SVG filter built in JS) */
 html.fx-on #stage { filter: url(#fx-vhs) saturate(.85) contrast(1.06); }

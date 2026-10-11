@@ -426,7 +426,7 @@
     } else if (kind === "finale") {               // the title comes back hard on every beat
       fx.kick(1);
       intro.title(beat === 0 ? 200 : 140);
-      if (beat === 0) intro.hold(true);
+      intro.hold(true);
       rfx.play(beat % 2 ? pickOf(HARD) : "waves", 330, 0.7 + 0.3 * build);
       if (beat === 3) fx.tear(0.5 + 0.5 * build);
     }

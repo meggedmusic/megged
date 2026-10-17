@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600&family=Frank+Ruhl+Libre:wght@400;500&display=swap">
 <link rel="preload" href="assets/bg-small.jpg" as="image">
 <link rel="preload" href="assets/logo.webp?v=2" as="image">
-<link rel="stylesheet" href="assets/style.css?v=9">
+<link rel="stylesheet" href="assets/style.css?v=10">
 </head>
 <body class="landing">
 <div class="backdrop" aria-hidden="true"></div>
@@ -34,7 +34,7 @@
     <button class="burger" id="burger" type="button" aria-label="תפריט" aria-expanded="false" aria-controls="menu">
       <span></span><span></span><span></span>
     </button>
-    <a class="topbar-logo" href="#" data-view="home" aria-label="לעמוד הראשי"><img src="assets/logo.webp?v=2" width="1400" height="439" alt=""></a>
+    <a class="topbar-logo" href="#" data-view="home" aria-label="לעמוד הראשי"><img src="assets/logo-names.webp" width="520" height="113" alt=""></a>
     <!-- Instagram link: set the address in assets/landing.js (INSTAGRAM_URL) -->
     <a class="topbar-insta" data-instagram href="#" target="_blank" rel="noopener" aria-label="האינסטגרם שלנו">
       <svg aria-hidden="true"><use href="#i-instagram"/></svg>
@@ -72,7 +72,7 @@
     <section class="card set" aria-labelledby="set-title">
       <p class="eyebrow">האזינו</p>
       <h2 class="section-title" id="set-title">סט לדוגמה</h2>
-      <p class="section-lead">טעימה קטנה ממה שקורה אצלנו על הרחבה.</p>
+      <p class="section-lead lines"><span>טעימה קטנה ממה שקורה אצלנו על הרחבה.</span><span class="aside">(זאת רק דוגמה, אל תהיו קטנוניים)</span></p>
       <div class="player" id="player">
         <button class="play" type="button" aria-label="נגינה">
           <svg aria-hidden="true"><use href="#i-play"/></svg>
@@ -87,11 +87,6 @@
       <div class="embed" id="embed" hidden></div>
     </section>
 
-    <nav class="cards-nav" aria-label="עוד באתר">
-      <a class="card nav-card" href="#gallery" data-view="gallery"><span class="nav-card-title">גלריה</span><span class="nav-card-text">רגעים מהרחבה ומהחופות</span></a>
-      <a class="card nav-card" href="#contact" data-view="contact"><span class="nav-card-title">קביעת פגישה</span><span class="nav-card-text">נכיר בזום, בלי התחייבות</span></a>
-      <a class="card nav-card" href="#questionnaire" data-view="questionnaire"><span class="nav-card-title">שאלון למתחתנים</span><span class="nav-card-text">ספרו לנו על המוזיקה שלכם</span></a>
-    </nav>
   </div>
 
   <!-- Gallery: photos go in assets/gallery/ and are listed in assets/landing.js (GALLERY) -->

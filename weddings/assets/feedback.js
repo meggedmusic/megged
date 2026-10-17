@@ -1,6 +1,6 @@
 // Sends the feedback form to a Google Sheet (see weddings/README.md).
 // Paste the Apps Script web-app URL here once it is deployed.
-var ENDPOINT = "";
+var ENDPOINT = "https://script.google.com/macros/s/AKfycbzdjJjW_-rb8Xz3nFyhBNHT6ftBIYdvr-THiEoqJCrs3SLPmZX8RCPVVjxUDdrkKEmB4w/exec";
 
 (function () {
   var form = document.getElementById("feedback");

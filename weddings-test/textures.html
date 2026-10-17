@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>טקסטורות לבחירה</title>
 <meta name="robots" content="noindex, nofollow">
-<link rel="stylesheet" href="assets/vintage.css?v=7">
+<link rel="stylesheet" href="assets/vintage.css?v=8">
 <style>
   body { margin: 0; padding: 28px 16px 60px; background: #7d8a4f url("assets/bg-film.jpg") center / cover fixed; }
   h1 { margin: 0 auto 6px; max-width: 1100px; padding: 14px 18px; font: 700 22px/1.3 var(--type); color: var(--ink); background: #f8f3e7; }
   .note { margin: 0 auto 26px; max-width: 1100px; padding: 0 18px 14px; font: 400 15px/1.6 var(--type); color: var(--ink-soft); background: #f8f3e7; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 18px; max-width: 1100px; margin: 0 auto 34px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; max-width: 1100px; margin: 0 auto 34px; }
   .sw { padding: 26px 22px 24px; color: var(--ink); text-align: center; }
   .tag { display: inline-block; margin-bottom: 12px; padding: 2px 10px; font: 700 15px/1.6 var(--type); color: #f3e9d4; background: var(--brown); }
   .sw h2 { margin: 0 0 6px; font: 400 24px/1.3 var(--type); filter: url(#ink); }
@@ -31,6 +31,22 @@
   .b-6 { background: #3f2a1c; }
   .bwrap { padding: 26px 18px; text-align: center; }
   .bwrap .tag { display: block; width: max-content; margin: 0 auto 14px; }
+
+  .cap { margin: 12px 0 0; font: 400 15px/1.6 var(--type); color: var(--ink-soft); }
+  .o { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 0 22px; font: 400 17px/1 var(--type); color: var(--brown); text-decoration: none; white-space: nowrap; }
+  .o b { font-weight: 700; filter: url(#ink); }
+  .o-1 { padding: 0 6px; }
+  .o-1:hover b { background: rgba(90, 52, 24, .1); }
+  .o-2 { padding: 0 2px 4px; min-height: 44px; background: linear-gradient(90deg, var(--brown) 60%, transparent 60%) 0 100% / 7px 2px repeat-x; transition: translate .11s steps(1, end); }
+  .o-2:hover { translate: -5px 0; }
+  .o-3 { background: #fffdf8; border: 1.5px solid var(--brown); box-shadow: 4px 4px 0 var(--brown); transition: translate .11s steps(1, end), box-shadow .11s steps(1, end); }
+  .o-3:hover { translate: 2px 2px; box-shadow: 2px 2px 0 var(--brown); }
+  .o-4 { border: 1.5px solid var(--brown); outline: 1px solid var(--brown); outline-offset: 3px; }
+  .o-4:hover { background: rgba(90, 52, 24, .08); }
+  .o-5 { padding: 0 6px; background: linear-gradient(transparent 52%, rgba(120, 72, 36, .32) 52%, rgba(120, 72, 36, .32) 88%, transparent 88%); color: var(--ink); }
+  .o-5:hover { background: linear-gradient(transparent 30%, rgba(120, 72, 36, .4) 30%, rgba(120, 72, 36, .4) 88%, transparent 88%); }
+  .o-6 { background: #c4a074 url("assets/tex/kraft.webp") 0 0 / 320px; color: #3a2414; }
+  .o-6:hover { background-color: #b8925f; filter: brightness(.95); }
 </style>
 </head>
 <body>
@@ -39,25 +55,20 @@
   <filter id="ink-sm" x="-3%" y="-20%" width="106%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="9" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.1" xChannelSelector="R" yChannelSelector="G"/></filter>
 </defs></svg>
 
-<h1>טקסטורה לדף הלבן</h1>
-<p class="note">בחרו אות. כדאי להסתכל מקרוב, ההבדלים עדינים.</p>
+<h1>כפתור: אפשרויות חדשות</h1>
+<p class="note">הכול על נייר מכתבים (ג׳). כדאי גם להעביר את העכבר מעל כל כפתור. בחרו מספר.</p>
 <div class="grid">
-  <div class="sw p-a"><span class="tag">א</span><h2>נייר <b>עדין</b></h2><p>מה שיש עכשיו. גרעין קטן של נייר גס.</p></div>
-  <div class="sw p-b"><span class="tag">ב</span><h2>נייר <b>וואשי</b></h2><p>נייר יפני, עם סיבים ארוכים ורכים.</p></div>
-  <div class="sw p-c"><span class="tag">ג</span><h2>נייר <b>מכתבים</b></h2><p>קווים דקים של נייר מכתבים ישן.</p></div>
-  <div class="sw p-d"><span class="tag">ד</span><h2>נייר <b>כותנה</b></h2><p>כמעט חלק, רק כתמים רכים מאוד.</p></div>
-  <div class="sw p-e"><span class="tag">ה</span><h2>נייר <b>ממוחזר</b></h2><p>קרם חם עם נקודות קטנות פזורות.</p></div>
+  <div class="bwrap p-c"><span class="tag">1</span><a class="o o-1" href="#">[ <b>לקביעת פגישת היכרות</b> ]</a><p class="cap">סוגריים של מכונת כתיבה, בלי קופסה</p></div>
+  <div class="bwrap p-c"><span class="tag">2</span><a class="o o-2" href="#"><b>לקביעת פגישת היכרות</b> ←</a><p class="cap">קו תחתון מוקלד וחץ</p></div>
+  <div class="bwrap p-c"><span class="tag">3</span><a class="o o-3" href="#"><b>לקביעת פגישת היכרות</b></a><p class="cap">מדבקה מודפסת עם צל ישר</p></div>
+  <div class="bwrap p-c"><span class="tag">4</span><a class="o o-4" href="#"><b>לקביעת פגישת היכרות</b></a><p class="cap">חותמת עם מסגרת כפולה</p></div>
+  <div class="bwrap p-c"><span class="tag">5</span><a class="o o-5" href="#"><b>לקביעת פגישת היכרות</b></a><p class="cap">פס מרקר חום מתחת לטקסט</p></div>
+  <div class="bwrap p-c"><span class="tag">6</span><a class="o o-6" href="#"><b>לקביעת פגישת היכרות</b></a><p class="cap">נייר קראפט חום בהיר</p></div>
 </div>
 
-<h1>טקסטורה לכפתורים החומים</h1>
-<p class="note">בחרו מספר.</p>
+<h1>הנייר שבחרתם: ג׳ נייר מכתבים</h1>
 <div class="grid">
-  <div class="bwrap p-a"><span class="tag">1</span><span class="b b-1"><i>לקביעת פגישת היכרות</i></span><p class="note" style="background:none;padding:10px 0 0">חלק לגמרי</p></div>
-  <div class="bwrap p-a"><span class="tag">2</span><span class="b b-2"><i>לקביעת פגישת היכרות</i></span><p class="note" style="background:none;padding:10px 0 0">גרעין דפוס עדין</p></div>
-  <div class="bwrap p-a"><span class="tag">3</span><span class="b b-3"><i>לקביעת פגישת היכרות</i></span><p class="note" style="background:none;padding:10px 0 0">בד פשתן</p></div>
-  <div class="bwrap p-a"><span class="tag">4</span><span class="b b-4"><i>לקביעת פגישת היכרות</i></span><p class="note" style="background:none;padding:10px 0 0">חותמת, קצוות כהים</p></div>
-  <div class="bwrap p-a"><span class="tag">5</span><span class="b b-5"><i>לקביעת פגישת היכרות</i></span><p class="note" style="background:none;padding:10px 0 0">בלי מילוי, רק מסגרת</p></div>
-  <div class="bwrap p-a"><span class="tag">6</span><span class="b b-6"><i>לקביעת פגישת היכרות</i></span><p class="note" style="background:none;padding:10px 0 0">חום כהה יותר, חלק</p></div>
+  <div class="sw p-c"><h2>נייר <b>מכתבים</b></h2><p>קווים דקים של נייר מכתבים ישן.</p></div>
 </div>
 </body>
 </html>

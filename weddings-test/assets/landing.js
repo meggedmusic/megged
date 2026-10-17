@@ -18,11 +18,20 @@ var SAMPLE_SET = {
 // While the list is empty the gallery shows soft placeholders.
 var GALLERY = [
   "omer-2148.webp",
-  "wa-0066.webp",
+  "vid-2607.mp4",
+  "omer-1794.webp",
   "omer-2068.webp",
+  "wa-0066.webp",
+  "omer-1665.webp",
+  "vid-2609.mp4",
+  "omer-1926.webp",
   "omer-1819.webp",
+  "omer-2366.webp",
   "omer-2098.webp",
+  "vid-2510.mp4",
+  "omer-2012.webp",
   "omer-1965.webp",
+  "dsc-0781.webp",
   "omer-2145.webp"
 ];
 

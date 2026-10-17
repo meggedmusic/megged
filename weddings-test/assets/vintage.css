@@ -304,3 +304,40 @@ input, textarea { color: var(--ink); }
 .btn:hover, .landing .btn:hover, .btn:focus-visible { background: none; translate: 0 -4px; }
 .btn[disabled]:hover { translate: none; }
 .btn[disabled] { opacity: .6; }
+
+/* ---------- Choices typed like on a typewriter: [ ] and [x] ---------- */
+.chips label, .landing .chips label { padding-inline-start: 0; }
+.chips label::before {
+  content: "[ ]";
+  position: static;
+  display: inline-block;
+  width: auto;
+  height: auto;
+  margin: 0 0 0 .5em; /* physical: the pseudo is LTR-isolated */
+  background: none;
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-weight: 400;
+  white-space: pre;
+}
+.chips input:checked + label::before { content: "[x]"; background: none; font-weight: 700; color: var(--brown); }
+
+/* 1-5 scale (feedback page): [ 1 ] ... [ 5 ] */
+.scale { gap: 4px 14px; }
+.scale label, .scale input:checked + label {
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  height: 44px;
+  padding: 0 2px;
+  font-size: 19px;
+  background: none;
+  color: var(--ink);
+}
+.scale label::before { content: "["; margin-inline-end: .35em; font-weight: 400; }
+.scale label::after { content: "]"; margin-inline-start: .35em; font-weight: 400; }
+.scale input:checked + label { font-weight: 700; color: var(--brown); }
+.scale input:checked + label::before, .scale input:checked + label::after { font-weight: 700; }
+.scale label:hover { background: none; }
+.scale input:focus-visible + label { outline: 2px dashed var(--brown); outline-offset: 2px; box-shadow: none; }
+.scale-ends { max-width: 340px; }

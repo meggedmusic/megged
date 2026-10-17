@@ -285,3 +285,20 @@ input, textarea { color: var(--ink); }
   .backdrop { bottom: auto; height: 100vh; height: 100lvh; }
   .grain { animation: none; }
 }
+
+/* ---------- Main buttons: typewriter brackets, no box ---------- */
+.btn, .landing .btn {
+  min-height: 48px;
+  padding: 0 6px;
+  font: 700 17px/1 var(--type);
+  color: var(--brown);
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+.btn, .landing .btn { gap: 0; }
+.btn::before { content: "["; margin-inline-end: .6em; font-weight: 400; }
+.btn::after { content: "]"; margin-inline-start: .45em; font-weight: 400; }
+.btn:hover, .landing .btn:hover { background: none; translate: none; }
+.btn:hover .w { background: rgba(90, 52, 24, .1); }
+.btn[disabled] { opacity: .6; }

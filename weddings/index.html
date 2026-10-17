@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Megged &amp; Katnoa Weddings</title>
 <meta name="robots" content="noindex, nofollow">
+<meta name="description" content="תקלוט לחתונות שמקשיב לכם ולרחבה, מקבלת הפנים ועד הריקוד האחרון.">
 <meta name="theme-color" content="#5f6d4b">
 <link rel="icon" href="assets/icons/favicon.ico" sizes="any">
 <link rel="icon" href="assets/icons/favicon-32.png" type="image/png" sizes="32x32">
@@ -14,25 +15,247 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600&family=Frank+Ruhl+Libre:wght@400;500&display=swap">
 <link rel="preload" href="assets/bg-small.jpg" as="image">
 <link rel="preload" href="assets/logo.webp?v=2" as="image">
-<link rel="stylesheet" href="assets/style.css?v=7">
+<link rel="stylesheet" href="assets/style.css?v=8">
 </head>
 <body class="landing">
 <div class="backdrop" aria-hidden="true"></div>
 <div class="grain" aria-hidden="true"></div>
 
-<!-- Placeholder landing page. The real one comes later. -->
-<main class="page">
-  <article class="card card--narrow">
-    <h1><img class="logo" src="assets/logo.webp?v=2" width="1400" height="439" alt="Megged &amp; Katnoa Weddings"></h1>
-    <p class="lead">תקלוט שמקשיב לכם ולרחבה, מקבלת הפנים ועד הריקוד האחרון.</p>
-    <div class="signoff">
-      <a class="btn" href="feedback/">התחתנתם איתנו? השאירו משוב</a>
-    </div>
-    <p class="soon lines">
-      <span>האתר שלנו עדיין בבנייה.</span>
-      <span>בקרוב נשתף כאן את המוזיקה, הסיפורים והרגעים הכי יפים מהרחבה.</span>
-    </p>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-instagram" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/></symbol>
+  <symbol id="i-photo" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M3 16l5-5 4 4 3-3 6 6" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="16" cy="9" r="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/></symbol>
+</svg>
+
+<main class="page page--top">
+  <article class="card card--wide" id="card">
+
+    <header class="hero">
+      <h1><img class="logo" src="assets/logo.webp?v=2" width="1400" height="439" alt="Megged &amp; Katnoa Weddings"></h1>
+      <p class="lead">תקלוט שמקשיב לכם ולרחבה, מקבלת הפנים ועד הריקוד האחרון.</p>
+
+      <!-- Instagram link: set the address in assets/landing.js (INSTAGRAM_URL) -->
+      <a class="insta" data-instagram href="#" target="_blank" rel="noopener">
+        <svg class="insta-icon" aria-hidden="true"><use href="#i-instagram"/></svg>
+        <span class="insta-text"><strong>עקבו אחרינו באינסטגרם</strong><span data-instagram-handle></span></span>
+      </a>
+    </header>
+
+    <!-- Sample set: set the source in assets/landing.js (SAMPLE_SET) -->
+    <section class="set" aria-labelledby="set-title">
+      <div class="set-head">
+        <p class="eyebrow">האזינו</p>
+        <h2 id="set-title">סט לדוגמה</h2>
+      </div>
+      <div class="player" id="player">
+        <button class="play" type="button" aria-label="נגינה">
+          <svg aria-hidden="true"><use href="#i-play"/></svg>
+        </button>
+        <div class="player-body">
+          <p class="player-title" data-set-title>סט לדוגמה</p>
+          <div class="bar" role="slider" tabindex="0" aria-label="מיקום בסט" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="bar-fill"></span></div>
+          <p class="player-time"><span data-current>0:00</span><span data-duration></span></p>
+        </div>
+        <audio preload="none"></audio>
+      </div>
+      <div class="embed" id="embed" hidden></div>
+    </section>
+
+    <nav class="tabs" role="tablist" aria-label="תוכן הדף">
+      <button class="tab" role="tab" id="tab-gallery" aria-controls="gallery" aria-selected="true">גלריה</button>
+      <button class="tab" role="tab" id="tab-contact" aria-controls="contact" aria-selected="false" tabindex="-1">קביעת פגישה</button>
+      <button class="tab" role="tab" id="tab-questionnaire" aria-controls="questionnaire" aria-selected="false" tabindex="-1">שאלון למתחתנים</button>
+    </nav>
+
+    <!-- Gallery: photos go in assets/gallery/ and are listed in assets/landing.js (GALLERY) -->
+    <section class="panel" id="gallery" role="tabpanel" aria-labelledby="tab-gallery">
+      <p class="panel-lead">רגעים מהרחבה, מהחופות ומאחורי העמדה.</p>
+      <div class="gallery" id="gallery-grid"></div>
+    </section>
+
+    <section class="panel" id="contact" role="tabpanel" aria-labelledby="tab-contact" hidden>
+      <div class="panel-body">
+        <p class="panel-lead lines">
+          <span>מתחתנים? נשמח להכיר.</span>
+          <span>השאירו פרטים ונחזור אליכם לתאם פגישת היכרות, בלי שום התחייבות.</span>
+        </p>
+        <form class="sheet-form" data-form="contact" novalidate>
+          <div class="q">
+            <div class="row">
+              <div><label for="c-names">שמות בני הזוג</label><input type="text" id="c-names" name="names" autocomplete="name" required></div>
+              <div><label for="c-phone">טלפון</label><input type="tel" id="c-phone" name="phone" autocomplete="tel" inputmode="tel" dir="ltr" required></div>
+            </div>
+            <div class="row">
+              <div><label for="c-email">אימייל <span class="opt">(לא חובה)</span></label><input type="email" id="c-email" name="email" autocomplete="email" dir="ltr"></div>
+              <div><label for="c-date">תאריך החתונה</label><input type="date" id="c-date" name="wedding_date"></div>
+            </div>
+            <div class="row">
+              <div><label for="c-venue">מקום האירוע</label><input type="text" id="c-venue" name="venue" placeholder="אם כבר סגרתם"></div>
+              <div><label for="c-guests">כמה אורחים בערך?</label><input type="text" id="c-guests" name="guests" inputmode="numeric"></div>
+            </div>
+          </div>
+
+          <fieldset class="q">
+            <legend>איך נוח לכם להיפגש?</legend>
+            <div class="chips">
+              <input type="radio" id="c-meet-1" name="meeting" value="פגישה פנים מול פנים"><label for="c-meet-1">פגישה פנים מול פנים</label>
+              <input type="radio" id="c-meet-2" name="meeting" value="שיחת וידאו"><label for="c-meet-2">שיחת וידאו</label>
+              <input type="radio" id="c-meet-3" name="meeting" value="שיחת טלפון"><label for="c-meet-3">שיחת טלפון</label>
+            </div>
+          </fieldset>
+
+          <fieldset class="q">
+            <legend>מתי הכי נוח לחזור אליכם? <span class="opt">(אפשר כמה)</span></legend>
+            <div class="chips">
+              <input type="checkbox" id="c-time-1" name="best_time" value="בוקר"><label for="c-time-1">בוקר</label>
+              <input type="checkbox" id="c-time-2" name="best_time" value="צהריים"><label for="c-time-2">צהריים</label>
+              <input type="checkbox" id="c-time-3" name="best_time" value="ערב"><label for="c-time-3">ערב</label>
+            </div>
+          </fieldset>
+
+          <div class="q">
+            <label for="c-message">משהו שתרצו לספר לנו? <span class="opt">(לא חובה)</span></label>
+            <textarea id="c-message" name="message" rows="3" placeholder="איזה אווירה אתם מדמיינים, איך הגעתם אלינו..."></textarea>
+          </div>
+
+          <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="actions">
+            <button class="btn" type="submit">שליחה</button>
+            <p class="error" role="alert"></p>
+          </div>
+        </form>
+      </div>
+      <div class="thanks">
+        <svg class="ornament" viewBox="0 0 64 14" aria-hidden="true"><path d="M2 7h22M40 7h22" stroke="currentColor" stroke-width="1"/><path d="M32 2c2 3 2 7 0 10-2-3-2-7 0-10zM27 7c3-2 7-2 10 0-3 2-7 2-10 0z" fill="currentColor" opacity=".85"/></svg>
+        <h3>תודה, קיבלנו!</h3>
+        <p class="lead lines"><span>נחזור אליכם בקרוב לתאם פגישה.</span><span>בינתיים מוזמנים להציץ באינסטגרם שלנו.</span></p>
+      </div>
+    </section>
+
+    <section class="panel" id="questionnaire" role="tabpanel" aria-labelledby="tab-questionnaire" hidden>
+      <div class="panel-body">
+        <p class="panel-lead lines">
+          <span>השאלון הזה עוזר לנו להכיר אתכם ואת המוזיקה שלכם.</span>
+          <span>אין תשובות נכונות. כתבו כמה שבא לכם, ותמיד אפשר לדבר על הכול בפגישה.</span>
+        </p>
+        <form class="sheet-form" data-form="questionnaire" novalidate>
+          <div class="q">
+            <div class="row">
+              <div><label for="q-names">שמות בני הזוג</label><input type="text" id="q-names" name="names" required></div>
+              <div><label for="q-date">תאריך החתונה</label><input type="date" id="q-date" name="wedding_date"></div>
+            </div>
+            <div class="row">
+              <div><label for="q-phone">טלפון</label><input type="tel" id="q-phone" name="phone" inputmode="tel" dir="ltr"></div>
+              <div><label for="q-venue">מקום האירוע</label><input type="text" id="q-venue" name="venue"></div>
+            </div>
+          </div>
+
+          <fieldset class="q">
+            <legend><span class="num">01</span>אילו סגנונות אתם הכי אוהבים? <span class="opt">(אפשר כמה)</span></legend>
+            <div class="chips">
+              <input type="checkbox" id="q-st-1" name="styles" value="ישראלי"><label for="q-st-1">ישראלי</label>
+              <input type="checkbox" id="q-st-2" name="styles" value="מזרחי וים תיכוני"><label for="q-st-2">מזרחי וים תיכוני</label>
+              <input type="checkbox" id="q-st-3" name="styles" value="פופ לועזי"><label for="q-st-3">פופ לועזי</label>
+              <input type="checkbox" id="q-st-4" name="styles" value="רטרו 70-90"><label for="q-st-4">רטרו 70-90</label>
+              <input type="checkbox" id="q-st-5" name="styles" value="היפ הופ ו-R&amp;B"><label for="q-st-5">היפ הופ ו-R&amp;B</label>
+              <input type="checkbox" id="q-st-6" name="styles" value="האוס ואלקטרוני"><label for="q-st-6">האוס ואלקטרוני</label>
+              <input type="checkbox" id="q-st-7" name="styles" value="פאנק ודיסקו"><label for="q-st-7">פאנק ודיסקו</label>
+              <input type="checkbox" id="q-st-8" name="styles" value="רוק"><label for="q-st-8">רוק</label>
+              <input type="checkbox" id="q-st-9" name="styles" value="לטיני"><label for="q-st-9">לטיני</label>
+              <input type="checkbox" id="q-st-10" name="styles" value="יווני"><label for="q-st-10">יווני</label>
+            </div>
+            <textarea class="detail" name="styles_details" rows="2" aria-label="סגנונות נוספים" placeholder="משהו נוסף או ספציפי? (לא חובה)"></textarea>
+          </fieldset>
+
+          <div class="q">
+            <label for="q-artists"><span class="num">02</span>אמנים או שירים שמייצגים אתכם</label>
+            <textarea id="q-artists" name="artists" rows="3" placeholder="מה מתנגן אצלכם בבית, באוטו, במסיבות..."></textarea>
+          </div>
+
+          <div class="q">
+            <label for="q-avoid"><span class="num">03</span>מה אתם לא רוצים לשמוע בחתונה?</label>
+            <textarea id="q-avoid" name="avoid" rows="3" placeholder="סגנונות, שירים או אמנים"></textarea>
+          </div>
+
+          <fieldset class="q">
+            <legend><span class="num">04</span>איזו אווירה תרצו בקבלת הפנים?</legend>
+            <div class="chips">
+              <input type="radio" id="q-rc-1" name="reception" value="רגוע ונעים"><label for="q-rc-1">רגוע ונעים</label>
+              <input type="radio" id="q-rc-2" name="reception" value="גרובי ומחמם"><label for="q-rc-2">גרובי ומחמם</label>
+              <input type="radio" id="q-rc-3" name="reception" value="שמח ומקפיץ"><label for="q-rc-3">שמח ומקפיץ</label>
+              <input type="radio" id="q-rc-4" name="reception" value="סומכים עליכם"><label for="q-rc-4">סומכים עליכם</label>
+            </div>
+            <textarea class="detail" name="reception_details" rows="2" aria-label="פירוט" placeholder="רוצים לפרט? (לא חובה)"></textarea>
+          </fieldset>
+
+          <div class="q">
+            <label for="q-chuppah"><span class="num">05</span>שירים לחופה</label>
+            <p class="hint">כניסה, שבירת הכוס, יציאה מהחופה. גם אם עוד לא החלטתם, כתבו כיוון.</p>
+            <textarea id="q-chuppah" name="chuppah" rows="3"></textarea>
+          </div>
+
+          <div class="q">
+            <label for="q-moments"><span class="num">06</span>רגעים מיוחדים במהלך הערב</label>
+            <p class="hint">ריקוד ראשון, הפתעה, ריקוד עם ההורים, סלואו, שיר של המשפחה.</p>
+            <textarea id="q-moments" name="moments" rows="3"></textarea>
+          </div>
+
+          <div class="q">
+            <label for="q-must"><span class="num">07</span>שירים שחייבים להתנגן</label>
+            <textarea id="q-must" name="must_play" rows="3"></textarea>
+          </div>
+
+          <fieldset class="q">
+            <legend><span class="num">08</span>מי הקהל שלכם?</legend>
+            <div class="chips">
+              <input type="radio" id="q-cr-1" name="crowd" value="בעיקר צעירים"><label for="q-cr-1">בעיקר צעירים</label>
+              <input type="radio" id="q-cr-2" name="crowd" value="מעורב"><label for="q-cr-2">מעורב</label>
+              <input type="radio" id="q-cr-3" name="crowd" value="הרבה משפחה מבוגרת"><label for="q-cr-3">הרבה משפחה מבוגרת</label>
+            </div>
+            <textarea class="detail" name="crowd_details" rows="2" aria-label="פירוט" placeholder="משהו שכדאי שנדע על הקהל? (לא חובה)"></textarea>
+          </fieldset>
+
+          <div class="q">
+            <label for="q-playlist"><span class="num">09</span>יש לכם פלייליסט?</label>
+            <p class="hint">קישור לספוטיפיי, יוטיוב או אפל מיוזיק.</p>
+            <input type="url" id="q-playlist" name="playlist" dir="ltr" placeholder="https://">
+          </div>
+
+          <div class="q">
+            <label for="q-more"><span class="num">10</span>עוד משהו שחשוב לכם שנדע?</label>
+            <textarea id="q-more" name="more" rows="3"></textarea>
+          </div>
+
+          <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="actions">
+            <button class="btn" type="submit">שליחת השאלון</button>
+            <p class="error" role="alert"></p>
+          </div>
+        </form>
+      </div>
+      <div class="thanks">
+        <svg class="ornament" viewBox="0 0 64 14" aria-hidden="true"><path d="M2 7h22M40 7h22" stroke="currentColor" stroke-width="1"/><path d="M32 2c2 3 2 7 0 10-2-3-2-7 0-10zM27 7c3-2 7-2 10 0-3 2-7 2-10 0z" fill="currentColor" opacity=".85"/></svg>
+        <h3>תודה רבה!</h3>
+        <p class="lead lines"><span>עכשיו אנחנו מכירים אתכם קצת יותר טוב.</span><span>נעבור על הכול ונדבר בקרוב.</span></p>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <a href="feedback/">התחתנתם איתנו? נשמח לשמוע משוב</a>
+    </footer>
   </article>
 </main>
+
+<a class="insta-float" data-instagram href="#" target="_blank" rel="noopener" aria-label="האינסטגרם שלנו">
+  <svg aria-hidden="true"><use href="#i-instagram"/></svg>
+</a>
+
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lightbox-close" type="button" aria-label="סגירה">&times;</button>
+  <img alt="">
+</div>
+
+<script src="assets/landing.js?v=1"></script>
 </body>
 </html>

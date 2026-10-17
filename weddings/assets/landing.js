@@ -8,8 +8,8 @@ var INSTAGRAM_URL = "https://www.instagram.com/katnoa_megged/";
 // Leave src empty to show the player without sound.
 var SAMPLE_SET = {
   type: "audio",
-  src: "",
-  title: "סט לדוגמה · קבלת פנים"
+  src: "assets/audio/sample-set-2026.mp3",
+  title: "סט לדוגמה"
 };
 
 // Gallery photos: put them in weddings/assets/gallery/ and list the file names here.

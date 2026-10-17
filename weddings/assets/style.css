@@ -46,7 +46,6 @@ body {
   filter: blur(6px) saturate(.9) sepia(.14);
   transform: scale(1.06);
 }
-.landing .backdrop::before { filter: saturate(.94) sepia(.12) contrast(.96); transform: none; }
 .backdrop::after {
   content: "";
   position: absolute;

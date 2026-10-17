@@ -345,3 +345,7 @@ input, textarea { color: var(--ink); }
 .btn::before, .btn::after { display: inline-block; filter: url(#ink); }
 .chips label::before, .scale label::before, .scale label::after { display: inline-block; filter: url(#ink-sm); }
 .scale label { filter: url(#ink-sm); }
+/* Choice text gets the ink too; the box is tighter, like a typed square, and a v when picked */
+.chips label { filter: url(#ink-sm); }
+.chips label::before { content: "[\2002]"; letter-spacing: -.1em; padding-left: .1em; filter: none; }
+.chips input:checked + label::before { content: "[v]"; letter-spacing: -.1em; padding-left: .1em; }

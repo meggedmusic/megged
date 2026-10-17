@@ -352,3 +352,43 @@ input, textarea { color: var(--ink); }
 /* No divider lines between questions or sections */
 .q::before, .landing .q::before { display: none; }
 .actions, .soon { border-top: 0; }
+
+/* Micha's hand-drawn title (Katnoa & Megged), "weddings" typed under it */
+.logo-wrap { aspect-ratio: 1209 / 814; max-width: 430px; }
+.logo-sub { margin: 10px 0 0; text-align: center; font: 700 22px/1 var(--type); letter-spacing: .5em; text-indent: .5em; color: var(--brown); filter: url(#ink); direction: ltr; }
+.hero .lead { margin-top: 26px; }
+
+/* Corner drawings, taken from the title sheet */
+img.doodle { height: auto; opacity: .8; filter: none; }
+.doodle.d1 { width: 44px; height: auto; top: 24px; right: 26px; rotate: 0deg; }
+.doodle.d4 { width: 40px; height: auto; bottom: 24px; right: 30px; rotate: 0deg; }
+.doodle.d5 { width: 40px; height: auto; top: 24px; left: 26px; rotate: 0deg; }
+.doodle.d7 { width: 34px; height: auto; top: 24px; right: 26px; rotate: 0deg; }
+.doodle.d8 { display: block; width: 52px; height: auto; top: 30px; left: 26px; rotate: 0deg; opacity: .8; }
+.doodle.d8[src*="squares"] { width: 26px; }
+.doodle.d8[src*="dots-pair"] { width: 22px; }
+@media (max-width: 640px) {
+  .logo-wrap { max-width: 300px; }
+  .logo-sub { font-size: 18px; }
+  .doodle.d1 { width: 34px; top: 14px; right: 14px; }
+  .doodle.d4 { width: 30px; bottom: 14px; right: 16px; }
+  .doodle.d5 { width: 30px; top: 14px; left: 14px; }
+  .doodle.d7 { width: 26px; top: 14px; right: 14px; }
+  .doodle.d8 { width: 40px; top: 18px; left: 14px; }
+  .doodle.d8[src*="squares"] { width: 20px; }
+  .doodle.d8[src*="dots-pair"] { width: 18px; }
+}
+
+/* Hebrew font options (?font=1|2|3). Hebrew letters only switch; Latin, digits and brackets stay typewriter */
+@font-face { font-family: "Heb Alt 1"; src: url("fonts/cousine-hebrew-400-normal.woff2") format("woff2"); font-weight: 400; unicode-range: U+0590-05FF, U+FB1D-FB4F; size-adjust: 104%; font-display: swap; }
+@font-face { font-family: "Heb Alt 1"; src: url("fonts/cousine-hebrew-700-normal.woff2") format("woff2"); font-weight: 700; unicode-range: U+0590-05FF, U+FB1D-FB4F; size-adjust: 104%; font-display: swap; }
+@font-face { font-family: "Heb Alt 2"; src: url("fonts/frank-ruhl-libre-hebrew-400-normal.woff2") format("woff2"); font-weight: 400; unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0020-0022, U+0027, U+002C, U+002E, U+003F; size-adjust: 118%; font-display: swap; }
+@font-face { font-family: "Heb Alt 2"; src: url("fonts/frank-ruhl-libre-hebrew-700-normal.woff2") format("woff2"); font-weight: 700; unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0020-0022, U+0027, U+002C, U+002E, U+003F; size-adjust: 118%; font-display: swap; }
+@font-face { font-family: "Heb Alt 3"; src: url("fonts/ibm-plex-sans-hebrew-hebrew-400-normal.woff2") format("woff2"); font-weight: 400; unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0020-0022, U+0027, U+002C, U+002E, U+003F; size-adjust: 106%; font-display: swap; }
+@font-face { font-family: "Heb Alt 3"; src: url("fonts/ibm-plex-sans-hebrew-hebrew-700-normal.woff2") format("woff2"); font-weight: 700; unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0020-0022, U+0027, U+002C, U+002E, U+003F; size-adjust: 106%; font-display: swap; }
+html.font-1, html.font-1 .landing { --type: "Heb Alt 1", "Miriam Mono", "Courier New", monospace; }
+html.font-2, html.font-2 .landing { --type: "Heb Alt 2", "Miriam Mono", "Courier New", monospace; }
+html.font-3, html.font-3 .landing { --type: "Heb Alt 3", "Miriam Mono", "Courier New", monospace; }
+html.font-2 body, html.font-3 body { -webkit-text-stroke: 0; }
+html.font-2 *, html.font-3 * { letter-spacing: normal; }
+html.font-2 .logo-sub, html.font-3 .logo-sub { letter-spacing: .5em; }

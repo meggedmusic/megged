@@ -360,3 +360,8 @@ textarea:focus { box-shadow: 0 0 0 3px var(--focus); }
 /* Hand-drawn page title (feedback page) */
 .title-img { display: block; width: 82%; max-width: 340px; height: auto; margin: 0 auto; }
 .head h1 { margin-bottom: 0; }
+
+/* Thank-you text: one phrase per line, balanced when a line has to wrap */
+.thanks-text { max-width: 26em; font-size: 18px; line-height: 1.75; }
+.thanks-text span { display: block; text-wrap: balance; }
+.done .head { display: none; }

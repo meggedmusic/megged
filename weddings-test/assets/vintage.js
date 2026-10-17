@@ -1,5 +1,4 @@
 /* Design experiment (weddings-test): the hand-made touches.
-   - paper edges that aren't perfectly straight
    - words and lines nudged a little off their line
    - an orange date imprint, like a 90s film camera */
 (function () {
@@ -11,29 +10,6 @@
     return function () { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
   }
   function range(r, a) { return (r() * 2 - 1) * a; }
-
-  // ---------- Rough paper edges ----------
-  function deckle(el, seed, amp) {
-    var w = el.offsetWidth, h = el.offsetHeight;
-    if (!w || !h) return;
-    var r = rng(seed), pts = [], step = 14, x, y;
-    for (x = 0; x < w; x += step) pts.push(x + "px " + (r() * amp).toFixed(1) + "px");
-    for (y = 0; y < h; y += step) pts.push((w - r() * amp).toFixed(1) + "px " + y + "px");
-    for (x = w; x > 0; x -= step) pts.push(x + "px " + (h - r() * amp).toFixed(1) + "px");
-    for (y = h; y > 0; y -= step) pts.push((r() * amp).toFixed(1) + "px " + y + "px");
-    el.style.clipPath = "polygon(" + pts.join(",") + ")";
-  }
-  var papers = Array.prototype.slice.call(document.querySelectorAll(".card"));
-  function edges() { papers.forEach(function (el, i) { deckle(el, 101 + i * 37, 2.6); }); }
-  if ("ResizeObserver" in window) {
-    var ro = new ResizeObserver(function (entries) {
-      entries.forEach(function (e) { deckle(e.target, 101 + papers.indexOf(e.target) * 37, 2.6); });
-    });
-    papers.forEach(function (el) { ro.observe(el); });
-  } else {
-    edges();
-    window.addEventListener("resize", edges);
-  }
 
   // ---------- Words off their line ----------
   var wordTargets = ".section-title, .lead, .section-lead, .eyebrow, .thanks h3, .q legend, .q > label, .hint, .fields label, .row label, .menu a, .site-foot a, .btn, .insta span, .player-title";

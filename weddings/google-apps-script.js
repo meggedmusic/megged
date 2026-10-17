@@ -24,7 +24,7 @@ var COLUMNS = [
   ["missing", "8. מה חסר"],
   ["recommend", "9. המלצה"],
   ["recommend_details", "9. פירוט"],
-  ["more", "10. משהו נוסף"],
+  ["more", "10. המלצה לפרסום"],
   ["share", "אישור שיתוף"],
 ];
 

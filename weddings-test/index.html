@@ -15,7 +15,7 @@
 <link rel="preload" href="assets/bg-film-small.jpg" as="image">
 <link rel="preload" href="../weddings/assets/logo.webp?v=2" as="image">
 <link rel="stylesheet" href="../weddings/assets/style.css?v=11">
-<link rel="stylesheet" href="assets/vintage.css?v=4">
+<link rel="stylesheet" href="assets/vintage.css?v=7">
 </head>
 <body class="landing">
 <div class="backdrop" aria-hidden="true"></div>
@@ -23,7 +23,7 @@
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <filter id="ink" x="-5%" y="-20%" width="110%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.6" xChannelSelector="R" yChannelSelector="G"/></filter>
+    <filter id="ink" x="-5%" y="-20%" width="110%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.6" xChannelSelector="R" yChannelSelector="G"/></filter><filter id="ink-sm" x="-3%" y="-20%" width="106%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="9" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.1" xChannelSelector="R" yChannelSelector="G"/></filter>
   </defs>
   <symbol id="i-instagram" viewBox="0 0 24 24"><path d="M3.6 3.9 Q12 3.2 20.3 3.7 Q20.8 12 20.2 20.4 Q12 20.9 3.8 20.2 Q3.2 12 3.6 3.9 Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 8.1 Q15.9 8 16 12 Q15.9 15.9 12 16 Q8.1 15.9 8 12 Q8.2 8.3 12.4 8.1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M16.6 6.7 L17.4 7.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></symbol>
@@ -142,7 +142,7 @@
             </div>
             <div class="row">
               <div><label for="c-venue">מקום האירוע</label><input type="text" id="c-venue" name="venue" placeholder="אם כבר סגרתם"></div>
-              <div><label for="c-guests">כמה אורחים בערך?</label><input type="text" id="c-guests" name="guests" inputmode="numeric"></div>
+              <div><label for="c-guests">כמה אורחים בערך? <span class="opt">(לא חובה)</span></label><input type="text" id="c-guests" name="guests" inputmode="numeric"></div>
             </div>
             <div>
               <label for="c-message">משהו שתרצו לספר לנו? <span class="opt">(לא חובה)</span></label>

@@ -357,3 +357,7 @@ textarea:focus { box-shadow: 0 0 0 3px var(--focus); }
 .landing .lead { margin-top: 26px; font-size: 18px; }
 .landing .btn { background: #5a3418; box-shadow: 0 8px 20px -10px rgba(90, 52, 24, .8); }
 .landing .btn:hover { background: #452712; }
+
+/* Hand-drawn page title (feedback page) */
+.title-img { display: block; width: 82%; max-width: 340px; height: auto; margin: 0 auto; }
+.head h1 { margin-bottom: 0; }

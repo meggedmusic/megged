@@ -1,8 +1,10 @@
 /**
- * Google Apps Script that receives the wedding feedback form and writes it to a Google Sheet.
+ * Google Apps Script that receives the wedding forms and writes them to a Google Sheet.
  * Setup steps are in weddings/README.md.
  *
- * Sheet "תשובות" gets one row per couple; sheet "סיכום" holds the averages and counts.
+ * Feedback form: sheet "תשובות" (one row per couple) and "סיכום" (averages and counts).
+ * Landing page: sheet "פניות" (leave details / meeting) and "שאלון מתחתנים".
+ * A new "פניות" row also sends an email to the sheet owner.
  */
 
 var COLUMNS = [
@@ -28,6 +30,40 @@ var COLUMNS = [
   ["share", "אישור שיתוף"],
 ];
 
+var CONTACT_COLUMNS = [
+  ["submitted_at", "נשלח ב"],
+  ["names", "שמות"],
+  ["phone", "טלפון"],
+  ["email", "אימייל"],
+  ["wedding_date", "תאריך החתונה"],
+  ["venue", "מקום האירוע"],
+  ["guests", "מספר אורחים"],
+  ["meeting", "סוג פגישה"],
+  ["best_time", "זמן נוח"],
+  ["message", "הודעה"],
+];
+
+var QUESTIONNAIRE_COLUMNS = [
+  ["submitted_at", "נשלח ב"],
+  ["names", "שמות"],
+  ["wedding_date", "תאריך החתונה"],
+  ["phone", "טלפון"],
+  ["venue", "מקום האירוע"],
+  ["styles", "1. סגנונות"],
+  ["styles_details", "1. פירוט"],
+  ["artists", "2. אמנים ושירים שמייצגים"],
+  ["avoid", "3. לא לנגן"],
+  ["reception", "4. קבלת פנים"],
+  ["reception_details", "4. פירוט"],
+  ["chuppah", "5. חופה"],
+  ["moments", "6. רגעים מיוחדים"],
+  ["must_play", "7. חייבים להתנגן"],
+  ["crowd", "8. קהל"],
+  ["crowd_details", "8. פירוט"],
+  ["playlist", "9. פלייליסט"],
+  ["more", "10. עוד"],
+];
+
 var RATINGS = ["communication", "taste", "crowd", "flow", "professional"];
 var RECOMMEND = ["בהחלט היינו ממליצים", "כנראה שהיינו ממליצים", "לא בטוחים", "כנראה שלא"];
 var SHARE = ["כן, עם השמות שלנו", "כן, בעילום שם", "מעדיפים שלא"];
@@ -36,8 +72,17 @@ function doPost(e) {
   var lock = LockService.getScriptLock();
   lock.waitLock(10000);
   try {
-    var sheet = responsesSheet_();
     var p = e.parameter || {};
+    if (p.form === "contact") {
+      appendTo_(tableSheet_("פניות", CONTACT_COLUMNS), CONTACT_COLUMNS, p);
+      notify_(p);
+      return ContentService.createTextOutput("ok");
+    }
+    if (p.form === "questionnaire") {
+      appendTo_(tableSheet_("שאלון מתחתנים", QUESTIONNAIRE_COLUMNS), QUESTIONNAIRE_COLUMNS, p);
+      return ContentService.createTextOutput("ok");
+    }
+    var sheet = responsesSheet_();
     sheet.appendRow(COLUMNS.map(function (c) {
       var v = p[c[0]] || "";
       if (c[0] === "submitted_at" && v) return new Date(v);
@@ -50,10 +95,46 @@ function doPost(e) {
   }
 }
 
-// Run once from the editor to create both sheets.
+// Run once from the editor to create the sheets and approve permissions.
 function setup() {
   responsesSheet_();
   summarySheet_();
+  tableSheet_("פניות", CONTACT_COLUMNS);
+  tableSheet_("שאלון מתחתנים", QUESTIONNAIRE_COLUMNS);
+  MailApp.getRemainingDailyQuota();
+}
+
+function appendTo_(sheet, columns, p) {
+  sheet.appendRow(columns.map(function (c) {
+    var v = p[c[0]] || "";
+    if (c[0] === "submitted_at" && v) return new Date(v);
+    if (c[0] === "phone" && v) return "'" + v;
+    return v;
+  }));
+}
+
+function tableSheet_(name, columns) {
+  var ss = SpreadsheetApp.getActive();
+  var sheet = ss.getSheetByName(name);
+  if (!sheet) {
+    sheet = ss.insertSheet(name);
+    sheet.setRightToLeft(true);
+    sheet.appendRow(columns.map(function (c) { return c[1]; }));
+    sheet.setFrozenRows(1);
+    sheet.getRange(1, 1, 1, columns.length).setFontWeight("bold").setBackground("#eef0e6");
+    sheet.setColumnWidths(1, columns.length, 170);
+  }
+  return sheet;
+}
+
+// Email the sheet owner about a new meeting request
+function notify_(p) {
+  try {
+    var lines = CONTACT_COLUMNS.slice(1).map(function (c) { return c[1] + ": " + (p[c[0]] || "-"); });
+    MailApp.sendEmail(Session.getEffectiveUser().getEmail(),
+      "פנייה חדשה מדף החתונות: " + (p.names || ""),
+      lines.join("\n") + "\n\n" + SpreadsheetApp.getActive().getUrl());
+  } catch (err) {}
 }
 
 function responsesSheet_() {

@@ -379,16 +379,16 @@ img.doodle { height: auto; opacity: .8; filter: none; }
   .doodle.d8[src*="dots-pair"] { width: 18px; }
 }
 
-/* Hebrew font options (?font=1|2|3). Hebrew letters only switch; Latin, digits and brackets stay typewriter */
-@font-face { font-family: "Heb Alt 1"; src: url("fonts/cousine-hebrew-400-normal.woff2") format("woff2"); font-weight: 400; unicode-range: U+0590-05FF, U+FB1D-FB4F; size-adjust: 104%; font-display: swap; }
-@font-face { font-family: "Heb Alt 1"; src: url("fonts/cousine-hebrew-700-normal.woff2") format("woff2"); font-weight: 700; unicode-range: U+0590-05FF, U+FB1D-FB4F; size-adjust: 104%; font-display: swap; }
-@font-face { font-family: "Heb Alt 2"; src: url("fonts/frank-ruhl-libre-hebrew-400-normal.woff2") format("woff2"); font-weight: 400; unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0020-0022, U+0027, U+002C, U+002E, U+003F; size-adjust: 118%; font-display: swap; }
-@font-face { font-family: "Heb Alt 2"; src: url("fonts/frank-ruhl-libre-hebrew-700-normal.woff2") format("woff2"); font-weight: 700; unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0020-0022, U+0027, U+002C, U+002E, U+003F; size-adjust: 118%; font-display: swap; }
-@font-face { font-family: "Heb Alt 3"; src: url("fonts/ibm-plex-sans-hebrew-hebrew-400-normal.woff2") format("woff2"); font-weight: 400; unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0020-0022, U+0027, U+002C, U+002E, U+003F; size-adjust: 106%; font-display: swap; }
-@font-face { font-family: "Heb Alt 3"; src: url("fonts/ibm-plex-sans-hebrew-hebrew-700-normal.woff2") format("woff2"); font-weight: 700; unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0020-0022, U+0027, U+002C, U+002E, U+003F; size-adjust: 106%; font-display: swap; }
+/* Hebrew font options (?font=1|2|3): typewriter faces that stay readable.
+   Only Hebrew letters (plus space and basic punctuation) switch; Latin, digits and brackets stay Miriam Mono */
+@font-face { font-family: "Heb Alt 1"; src: url("fonts/freemono-hebrew.woff2") format("woff2"); font-weight: 400; unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0020-0022, U+0027, U+002C, U+002E, U+003F; size-adjust: 112%; font-display: swap; }
+@font-face { font-family: "Heb Alt 1"; src: url("fonts/freemono-hebrew-bold.woff2") format("woff2"); font-weight: 700; unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0020-0022, U+0027, U+002C, U+002E, U+003F; size-adjust: 112%; font-display: swap; }
+@font-face { font-family: "Heb Alt 2"; src: url("fonts/cousine-hebrew-400-normal.woff2") format("woff2"); font-weight: 400; unicode-range: U+0590-05FF, U+FB1D-FB4F; size-adjust: 104%; font-display: swap; }
+@font-face { font-family: "Heb Alt 2"; src: url("fonts/cousine-hebrew-700-normal.woff2") format("woff2"); font-weight: 700; unicode-range: U+0590-05FF, U+FB1D-FB4F; size-adjust: 104%; font-display: swap; }
 html.font-1, html.font-1 .landing { --type: "Heb Alt 1", "Miriam Mono", "Courier New", monospace; }
 html.font-2, html.font-2 .landing { --type: "Heb Alt 2", "Miriam Mono", "Courier New", monospace; }
-html.font-3, html.font-3 .landing { --type: "Heb Alt 3", "Miriam Mono", "Courier New", monospace; }
-html.font-2 body, html.font-3 body { -webkit-text-stroke: 0; }
-html.font-2 *, html.font-3 * { letter-spacing: normal; }
-html.font-2 .logo-sub, html.font-3 .logo-sub { letter-spacing: .5em; }
+/* 1: FreeMono is a thin Courier-style face, so it gets a heavier ink stroke */
+html.font-1 body { -webkit-text-stroke: .45px currentColor; }
+/* 3: the current Miriam Mono, set larger, darker and heavier */
+html.font-3 body { -webkit-text-stroke: .65px currentColor; }
+html.font-3 .card p, html.font-3 .hint, html.font-3 .chips label, html.font-3 .fields input, html.font-3 .fields textarea { font-size: 1.12em; color: var(--ink); }

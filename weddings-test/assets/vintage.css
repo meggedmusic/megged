@@ -299,6 +299,8 @@ input, textarea { color: var(--ink); }
 .btn, .landing .btn { gap: 0; }
 .btn::before { content: "["; margin-inline-end: .6em; font-weight: 400; }
 .btn::after { content: "]"; margin-inline-start: .45em; font-weight: 400; }
-.btn:hover, .landing .btn:hover { background: none; translate: none; }
-.btn:hover .w { background: rgba(90, 52, 24, .1); }
+/* Hover: the same stop-motion hop as the menu */
+.btn, .landing .btn { transition: translate .11s steps(1, end); }
+.btn:hover, .landing .btn:hover, .btn:focus-visible { background: none; translate: 0 -4px; }
+.btn[disabled]:hover { translate: none; }
 .btn[disabled] { opacity: .6; }

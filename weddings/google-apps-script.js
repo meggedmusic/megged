@@ -4,8 +4,11 @@
  *
  * Feedback form: sheet "תשובות" (one row per couple) and "סיכום" (averages and counts).
  * Landing page: sheet "פניות" (leave details / meeting) and "שאלון מתחתנים".
- * A new "פניות" row also sends an email to the sheet owner.
+ * A new "פניות" row also sends an email to NOTIFY_EMAIL (or to the sheet owner if it is empty).
  */
+
+// Where new meeting requests are emailed
+var NOTIFY_EMAIL = "";
 
 var COLUMNS = [
   ["submitted_at", "נשלח ב"],
@@ -38,8 +41,6 @@ var CONTACT_COLUMNS = [
   ["wedding_date", "תאריך החתונה"],
   ["venue", "מקום האירוע"],
   ["guests", "מספר אורחים"],
-  ["meeting", "סוג פגישה"],
-  ["best_time", "זמן נוח"],
   ["message", "הודעה"],
 ];
 
@@ -127,13 +128,26 @@ function tableSheet_(name, columns) {
   return sheet;
 }
 
-// Email the sheet owner about a new meeting request
+// Email about a new meeting request, with the couple's details and quick links to call or message them
 function notify_(p) {
   try {
-    var lines = CONTACT_COLUMNS.slice(1).map(function (c) { return c[1] + ": " + (p[c[0]] || "-"); });
-    MailApp.sendEmail(Session.getEffectiveUser().getEmail(),
-      "פנייה חדשה מדף החתונות: " + (p.names || ""),
-      lines.join("\n") + "\n\n" + SpreadsheetApp.getActive().getUrl());
+    var esc = function (v) { return String(v || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); };
+    var phone = String(p.phone || "").replace(/[^\d+]/g, "");
+    var intl = phone.replace(/^\+/, "").replace(/^0/, "972");
+    var rows = CONTACT_COLUMNS.slice(1).map(function (c) {
+      return "<tr><td style=\"padding:6px 0 6px 18px;color:#6b6c5e;white-space:nowrap;vertical-align:top\">" + c[1] +
+        "</td><td style=\"padding:6px 0\">" + (esc(p[c[0]]) || "-") + "</td></tr>";
+    }).join("");
+    var html = "<div dir=\"rtl\" style=\"font-family:Arial,sans-serif;font-size:15px;color:#2f3127\">" +
+      "<p style=\"font-size:18px;margin:0 0 14px\">פנייה חדשה מדף החתונות</p>" +
+      "<table style=\"border-collapse:collapse\">" + rows + "</table>" +
+      (phone ? "<p style=\"margin:18px 0 0\"><a href=\"tel:" + phone + "\">התקשרות</a> · <a href=\"https://wa.me/" + intl + "\">וואטסאפ</a></p>" : "") +
+      "<p style=\"margin:18px 0 0;font-size:13px\"><a href=\"" + SpreadsheetApp.getActive().getUrl() + "\">לגיליון</a></p></div>";
+    var text = CONTACT_COLUMNS.slice(1).map(function (c) { return c[1] + ": " + (p[c[0]] || "-"); }).join("\n");
+    var options = { htmlBody: html, name: "Megged & Katnoa Weddings" };
+    if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email || "")) options.replyTo = p.email;
+    MailApp.sendEmail(NOTIFY_EMAIL || Session.getEffectiveUser().getEmail(),
+      "פנייה חדשה: " + (p.names || "זוג חדש") + (p.wedding_date ? " · " + p.wedding_date : ""), text, options);
   } catch (err) {}
 }
 

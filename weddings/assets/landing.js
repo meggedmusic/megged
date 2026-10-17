@@ -2,7 +2,7 @@
 // Everything Micha may want to change is in this first block.
 
 // Instagram page for the weddings
-var INSTAGRAM_URL = "https://www.instagram.com/meggedofficial/";
+var INSTAGRAM_URL = "https://www.instagram.com/katnoa_megged/";
 
 // Sample set. type: "audio" (an mp3 file or link), "youtube", "soundcloud" or "mixcloud".
 // Leave src empty to show the player without sound.
@@ -19,68 +19,154 @@ var GALLERY = [];
 // Google Apps Script web app (the same one the feedback form uses)
 var ENDPOINT = "https://script.google.com/macros/s/AKfycbzdjJjW_-rb8Xz3nFyhBNHT6ftBIYdvr-THiEoqJCrs3SLPmZX8RCPVVjxUDdrkKEmB4w/exec";
 
+// Letters of the logo, cut from assets/logo.webp into assets/logo/l0.webp ... (x, y, width, height in the 1400x439 logo)
+var LOGO_PIECES = [[1217,33,177,256],[1165,111,68,75],[1148,89,106,116],[1044,65,114,184],[954,29,119,226],[917,99,93,127],[813,6,175,273],[675,53,129,183],[505,25,137,229],[472,68,74,143],[380,60,90,160],[274,59,101,165],[190,56,93,168],[6,12,245,285],[1061,303,85,77],[981,284,81,149],[878,290,102,130],[783,282,96,148],[736,251,43,170],[672,280,72,145],[566,255,103,174],[510,284,75,131],[354,247,156,186],[258,300,86,81]];
+
 (function () {
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   // ---------- Instagram ----------
   var handle = (INSTAGRAM_URL.match(/instagram\.com\/([^/?#]+)/) || [])[1];
   document.querySelectorAll("[data-instagram]").forEach(function (a) { a.href = INSTAGRAM_URL; });
-  document.querySelectorAll("[data-instagram-handle]").forEach(function (s) { s.textContent = handle ? "@" + handle : ""; });
+  document.querySelectorAll("[data-instagram-handle]").forEach(function (s) { if (handle) s.textContent = "@" + handle; });
 
-  // The floating Instagram button appears once the big one has scrolled away
-  var bigInsta = document.querySelector(".insta");
-  var floatInsta = document.querySelector(".insta-float");
-  if ("IntersectionObserver" in window) {
-    new IntersectionObserver(function (entries) {
-      floatInsta.classList.toggle("show", !entries[0].isIntersecting);
-    }).observe(bigInsta);
+  // ---------- Top bar and menu ----------
+  var topbar = document.getElementById("topbar");
+  var burger = document.getElementById("burger");
+  var menu = document.getElementById("menu");
+  var shade = document.getElementById("menu-shade");
+
+  function setMenu(open) {
+    menu.hidden = !open;
+    shade.hidden = !open;
+    burger.setAttribute("aria-expanded", open);
+    burger.setAttribute("aria-label", open ? "סגירת התפריט" : "תפריט");
+    topbar.classList.toggle("open", open);
+  }
+  burger.addEventListener("click", function () { setMenu(menu.hidden); });
+  shade.addEventListener("click", function () { setMenu(false); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !menu.hidden) { setMenu(false); burger.focus(); } });
+
+  function onScroll() { topbar.classList.toggle("solid", window.scrollY > 12); }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  // ---------- Pages (one per menu item) ----------
+  var views = Array.prototype.slice.call(document.querySelectorAll(".view"));
+
+  function show(id) {
+    if (!document.getElementById("page-" + id)) id = "home";
+    views.forEach(function (v) { v.hidden = v.id !== "page-" + id; });
+    menu.querySelectorAll("a").forEach(function (a) {
+      if (a.dataset.view === id) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    });
+    topbar.classList.toggle("inner", id !== "home");
+    var title = document.getElementById("page-" + id).dataset.title;
+    document.title = id === "home" ? title : title + " · Megged & Katnoa Weddings";
+    setMenu(false);
+    window.scrollTo(0, 0);
   }
 
-  // ---------- Tabs ----------
-  var tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
-  var tabBar = document.querySelector(".tabs");
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest("a[data-view]");
+    if (!a) return;
+    e.preventDefault();
+    var id = a.dataset.view;
+    history.pushState(null, "", id === "home" ? location.pathname : "#" + id);
+    show(id);
+  });
+  window.addEventListener("popstate", function () { show(location.hash.slice(1)); });
+  window.addEventListener("hashchange", function () { show(location.hash.slice(1)); });
+  show(location.hash.slice(1));
 
-  function select(id, focus, scroll) {
-    tabs.forEach(function (t) {
-      var on = t.getAttribute("aria-controls") === id;
-      t.setAttribute("aria-selected", on);
-      t.tabIndex = on ? 0 : -1;
-      document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
-      if (on && focus) t.focus();
-    });
-    if (scroll && tabBar.getBoundingClientRect().top <= 1) toPanel(id);
-  }
-
-  // Scroll so the open tab starts just under the sticky tab bar
-  function toPanel(id) {
-    var panel = document.getElementById(id);
-    var y = panel.getBoundingClientRect().top + window.scrollY - tabBar.offsetHeight - 24;
-    window.scrollTo({ top: y, behavior: "smooth" });
-  }
-
-  tabs.forEach(function (t, i) {
-    t.addEventListener("click", function () {
-      var id = t.getAttribute("aria-controls");
-      history.replaceState(null, "", "#" + id);
-      select(id, false, true);
-    });
-    t.addEventListener("keydown", function (e) {
-      // RTL: the left arrow moves to the next tab
-      var step = e.key === "ArrowLeft" ? 1 : e.key === "ArrowRight" ? -1 : 0;
-      if (!step) return;
-      var next = tabs[(i + step + tabs.length) % tabs.length];
-      history.replaceState(null, "", "#" + next.getAttribute("aria-controls"));
-      select(next.getAttribute("aria-controls"), true);
-    });
+  // ---------- Logo letters that shy away from the mouse ----------
+  var logo = document.getElementById("logo");
+  var pieces = [];
+  var loaded = 0;
+  LOGO_PIECES.forEach(function (p, i) {
+    var img = new Image();
+    img.className = "piece";
+    img.alt = "";
+    img.setAttribute("aria-hidden", "true");
+    img.draggable = false;
+    img.style.left = p[0] / 14 + "%";
+    img.style.top = p[1] / 4.39 + "%";
+    img.style.width = p[2] / 14 + "%";
+    img.onload = function () { if (++loaded === LOGO_PIECES.length) logo.classList.add("split"); };
+    img.src = "assets/logo/l" + i + ".webp";
+    logo.appendChild(img);
+    // center of the letter as a fraction of the logo, plus spring state
+    pieces.push({ el: img, cx: (p[0] + p[2] / 2) / 1400, cy: (p[1] + p[3] / 2) / 439, x: 0, y: 0, r: 0, vx: 0, vy: 0, vr: 0 });
   });
 
-  // A link straight to a tab: megged.music/weddings/#questionnaire
-  function fromHash() {
-    var id = location.hash.slice(1);
-    if (!document.getElementById("tab-" + id)) return;
-    select(id);
-    setTimeout(function () { toPanel(id); }, 300);
+  var pointer = null;
+  var running = false;
+
+  function frame() {
+    var box = logo.getBoundingClientRect();
+    var reach = box.width * 0.26;         // how close the mouse gets before a letter reacts
+    var push = box.width * 0.028;          // the most a letter moves, in pixels
+    var moving = false;
+    pieces.forEach(function (p) {
+      var tx = 0, ty = 0, tr = 0;
+      if (pointer) {
+        var dx = box.left + p.cx * box.width - pointer.x;
+        var dy = box.top + p.cy * box.height - pointer.y;
+        var d = Math.sqrt(dx * dx + dy * dy) || 1;
+        if (d < reach) {
+          var f = Math.pow(1 - d / reach, 1.6);
+          tx = dx / d * f * push;
+          ty = dy / d * f * push;
+          tr = (dx > 0 ? 1 : -1) * f * 7;
+        }
+      }
+      // a soft spring, so letters wobble a little before settling
+      p.vx = (p.vx + (tx - p.x) * 0.14) * 0.76;
+      p.vy = (p.vy + (ty - p.y) * 0.14) * 0.76;
+      p.vr = (p.vr + (tr - p.r) * 0.14) * 0.76;
+      p.x += p.vx; p.y += p.vy; p.r += p.vr;
+      if (Math.abs(p.vx) + Math.abs(p.vy) + Math.abs(p.vr) > 0.02 || Math.abs(p.x - tx) + Math.abs(p.y - ty) > 0.05) moving = true;
+      p.el.style.transform = "translate(" + p.x.toFixed(2) + "px," + p.y.toFixed(2) + "px) rotate(" + p.r.toFixed(2) + "deg)";
+    });
+    if (moving || pointer) requestAnimationFrame(frame); else running = false;
   }
-  fromHash();
-  window.addEventListener("hashchange", fromHash);
+  function wake() { if (!running) { running = true; requestAnimationFrame(frame); } }
+
+  function near(x, y) {
+    var b = logo.getBoundingClientRect();
+    var m = b.width * 0.25;
+    return x > b.left - m && x < b.right + m && y > b.top - m && y < b.bottom + m;
+  }
+
+  if (!reduceMotion) {
+    window.addEventListener("pointermove", function (e) {
+      if (document.getElementById("page-home").hidden) return;
+      if (near(e.clientX, e.clientY)) { pointer = { x: e.clientX, y: e.clientY }; wake(); }
+      else pointer = null;
+    }, { passive: true });
+    window.addEventListener("pointerdown", function (e) {
+      if (near(e.clientX, e.clientY)) { pointer = { x: e.clientX, y: e.clientY }; wake(); }
+    }, { passive: true });
+    ["pointerup", "pointercancel", "blur"].forEach(function (t) {
+      window.addEventListener(t, function (e) { if (!e.pointerType || e.pointerType !== "mouse") pointer = null; });
+    });
+    document.documentElement.addEventListener("pointerleave", function () { pointer = null; });
+
+    // A small hello: an invisible "mouse" sweeps across the logo once it has loaded
+    var hello = setInterval(function () {
+      if (!logo.classList.contains("split")) return;
+      clearInterval(hello);
+      if (pointer || document.getElementById("page-home").hidden) return;
+      var t0 = performance.now();
+      (function sweep(now) {
+        var t = Math.min((now - t0) / 1800, 1);
+        var b = logo.getBoundingClientRect();
+        pointer = { x: b.right - t * b.width, y: b.top + b.height * (0.5 + 0.25 * Math.sin(t * Math.PI * 2)) };
+        wake();
+        if (t < 1) requestAnimationFrame(sweep); else pointer = null;
+      })(t0);
+    }, 300);
+  }
 
   // ---------- Sample set ----------
   var player = document.getElementById("player");
@@ -210,7 +296,7 @@ var ENDPOINT = "https://script.google.com/macros/s/AKfycbzdjJjW_-rb8Xz3nFyhBNHT6
 
   // ---------- Forms ----------
   document.querySelectorAll(".sheet-form").forEach(function (form) {
-    var panel = form.closest(".panel");
+    var panel = form.closest(".page-card");
     var error = form.querySelector(".error");
     var button = form.querySelector("button[type=submit]");
     var label = button.textContent;
@@ -267,7 +353,7 @@ var ENDPOINT = "https://script.google.com/macros/s/AKfycbzdjJjW_-rb8Xz3nFyhBNHT6
 
       send.then(function () {
         panel.classList.add("done");
-        toPanel(panel.id);
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }).catch(function () {
         button.disabled = false;
         button.textContent = label;

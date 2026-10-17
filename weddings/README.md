@@ -4,14 +4,14 @@ Standalone pages on the same domain, not linked from the main MEGGED site and hi
 
 | URL | File |
 |---|---|
-| `megged.music/weddings/` | `index.html`: landing page with Instagram, a sample set and three tabs (gallery, meeting request, couples questionnaire). Tabs can be linked directly: `#gallery`, `#contact`, `#questionnaire` |
+| `megged.music/weddings/` | `index.html`: landing site with a top bar (menu + Instagram), a home page (logo, sample set) and pages for the gallery, meeting request and couples questionnaire. Pages can be linked directly: `#gallery`, `#contact`, `#questionnaire` |
 | `megged.music/weddings/feedback/` | `feedback/index.html`: the feedback form for couples |
 
 | What | Where |
 |---|---|
 | Colors, fonts, spacing | `assets/style.css` (variables at the top) |
 | Background photo | `assets/bg.jpg` (large) and `assets/bg-small.jpg` (loads first), shared by both pages. The warm tone and grain come from the CSS; the feedback page also blurs it |
-| Logo (landing page) | `assets/logo.webp` (transparent) |
+| Logo (landing page) | `assets/logo.webp` (transparent). The moving letters are cut from it into `assets/logo/l0.webp`…`l23.webp`, positioned by `LOGO_PIECES` in `assets/landing.js`. If the logo changes, cut it again |
 | Browser tab icon | `assets/icons/` (spiral from the logo) |
 | Title (feedback page) | `assets/title-feedback.webp` (transparent) |
 | Questions | `feedback/index.html`. If you add or rename a question, add its `name` to `COLUMNS` in `google-apps-script.js` too |
@@ -21,7 +21,7 @@ Standalone pages on the same domain, not linked from the main MEGGED site and hi
 
 ## Collecting the answers in Google Sheets
 
-Every answer becomes a row in a Google Sheet: feedback in "תשובות", meeting requests in "פניות" (each one also emails the sheet owner), and couples questionnaires in "שאלון מתחתנים". A "סיכום" tab shows the average of each 1–5 question, how many couples picked each score, and the recommendation and sharing breakdown.
+Every answer becomes a row in a Google Sheet: feedback in "תשובות", meeting requests in "פניות" (each one also emails `NOTIFY_EMAIL`, or the sheet owner if it is empty), and couples questionnaires in "שאלון מתחתנים". A "סיכום" tab shows the average of each 1–5 question, how many couples picked each score, and the recommendation and sharing breakdown.
 
 1. Create a new Google Sheet (for example "משוב חתונות").
 2. In the sheet: Extensions → Apps Script. Delete what is there and paste the contents of `google-apps-script.js`. Save.

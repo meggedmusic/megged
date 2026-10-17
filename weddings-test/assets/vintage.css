@@ -38,7 +38,7 @@ b, strong { font-weight: 700; }
 
 /* ---------- Paper: no frame, no shadow, straight edges, a light rough texture ---------- */
 .card, .landing .card {
-  background: #f8f3e7 url("tex/laid.webp") 0 0 / 640px;
+  background: #f8f3e7 url("tex/laid.webp?v=3") 0 0 / 640px;
   border-radius: 0;
   box-shadow: none;
   animation: paperIn .9s cubic-bezier(.2, .7, .2, 1) both;
@@ -119,7 +119,7 @@ h1, h2, h3, .section-title, .player-title, .q legend, .q > label, .menu a, .nav-
 
 /* ---------- Top bar: one flat paper strip, a thin line under it ---------- */
 .topbar, .topbar.solid, .topbar.open {
-  background: #f8f3e7 url("tex/laid.webp") 0 0 / 640px;
+  background: #f8f3e7 url("tex/laid.webp?v=3") 0 0 / 640px;
   box-shadow: 0 1px 0 rgba(90, 52, 24, .22);
   filter: none;
 }
@@ -304,3 +304,44 @@ input, textarea { color: var(--ink); }
 .btn:hover, .landing .btn:hover, .btn:focus-visible { background: none; translate: 0 -4px; }
 .btn[disabled]:hover { translate: none; }
 .btn[disabled] { opacity: .6; }
+
+/* ---------- Choices typed like on a typewriter: [ ] and [x] ---------- */
+.chips label, .landing .chips label { padding-inline-start: 0; }
+.chips label::before {
+  content: "[ ]";
+  position: static;
+  display: inline-block;
+  width: auto;
+  height: auto;
+  margin: 0 0 0 .5em; /* physical: the pseudo is LTR-isolated */
+  background: none;
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-weight: 400;
+  white-space: pre;
+}
+.chips input:checked + label::before { content: "[x]"; background: none; font-weight: 700; color: var(--brown); }
+
+/* 1-5 scale (feedback page): [ 1 ] ... [ 5 ] */
+.scale { gap: 4px 14px; }
+.scale label, .scale input:checked + label {
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  height: 44px;
+  padding: 0 2px;
+  font-size: 19px;
+  background: none;
+  color: var(--ink);
+}
+.scale label::before { content: "["; margin-inline-end: .35em; font-weight: 400; }
+.scale label::after { content: "]"; margin-inline-start: .35em; font-weight: 400; }
+.scale input:checked + label { font-weight: 700; color: var(--brown); }
+.scale input:checked + label::before, .scale input:checked + label::after { font-weight: 700; }
+.scale label:hover { background: none; }
+.scale input:focus-visible + label { outline: 2px dashed var(--brown); outline-offset: 2px; box-shadow: none; }
+.scale-ends { max-width: 340px; }
+/* Brackets get the same typewriter ink as the letters */
+.btn::before, .btn::after { display: inline-block; filter: url(#ink); }
+.chips label::before, .scale label::before, .scale label::after { display: inline-block; filter: url(#ink-sm); }
+.scale label { filter: url(#ink-sm); }

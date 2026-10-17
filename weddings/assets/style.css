@@ -146,6 +146,7 @@ h1 {
   letter-spacing: -.01em;
 }
 .lead {
+  text-wrap: balance;
   margin: 0 auto;
   max-width: 34em;
   color: var(--ink-soft);
@@ -365,3 +366,6 @@ textarea:focus { box-shadow: 0 0 0 3px var(--focus); }
 .lines span { display: block; text-wrap: balance; }
 .thanks-text { max-width: 26em; line-height: 1.75; }
 .done .head { display: none; }
+
+/* "Under construction" note on the landing page */
+.soon { margin: 34px auto 0; padding-top: 22px; max-width: 30em; border-top: 1px solid var(--line); font-size: 15px; line-height: 1.7; color: var(--ink-soft); }

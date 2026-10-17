@@ -16,7 +16,15 @@ var SAMPLE_SET = {
 // A photo is "name.webp". A video is "name.mp4" and also needs "name-preview.mp4"
 // (short, silent, plays on hover) and "name.jpg" (its first frame).
 // While the list is empty the gallery shows soft placeholders.
-var GALLERY = [];
+var GALLERY = [
+  "omer-2148.webp",
+  "wa-0066.webp",
+  "omer-2068.webp",
+  "omer-1819.webp",
+  "omer-2098.webp",
+  "omer-1965.webp",
+  "omer-2145.webp"
+];
 
 // Google Apps Script web app (the same one the feedback form uses)
 var ENDPOINT = "https://script.google.com/macros/s/AKfycbzdjJjW_-rb8Xz3nFyhBNHT6ftBIYdvr-THiEoqJCrs3SLPmZX8RCPVVjxUDdrkKEmB4w/exec";

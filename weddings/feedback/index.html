@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>משוב אחרי החתונה</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="נשמח לשמוע איך הייתה החוויה שלכם איתנו.">
+<meta name="theme-color" content="#5f6d4b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600&family=Frank+Ruhl+Libre:wght@400;500&display=swap">
+<link rel="preload" href="../assets/bg-small.jpg" as="image">
+<link rel="preload" href="../assets/title-feedback.webp" as="image">
+<link rel="stylesheet" href="../assets/style.css?v=3">
+</head>
+<body>
+<div class="backdrop" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<main class="page">
+  <article class="card" id="card">
+  <header class="head">
+    <h1><img class="title-img" src="../assets/title-feedback.webp" width="1000" height="301" alt="משוב אחרי החתונה"></h1>
+    <svg class="ornament" viewBox="0 0 64 14" aria-hidden="true"><path d="M2 7h22M40 7h22" stroke="currentColor" stroke-width="1"/><path d="M32 2c2 3 2 7 0 10-2-3-2-7 0-10zM27 7c3-2 7-2 10 0-3 2-7 2-10 0z" fill="currentColor" opacity=".85"/></svg>
+    <p class="lead">תודה שבחרתם בנו להיות חלק מהחתונה שלכם! נשמח לשמוע איך הייתה החוויה שלכם איתנו, מה אהבתם ומה אפשר לשפר. תרגישו חופשי להיות כנים.</p>
+  </header>
+
+  <form id="feedback" novalidate>
+    <div class="q">
+      <div class="row">
+        <div><label for="couple">שמות בני הזוג</label><input type="text" id="couple" name="couple" autocomplete="off" placeholder="לא חובה"></div>
+        <div><label for="wedding_date">תאריך החתונה</label><input type="date" id="wedding_date" name="wedding_date"></div>
+      </div>
+    </div>
+
+    <fieldset class="q">
+      <legend><span class="num">01</span>איך הייתה התקשורת איתנו לפני החתונה?</legend>
+      <p class="hint">זמינות, הקשבה, תיאום ציפיות והכנה מוזיקלית.</p>
+      <div class="scale">
+        <input type="radio" id="communication-1" name="communication" value="1" required><label for="communication-1">1</label>
+        <input type="radio" id="communication-2" name="communication" value="2" required><label for="communication-2">2</label>
+        <input type="radio" id="communication-3" name="communication" value="3" required><label for="communication-3">3</label>
+        <input type="radio" id="communication-4" name="communication" value="4" required><label for="communication-4">4</label>
+        <input type="radio" id="communication-5" name="communication" value="5" required><label for="communication-5">5</label>
+      </div>
+      <div class="scale-ends" aria-hidden="true"><span>בכלל לא מרוצים</span><span>מרוצים מאוד</span></div>
+      <textarea class="detail" name="communication_details" rows="2" aria-label="פירוט" placeholder="רוצים לפרט? (לא חובה)"></textarea>
+    </fieldset>
+
+    <fieldset class="q">
+      <legend><span class="num">02</span>עד כמה הרגשתם שהמוזיקה התאימה לטעם האישי שלכם?</legend>
+      <div class="scale">
+        <input type="radio" id="taste-1" name="taste" value="1" required><label for="taste-1">1</label>
+        <input type="radio" id="taste-2" name="taste" value="2" required><label for="taste-2">2</label>
+        <input type="radio" id="taste-3" name="taste" value="3" required><label for="taste-3">3</label>
+        <input type="radio" id="taste-4" name="taste" value="4" required><label for="taste-4">4</label>
+        <input type="radio" id="taste-5" name="taste" value="5" required><label for="taste-5">5</label>
+      </div>
+      <div class="scale-ends" aria-hidden="true"><span>בכלל לא מרוצים</span><span>מרוצים מאוד</span></div>
+      <textarea class="detail" name="taste_details" rows="2" aria-label="פירוט" placeholder="רוצים לפרט? (לא חובה)"></textarea>
+    </fieldset>
+
+    <fieldset class="q">
+      <legend><span class="num">03</span>עד כמה הצלחנו לקרוא את הקהל ולהתאים את המוזיקה לאווירה?</legend>
+      <div class="scale">
+        <input type="radio" id="crowd-1" name="crowd" value="1" required><label for="crowd-1">1</label>
+        <input type="radio" id="crowd-2" name="crowd" value="2" required><label for="crowd-2">2</label>
+        <input type="radio" id="crowd-3" name="crowd" value="3" required><label for="crowd-3">3</label>
+        <input type="radio" id="crowd-4" name="crowd" value="4" required><label for="crowd-4">4</label>
+        <input type="radio" id="crowd-5" name="crowd" value="5" required><label for="crowd-5">5</label>
+      </div>
+      <div class="scale-ends" aria-hidden="true"><span>בכלל לא מרוצים</span><span>מרוצים מאוד</span></div>
+      <textarea class="detail" name="crowd_details" rows="2" aria-label="פירוט" placeholder="רוצים לפרט? (לא חובה)"></textarea>
+    </fieldset>
+
+    <fieldset class="q">
+      <legend><span class="num">04</span>איך הייתה בעיניכם הזרימה המוזיקלית לאורך האירוע?</legend>
+      <p class="hint">קבלת פנים, ארוחה, ריקודים ומעברים ביניהם.</p>
+      <div class="scale">
+        <input type="radio" id="flow-1" name="flow" value="1" required><label for="flow-1">1</label>
+        <input type="radio" id="flow-2" name="flow" value="2" required><label for="flow-2">2</label>
+        <input type="radio" id="flow-3" name="flow" value="3" required><label for="flow-3">3</label>
+        <input type="radio" id="flow-4" name="flow" value="4" required><label for="flow-4">4</label>
+        <input type="radio" id="flow-5" name="flow" value="5" required><label for="flow-5">5</label>
+      </div>
+      <div class="scale-ends" aria-hidden="true"><span>בכלל לא מרוצים</span><span>מרוצים מאוד</span></div>
+      <textarea class="detail" name="flow_details" rows="2" aria-label="פירוט" placeholder="רוצים לפרט? (לא חובה)"></textarea>
+    </fieldset>
+
+    <fieldset class="q">
+      <legend><span class="num">05</span>עד כמה הייתם מרוצים מהמקצועיות וההתנהלות שלנו ביום החתונה?</legend>
+      <div class="scale">
+        <input type="radio" id="professional-1" name="professional" value="1" required><label for="professional-1">1</label>
+        <input type="radio" id="professional-2" name="professional" value="2" required><label for="professional-2">2</label>
+        <input type="radio" id="professional-3" name="professional" value="3" required><label for="professional-3">3</label>
+        <input type="radio" id="professional-4" name="professional" value="4" required><label for="professional-4">4</label>
+        <input type="radio" id="professional-5" name="professional" value="5" required><label for="professional-5">5</label>
+      </div>
+      <div class="scale-ends" aria-hidden="true"><span>בכלל לא מרוצים</span><span>מרוצים מאוד</span></div>
+      <textarea class="detail" name="professional_details" rows="2" aria-label="פירוט" placeholder="רוצים לפרט? (לא חובה)"></textarea>
+    </fieldset>
+
+    <div class="q">
+      <label for="loved"><span class="num">06</span>מה הכי אהבתם בתקלוט שלנו?</label>
+      <textarea id="loved" name="loved" rows="4" placeholder="ספרו לנו..."></textarea>
+    </div>
+
+    <div class="q">
+      <label for="different"><span class="num">07</span>האם היה משהו שהייתם רוצים שנעשה אחרת?</label>
+      <textarea id="different" name="different" rows="4" placeholder="ספרו לנו..."></textarea>
+    </div>
+
+    <div class="q">
+      <label for="missing"><span class="num">08</span>האם היו שירים, סגנונות או רגעים מוזיקליים שהרגשתם שחסרו?</label>
+      <textarea id="missing" name="missing" rows="4" placeholder="ספרו לנו..."></textarea>
+    </div>
+
+    <fieldset class="q">
+      <legend><span class="num">09</span>עד כמה הייתם ממליצים עלינו לזוגות אחרים?</legend>
+      <div class="chips chips--stack">
+        <input type="radio" id="recommend-1" name="recommend" value="בהחלט היינו ממליצים" required><label for="recommend-1">בהחלט היינו ממליצים</label>
+        <input type="radio" id="recommend-2" name="recommend" value="כנראה שהיינו ממליצים" required><label for="recommend-2">כנראה שהיינו ממליצים</label>
+        <input type="radio" id="recommend-3" name="recommend" value="לא בטוחים" required><label for="recommend-3">לא בטוחים</label>
+        <input type="radio" id="recommend-4" name="recommend" value="כנראה שלא" required><label for="recommend-4">כנראה שלא</label>
+      </div>
+      <textarea class="detail" name="recommend_details" rows="2" aria-label="פירוט" placeholder="רוצים לפרט? (לא חובה)"></textarea>
+    </fieldset>
+
+    <div class="q">
+      <label for="more"><span class="num">10</span>יש משהו נוסף שתרצו לספר לנו?</label>
+      <textarea id="more" name="more" rows="4" placeholder="ספרו לנו..."></textarea>
+    </div>
+
+    <fieldset class="q">
+      <legend>האם אפשר לשתף חלק מהמשוב שלכם עם זוגות שמתעניינים בנו?</legend>
+      <div class="chips">
+        <input type="radio" id="share-1" name="share" value="כן, עם השמות שלנו" required><label for="share-1">כן, עם השמות שלנו</label>
+        <input type="radio" id="share-2" name="share" value="כן, בעילום שם" required><label for="share-2">כן, בעילום שם</label>
+        <input type="radio" id="share-3" name="share" value="מעדיפים שלא" required><label for="share-3">מעדיפים שלא</label>
+      </div>
+    </fieldset>
+
+    <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+    <div class="actions">
+      <button class="btn" type="submit">שליחת המשוב</button>
+      <p class="error" id="error" role="alert"></p>
+    </div>
+  </form>
+
+  <section class="thanks" aria-live="polite">
+    <svg class="ornament" viewBox="0 0 64 14" aria-hidden="true"><path d="M2 7h22M40 7h22" stroke="currentColor" stroke-width="1"/><path d="M32 2c2 3 2 7 0 10-2-3-2-7 0-10zM27 7c3-2 7-2 10 0-3 2-7 2-10 0z" fill="currentColor" opacity=".85"/></svg>
+    <h1>תודה רבה!</h1>
+    <p class="lead">המשוב שלכם התקבל. היה לנו כבוד להיות חלק מהיום שלכם, ומאחלים לכם המון אהבה ומוזיקה טובה.</p>
+  </section>
+  </article>
+</main>
+
+<script src="../assets/feedback.js?v=1"></script>
+</body>
+</html>

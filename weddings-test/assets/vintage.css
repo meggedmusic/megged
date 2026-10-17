@@ -341,3 +341,7 @@ input, textarea { color: var(--ink); }
 .scale label:hover { background: none; }
 .scale input:focus-visible + label { outline: 2px dashed var(--brown); outline-offset: 2px; box-shadow: none; }
 .scale-ends { max-width: 340px; }
+/* Brackets get the same typewriter ink as the letters */
+.btn::before, .btn::after { display: inline-block; filter: url(#ink); }
+.chips label::before, .scale label::before, .scale label::after { display: inline-block; filter: url(#ink-sm); }
+.scale label { filter: url(#ink-sm); }

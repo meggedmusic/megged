@@ -1,6 +1,5 @@
 /* Design experiment (weddings-test): the hand-made touches.
-   - words and lines nudged a little off their line
-   - an orange date imprint, like a 90s film camera */
+   - words and lines nudged a little off their line */
 (function () {
   "use strict";
 
@@ -49,29 +48,4 @@
     el.style.translate = range(r2, 5).toFixed(1) + "px " + range(r2, 1.6).toFixed(1) + "px";
     el.style.rotate = range(r2, 0.55).toFixed(2) + "deg";
   });
-
-  // ---------- Date imprint ----------
-  var stamp = document.getElementById("datestamp");
-  if (stamp) {
-    var d = new Date();
-    var text = "'98 " + String(d.getMonth() + 1).padStart(2, " ") + " " + String(d.getDate()).padStart(2, " ");
-    // Seven segments: a b c d e f g
-    var SEG = { "0": "abcdef", "1": "bc", "2": "abged", "3": "abgcd", "4": "fgbc", "5": "afgcd", "6": "afgedc", "7": "abc", "8": "abcdefg", "9": "abcdfg" };
-    var W = 11, H = 20, T = 2.2, gap = 5, x = 2, svg = "";
-    function seg(x0, s) {
-      var m = H / 2, out = "";
-      var rects = {
-        a: [x0 + T / 2, 0, W - T, T], d: [x0 + T / 2, H - T, W - T, T], g: [x0 + T / 2, m - T / 2, W - T, T],
-        f: [x0, T / 2, T, m - T], e: [x0, m + T / 2 - T / 2, T, m - T], b: [x0 + W - T, T / 2, T, m - T], c: [x0 + W - T, m, T, m - T]
-      };
-      s.split("").forEach(function (k) { var q = rects[k]; out += '<rect x="' + q[0] + '" y="' + q[1] + '" width="' + q[2] + '" height="' + q[3] + '"/>'; });
-      return out;
-    }
-    text.split("").forEach(function (ch) {
-      if (ch === "'") { svg += '<rect x="' + x + '" y="0" width="' + T + '" height="5"/>'; x += 5; return; }
-      if (ch === " ") { x += gap + 2; return; }
-      svg += seg(x, SEG[ch]); x += W + 3;
-    });
-    stamp.innerHTML = '<svg viewBox="0 0 ' + x + ' ' + H + '" preserveAspectRatio="xMaxYMax meet"><g fill="#ff8a2a" transform="skewX(-8) translate(3 0)">' + svg + "</g></svg>";
-  }
 })();

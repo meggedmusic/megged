@@ -39,7 +39,8 @@ var GALLERY = [
 var ENDPOINT = "https://script.google.com/macros/s/AKfycbzdjJjW_-rb8Xz3nFyhBNHT6ftBIYdvr-THiEoqJCrs3SLPmZX8RCPVVjxUDdrkKEmB4w/exec";
 
 // Letters of the logo, cut from assets/logo.webp into assets/logo/l0.webp ... (x, y, width, height in the 1400x439 logo)
-var LOGO_PIECES = [[1217,33,177,256],[1165,111,68,75],[1148,89,106,116],[1044,65,114,184],[954,29,119,226],[917,99,93,127],[813,6,175,273],[675,53,129,183],[505,25,137,229],[472,68,74,143],[380,60,90,160],[274,59,101,165],[190,56,93,168],[6,12,245,285],[1061,303,85,77],[981,284,81,149],[878,290,102,130],[783,282,96,148],[736,251,43,170],[672,280,72,145],[566,255,103,174],[510,284,75,131],[354,247,156,186],[258,300,86,81]];
+// Test: names swapped (Katnoa & Megged); A and M drawn at 82% so their legs clear WEDDINGS
+var LOGO_PIECES = [[435,36,145,210],[383,111,68,75],[366,89,106,116],[262,65,114,184],[172,29,119,226],[135,99,93,127],[31,6,175,273],[608,53,129,183],[1232,25,137,229],[1199,68,74,143],[1107,60,90,160],[1001,59,101,165],[917,56,93,168],[755,12,201,234],[1061,303,85,77],[981,284,81,149],[878,290,102,130],[783,282,96,148],[736,251,43,170],[672,280,72,145],[566,255,103,174],[510,284,75,131],[354,247,156,186],[258,300,86,81]];
 
 (function () {
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -81,7 +82,7 @@ var LOGO_PIECES = [[1217,33,177,256],[1165,111,68,75],[1148,89,106,116],[1044,65
     });
     topbar.classList.toggle("inner", id !== "home");
     var title = document.getElementById("page-" + id).dataset.title;
-    document.title = id === "home" ? title : title + " · Megged & Katnoa Weddings";
+    document.title = id === "home" ? title : title + " · Katnoa & Megged Weddings";
     setMenu(false);
     window.scrollTo(0, 0);
   }

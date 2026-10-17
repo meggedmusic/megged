@@ -636,8 +636,8 @@ textarea:focus { box-shadow: 0 0 0 3px var(--focus); }
 .page-card.done .thanks { display: block; }
 
 .site-foot { margin-top: clamp(28px, 4vw, 40px); text-align: center; font-size: 15px; }
-.site-foot a { color: var(--paper); text-decoration: none; padding: 9px 20px; border-radius: 999px; background: var(--brown); box-shadow: 0 8px 20px -10px rgba(90, 52, 24, .8); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: background .2s; }
-.site-foot a:hover { background: var(--brown-dark); }
+.site-foot a { display: inline-block; color: var(--brown); font-weight: 600; text-decoration: none; padding: 9px 22px; border: 1.5px solid var(--brown); border-radius: 999px; background: transparent; transition: background .2s, color .2s; }
+.site-foot a:hover { background: var(--brown); color: var(--paper); }
 
 @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 

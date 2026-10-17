@@ -43,9 +43,10 @@ body {
   position: absolute;
   inset: 0;
   background: url("bg.jpg") center / cover no-repeat;
-  filter: blur(2px) saturate(.92) sepia(.12);
-  transform: scale(1.03);
+  filter: blur(6px) saturate(.9) sepia(.14);
+  transform: scale(1.06);
 }
+.landing .backdrop::before { filter: saturate(.94) sepia(.12) contrast(.96); transform: none; }
 .backdrop::after {
   content: "";
   position: absolute;
@@ -349,3 +350,10 @@ textarea:focus { box-shadow: 0 0 0 3px var(--focus); }
 .chips--stack { flex-direction: column; align-items: flex-start; }
 
 .hp { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); opacity: 0; }
+
+/* Landing page */
+.landing .card--narrow { max-width: 720px; padding-block: clamp(40px, 7vw, 72px); }
+.logo { display: block; width: 100%; max-width: 560px; height: auto; margin: 0 auto; }
+.landing .lead { margin-top: 26px; font-size: 18px; }
+.landing .btn { background: #5a3418; box-shadow: 0 8px 20px -10px rgba(90, 52, 24, .8); }
+.landing .btn:hover { background: #452712; }

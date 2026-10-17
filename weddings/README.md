@@ -10,7 +10,8 @@ Standalone pages on the same domain, not linked from the main MEGGED site and hi
 | What | Where |
 |---|---|
 | Colors, fonts, spacing | `assets/style.css` (variables at the top) |
-| Background photo | `assets/bg.jpg` (large) and `assets/bg-small.jpg` (loads first). Replace both with a real photo, same names; the blur, warm tone and grain are added by the CSS |
+| Background photo | `assets/bg.jpg` (large) and `assets/bg-small.jpg` (loads first), shared by both pages. The warm tone and grain come from the CSS; the feedback page also blurs it |
+| Logo (landing page) | `assets/logo.webp` (transparent) |
 | Questions | `feedback/index.html`. If you add or rename a question, add its `name` to `COLUMNS` in `google-apps-script.js` too |
 | Where answers go | `ENDPOINT` at the top of `assets/feedback.js` |
 

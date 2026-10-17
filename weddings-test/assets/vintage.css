@@ -9,7 +9,7 @@
   --serif: var(--type);
   --sans: var(--type);
   --ink: #33261b;
-  --ink-soft: #6a5847;
+  --ink-soft: #4d3d2f;
   --brown: #5a3418;
   --brown-dark: #43260f;
   --rose: #8a5a3a;
@@ -56,7 +56,7 @@ b, strong { font-weight: 700; }
 h1, h2, h3, .section-title, .player-title, .q legend, .q > label, .menu a, .nav-card-title { font-family: var(--type); }
 .section-title { font-weight: 400; font-size: clamp(26px, 3.6vw, 34px); letter-spacing: -.01em; line-height: 1.25; }
 .set .section-title { font-size: clamp(24px, 3vw, 30px); }
-.section-title, .thanks h3, .btn, .menu a { filter: url(#ink); }
+.section-title, .thanks h3, .menu a { filter: url(#ink); }
 .lead, .section-lead { color: var(--ink); }
 .hero .lead { font-size: clamp(16px, 1.9vw, 18.5px); line-height: 1.8; }
 .eyebrow, .set .eyebrow { font-size: 13px; letter-spacing: .12em; color: var(--rose); }
@@ -95,8 +95,6 @@ h1, h2, h3, .section-title, .player-title, .q legend, .q > label, .menu a, .nav-
   background: var(--brown);
   border-radius: 0;
   box-shadow: none;
-  -webkit-mask: url("ink.webp") 0 0 / 256px;
-  mask: url("ink.webp") 0 0 / 256px;
   transition: background .2s, translate .2s;
 }
 .btn:hover, .landing .btn:hover { background: var(--brown-dark); transform: none; translate: 0 -1px; }
@@ -146,8 +144,6 @@ h1, h2, h3, .section-title, .player-title, .q legend, .q > label, .menu a, .nav-
   border-radius: 0;
   background: var(--brown);
   box-shadow: none;
-  -webkit-mask: url("ink.webp") 0 0 / 256px;
-  mask: url("ink.webp") 0 0 / 256px;
 }
 .play:hover { background: var(--brown-dark); transform: none; }
 .player-title, .set .player-title { font-weight: 700; font-size: 15px; }
@@ -256,3 +252,27 @@ textarea:focus, .landing textarea:focus { box-shadow: none; background-color: rg
 @media (prefers-reduced-motion: reduce) {
   .card { animation: none; }
 }
+
+/* ---------- Readability on the inner pages: darker, a touch heavier, questions in bold ---------- */
+body { -webkit-text-stroke: .22px currentColor; }
+.q legend, .q > label { font-weight: 700; color: var(--ink); }
+.q legend .opt, .q > label .opt { font-weight: 400; }
+.fields label, .row label { font-size: 16px; font-weight: 700; color: var(--ink); }
+.fields label .opt, .row label .opt { font-weight: 400; }
+.opt { color: var(--ink-soft); font-size: 15px; }
+.hint { font-size: 16px; color: var(--ink-soft); }
+.scale-ends { font-size: 14px; color: var(--ink-soft); }
+.section-lead, .page-head .section-lead, .head .lead { font-size: 17.5px; line-height: 1.8; }
+.q legend, .q > label { font-size: 19px; }
+.chips label, .landing .chips label { font-size: 17px; }
+input, textarea { font-size: 17px; }
+.scale-ends { font-size: 15px; }
+::placeholder { color: #8a7660; }
+input, textarea { color: var(--ink); }
+
+/* Typewriter ink on all text (the same uneven edge as the titles, lighter for small text) */
+/* (only on text, never on boxes, so every edge stays straight) */
+.card p, .card legend, .card h3, .card .eyebrow, .fields label, .row label, .q > label, .menu a,
+.chips .w, .site-foot a .w, .insta .w, .insta span, .lightbox button { filter: url(#ink-sm); }
+.section-title, .thanks h3, .btn .w { filter: url(#ink); }
+.btn, .insta, .site-foot a, .scale label { filter: none; }

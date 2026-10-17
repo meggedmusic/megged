@@ -16,7 +16,7 @@ Standalone pages on the same domain, not linked from the main MEGGED site and hi
 | Title (feedback page) | `assets/title-feedback.webp` (transparent) |
 | Questions | `feedback/index.html`. If you add or rename a question, add its `name` to `COLUMNS` in `google-apps-script.js` too |
 | Where answers go | `ENDPOINT` at the top of `assets/feedback.js` and `assets/landing.js` (same script) |
-| Instagram link, sample set, gallery photos | the first block of `assets/landing.js` (`INSTAGRAM_URL`, `SAMPLE_SET`, `GALLERY`). Gallery photos go in `assets/gallery/` |
+| Instagram link, sample set, gallery photos | the first block of `assets/landing.js` (`INSTAGRAM_URL`, `SAMPLE_SET`, `GALLERY`). The sample set is `assets/audio/sample-set-2026.mp3` (128 kbps). Gallery photos go in `assets/gallery/` |
 | Landing page questions | `index.html`. Keep the `name`s in sync with `CONTACT_COLUMNS` / `QUESTIONNAIRE_COLUMNS` in `google-apps-script.js` |
 
 ## Collecting the answers in Google Sheets

@@ -1,0 +1,11 @@
+# weddings-test (design experiment)
+
+Hidden preview of a new look for `/weddings/` (noindex, not linked). The live pages are untouched;
+once the design is approved it moves into `weddings/` and this folder is removed.
+
+- `assets/vintage.css` is loaded after `../weddings/assets/style.css` and only overrides it.
+- `assets/vintage.js`: rough paper edges, words nudged off their line, the orange date imprint.
+- `assets/landing.js` is the live script with media paths pointing at `../weddings/assets/`.
+- Typewriter font: Miriam Mono CLM from the Culmus project (GPL-2 with the font embedding exception).
+- `bg-film.jpg` is `weddings/assets/bg.jpg` processed to look like a late-90s film print.
+- Forms here send to the same Google Sheet as the live site.

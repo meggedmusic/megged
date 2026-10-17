@@ -12,9 +12,19 @@ var SAMPLE_SET = {
   title: "סט לדוגמה"
 };
 
-// Gallery photos: put them in weddings/assets/gallery/ and list the file names here.
+// Gallery: files in weddings/assets/gallery/, in the order they appear.
+// A photo is "name.webp". A video is "name.mp4" and also needs "name-preview.mp4"
+// (short, silent, plays on hover) and "name.jpg" (its first frame).
 // While the list is empty the gallery shows soft placeholders.
-var GALLERY = [];
+var GALLERY = [
+  "omer-2148.webp",
+  "wa-0066.webp",
+  "omer-2068.webp",
+  "omer-1819.webp",
+  "omer-2098.webp",
+  "omer-1965.webp",
+  "omer-2145.webp"
+];
 
 // Google Apps Script web app (the same one the feedback form uses)
 var ENDPOINT = "https://script.google.com/macros/s/AKfycbzdjJjW_-rb8Xz3nFyhBNHT6ftBIYdvr-THiEoqJCrs3SLPmZX8RCPVVjxUDdrkKEmB4w/exec";
@@ -258,29 +268,66 @@ var LOGO_PIECES = [[1217,33,177,256],[1165,111,68,75],[1148,89,106,116],[1044,65
   // ---------- Gallery ----------
   var grid = document.getElementById("gallery-grid");
   var lightbox = document.getElementById("lightbox");
-  var big = lightbox.querySelector("img");
+  var stage = lightbox.querySelector(".lightbox-stage");
+  var canHover = window.matchMedia("(hover: hover)").matches;
+  var items = GALLERY.map(function (name) {
+    var src = /^https?:|\//.test(name) ? name : "assets/gallery/" + name;
+    var video = /\.mp4$/i.test(src);
+    return {
+      src: src,
+      video: video,
+      preview: video ? src.replace(/\.mp4$/i, "-preview.mp4") : null,
+      poster: video ? src.replace(/\.mp4$/i, ".jpg") : src
+    };
+  });
+  var current = -1;
 
-  if (GALLERY.length) {
-    GALLERY.forEach(function (name) {
-      var src = /^https?:|\//.test(name) ? name : "assets/gallery/" + name;
-      var fig = document.createElement("figure");
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.setAttribute("aria-label", "הגדלת התמונה");
-      var img = document.createElement("img");
-      img.src = src;
-      img.alt = "";
-      img.loading = "lazy";
-      btn.appendChild(img);
-      fig.appendChild(btn);
-      grid.appendChild(fig);
-      btn.addEventListener("click", function () {
-        big.src = src;
-        lightbox.hidden = false;
-        lightbox.querySelector("button").focus();
-      });
+  // Silent previews play while visible on phones, on hover with a mouse
+  var seen = "IntersectionObserver" in window && !canHover ? new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) e.target.play().catch(function () {}); else e.target.pause();
     });
-  } else {
+  }, { threshold: 0.6 }) : null;
+
+  items.forEach(function (item, i) {
+    var fig = document.createElement("figure");
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.setAttribute("aria-label", item.video ? "פתיחת הסרטון" : "הגדלת התמונה");
+    var img = document.createElement("img");
+    img.src = item.poster;
+    img.alt = "";
+    img.loading = "lazy";
+    btn.appendChild(img);
+    if (item.video) {
+      btn.classList.add("is-video");
+      var v = document.createElement("video");
+      v.muted = true;
+      v.loop = true;
+      v.playsInline = true;
+      v.preload = "none";
+      v.setAttribute("aria-hidden", "true");
+      v.src = item.preview;
+      btn.appendChild(v);
+      var badge = document.createElement("span");
+      badge.className = "badge";
+      badge.innerHTML = '<svg aria-hidden="true"><use href="#i-play"/></svg>';
+      btn.appendChild(badge);
+      v.addEventListener("playing", function () { btn.classList.add("playing"); });
+      v.addEventListener("pause", function () { btn.classList.remove("playing"); });
+      if (canHover) {
+        btn.addEventListener("mouseenter", function () { v.play().catch(function () {}); });
+        btn.addEventListener("mouseleave", function () { v.pause(); v.currentTime = 0; });
+      } else if (seen) {
+        seen.observe(v);
+      }
+    }
+    fig.appendChild(btn);
+    grid.appendChild(fig);
+    btn.addEventListener("click", function () { open(i); });
+  });
+
+  if (!items.length) {
     [4 / 5, 1, 3 / 4, 4 / 3, 1, 4 / 5, 3 / 4, 1, 4 / 3].forEach(function (ratio) {
       var ph = document.createElement("div");
       ph.className = "ph";
@@ -290,9 +337,52 @@ var LOGO_PIECES = [[1217,33,177,256],[1165,111,68,75],[1148,89,106,116],[1044,65
     });
   }
 
-  function closeLightbox() { lightbox.hidden = true; big.src = ""; }
-  lightbox.addEventListener("click", function (e) { if (e.target !== big) closeLightbox(); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !lightbox.hidden) closeLightbox(); });
+  function open(i) {
+    current = (i + items.length) % items.length;
+    var item = items[current];
+    stage.innerHTML = "";
+    var el;
+    if (item.video) {
+      el = document.createElement("video");
+      el.src = item.src;
+      el.poster = item.poster;
+      el.controls = true;
+      el.playsInline = true;
+      el.autoplay = true;
+    } else {
+      el = document.createElement("img");
+      el.src = item.src;
+      el.alt = "";
+    }
+    stage.appendChild(el);
+    lightbox.hidden = false;
+    document.body.classList.add("no-scroll");
+    lightbox.querySelector(".lightbox-close").focus();
+  }
+  function closeLightbox() {
+    lightbox.hidden = true;
+    stage.innerHTML = "";
+    document.body.classList.remove("no-scroll");
+  }
+  lightbox.querySelector(".lightbox-close").addEventListener("click", closeLightbox);
+  lightbox.querySelector(".lightbox-prev").addEventListener("click", function () { open(current - 1); });
+  lightbox.querySelector(".lightbox-next").addEventListener("click", function () { open(current + 1); });
+  lightbox.addEventListener("click", function (e) { if (e.target === lightbox || e.target === stage) closeLightbox(); });
+  document.addEventListener("keydown", function (e) {
+    if (lightbox.hidden) return;
+    if (e.key === "Escape") closeLightbox();
+    // RTL: the left arrow goes forward
+    if (e.key === "ArrowLeft") open(current + 1);
+    if (e.key === "ArrowRight") open(current - 1);
+  });
+  var touchX = null;
+  lightbox.addEventListener("touchstart", function (e) { touchX = e.touches[0].clientX; }, { passive: true });
+  lightbox.addEventListener("touchend", function (e) {
+    if (touchX === null) return;
+    var dx = e.changedTouches[0].clientX - touchX;
+    touchX = null;
+    if (Math.abs(dx) > 50) open(current + (dx > 0 ? 1 : -1));
+  });
 
   // ---------- Forms ----------
   document.querySelectorAll(".sheet-form").forEach(function (form) {

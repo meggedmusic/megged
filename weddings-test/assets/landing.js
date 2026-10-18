@@ -41,6 +41,8 @@ var ENDPOINT = "https://script.google.com/macros/s/AKfycbzdjJjW_-rb8Xz3nFyhBNHT6
 // Letters of Micha's new title, cut into assets/title/t0.webp ... (x, y, width, height in the 1209x814 title)
 var LOGO_W = 1209, LOGO_H = 814;
 var LOGO_PIECES = [[7,0,219,309],[375,49,248,265],[243,169,136,153],[637,142,133,157],[791,200,110,122],[0,529,144,191],[185,370,216,374],[194,541,580,272],[443,583,114,119],[754,584,103,173],[875,544,120,131],[1034,359,174,324]];
+// The small drawings around the title, cut from assets/title/deco.webp into d0.webp ... (same coordinates; they sit partly outside the title)
+var DECO_PIECES = [[888.5,29.4,86,43],[857.5,35.4,29,30],[817.5,47.4,30,28],[-121.8,107.4,37,34],[953.6,129.4,142,129],[-103.8,268.5,117,113],[1223.6,319.5,38,37],[1255.7,343.5,32,34],[1249.7,433.5,57,52],[1284.7,484.5,45,43]];
 
 (function () {
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -103,7 +105,10 @@ var LOGO_PIECES = [[7,0,219,309],[375,49,248,265],[243,169,136,153],[637,142,133
   var logo = document.getElementById("logo");
   var pieces = [];
   var loaded = 0;
-  LOGO_PIECES.forEach(function (p, i) {
+  var allPieces = LOGO_PIECES.map(function (p, i) { return { box: p, src: "assets/title/t" + i + ".webp" }; })
+    .concat(DECO_PIECES.map(function (p, i) { return { box: p, src: "assets/title/d" + i + ".webp" }; }));
+  allPieces.forEach(function (piece) {
+    var p = piece.box;
     var img = new Image();
     img.className = "piece";
     img.alt = "";
@@ -112,8 +117,8 @@ var LOGO_PIECES = [[7,0,219,309],[375,49,248,265],[243,169,136,153],[637,142,133
     img.style.left = p[0] / LOGO_W * 100 + "%";
     img.style.top = p[1] / LOGO_H * 100 + "%";
     img.style.width = p[2] / LOGO_W * 100 + "%";
-    img.onload = function () { if (++loaded === LOGO_PIECES.length) logo.classList.add("split"); };
-    img.src = "assets/title/t" + i + ".webp";
+    img.onload = function () { if (++loaded === allPieces.length) logo.classList.add("split"); };
+    img.src = piece.src;
     logo.appendChild(img);
     // center of the letter as a fraction of the logo, plus spring state
     pieces.push({ el: img, cx: (p[0] + p[2] / 2) / LOGO_W, cy: (p[1] + p[3] / 2) / LOGO_H, x: 0, y: 0, r: 0, vx: 0, vy: 0, vr: 0 });

@@ -301,3 +301,5 @@ img.doodle { height: auto; opacity: .8; filter: none; }
 .scale input:checked + label { background: var(--brown); border-color: var(--brown); color: #fcf9f1; }
 .scale input:focus-visible + label { outline: 2px solid var(--brown); outline-offset: 2px; box-shadow: none; }
 .scale-ends { max-width: 270px; }
+/* the drawings around the title move with it: cut into pieces (assets/title/d*.webp) that replace the whole sheet once loaded */
+.logo-wrap.split .title-deco { opacity: 0; }

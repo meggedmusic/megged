@@ -287,7 +287,6 @@ textarea:focus { box-shadow: 0 0 0 3px var(--focus); }
   cursor: pointer;
   /* the lift is instant so it lands together with the darker colour */
   transition: background .2s, box-shadow .2s;
-  box-shadow: 0 8px 20px -10px rgba(72, 84, 58, .8);
 }
 .btn:hover { background: var(--sage-dark); transform: translateY(-1px); }
 .btn:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--focus); }
@@ -338,7 +337,7 @@ textarea:focus { box-shadow: 0 0 0 3px var(--focus); }
 .landing .card--narrow { max-width: 720px; padding-block: clamp(40px, 7vw, 72px); }
 .logo { display: block; width: 100%; max-width: 560px; height: auto; margin: 0 auto; }
 .landing .lead { margin-top: 26px; font-size: 18px; }
-.landing .btn { background: #5a3418; box-shadow: 0 8px 20px -10px rgba(90, 52, 24, .8); }
+.landing .btn { background: #5a3418; }
 .landing .btn:hover { background: #452712; }
 
 /* Hand-drawn page title (feedback page) */
@@ -468,8 +467,8 @@ textarea:focus { box-shadow: 0 0 0 3px var(--focus); }
 .page-head .section-lead { margin-top: 0; }
 .page-card--form .sheet-form { max-width: 600px; margin: 0 auto; }
 
-/* Interactive logo: each letter is its own image (assets/logo/) */
-.logo-wrap { position: relative; max-width: 580px; margin: 0 auto; aspect-ratio: 1400 / 439; }
+/* Interactive title: Micha's drawing, each letter and small drawing is its own image (assets/title/) */
+.logo-wrap { position: relative; max-width: 430px; margin: 0 auto 34px; aspect-ratio: 1209 / 814; }
 .logo-wrap .logo { max-width: none; }
 .logo-wrap .piece {
   position: absolute;
@@ -482,6 +481,11 @@ textarea:focus { box-shadow: 0 0 0 3px var(--focus); }
 }
 .logo-wrap.split .piece { opacity: 1; }
 .logo-wrap.split .logo { opacity: 0; }
+/* the small drawings around the title on Micha's sheet (replaced by moving pieces once they load) */
+.title-deco { position: absolute; left: -10.32%; top: -1.18%; width: 120.55%; max-width: none; height: auto; pointer-events: none; }
+.logo-wrap.split .title-deco { opacity: 0; }
+.hero { overflow: hidden; }
+.hero .lead { margin-top: 0; }
 
 /* Instagram */
 .insta {
@@ -509,7 +513,7 @@ textarea:focus { box-shadow: 0 0 0 3px var(--focus); }
 .set .section-lead { margin-top: 6px; font-size: 16px; }
 .set .aside { margin-top: 2px; font-size: 14px; color: #9a927f; }
 .set .player { max-width: 500px; margin: 22px auto 0; padding: 12px 16px; gap: 14px; }
-.set .play { width: 46px; height: 46px; box-shadow: 0 6px 14px -8px rgba(90, 52, 24, .8); }
+.set .play { width: 46px; height: 46px; }
 .set .play svg { width: 20px; height: 20px; }
 .set .player-title { margin-bottom: 8px; font-size: 16px; }
 .set .player-time { margin-top: 6px; font-size: 12px; }
@@ -536,7 +540,6 @@ textarea:focus { box-shadow: 0 0 0 3px var(--focus); }
   border: 0;
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 8px 20px -10px rgba(90, 52, 24, .8);
   transition: background .2s, transform .15s;
 }
 .play:hover { background: var(--brown-dark); transform: scale(1.04); }
@@ -661,6 +664,7 @@ body.no-scroll { overflow: hidden; }
   .cards-nav { grid-template-columns: 1fr; }
   .nav-card { padding: 24px 18px !important; }
   .topbar-logo { width: 170px; }
+  .logo-wrap { max-width: 270px; margin-bottom: 26px; }
   .burger, .topbar-insta { width: 42px; height: 42px; }
   .hero-actions .btn, .hero-actions .insta { width: 100%; max-width: 320px; justify-content: center; }
   .player { gap: 14px; padding: 14px; }

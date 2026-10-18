@@ -13,7 +13,7 @@ Standalone pages on the same domain, not linked from the main MEGGED site and hi
 | Background photo | `assets/bg-film.jpg` (large) and `assets/bg-film-small.jpg` (loads first), shared by both pages: a film print, softly out of focus. Grain comes from the CSS. Card paper: `assets/tex/handmade.webp` |
 | Title (landing page) | Micha's drawing `assets/title/title.webp` plus the small drawings around it `assets/title/deco.webp`. The moving pieces are cut into `assets/title/t*.webp` (letters) and `d*.webp` (drawings), positioned by `LOGO_PIECES` and `DECO_PIECES` in `assets/landing.js`. |
 | Browser tab icon | `assets/icons/` (spiral from the logo) |
-| Page titles | `assets/titles/` (gallery, contact, questionnaire, feedback): black pen outlines drawn as uneven hand strokes |
+| Page titles | `assets/titles/` (gallery, contact, questionnaire, feedback): black pen outlines drawn like the main title: one uneven hand line, varying thickness, slightly ragged ink edge |
 | Questions | `feedback/index.html`. If you add or rename a question, add its `name` to `COLUMNS` in `google-apps-script.js` too |
 | Where answers go | `ENDPOINT` at the top of `assets/feedback.js` and `assets/landing.js` (same script) |
 | Instagram link, sample set, gallery photos | the first block of `assets/landing.js` (`INSTAGRAM_URL`, `SAMPLE_SET`, `GALLERY`). The sample set is `assets/audio/sample-set-2026.mp3` (128 kbps). Gallery photos go in `assets/gallery/` |

@@ -342,7 +342,6 @@ textarea:focus { box-shadow: 0 0 0 3px var(--focus); }
 .landing .btn:hover { background: #452712; }
 
 /* Hand-drawn page title (feedback page) */
-.title-img { display: block; width: 82%; max-width: 340px; height: auto; margin: 0 auto; }
 .head h1 { margin-bottom: 0; }
 
 /* Thank-you text: one phrase per line, balanced when a line has to wrap */
@@ -680,3 +679,8 @@ body.no-scroll { overflow: hidden; }
 
 /* Headings: Noto Sans Hebrew, narrow and light (close to "Millennial") */
 h1, h2, h3, .section-title, .nav-card-title, .player-title, .menu a { font-stretch: 75%; font-weight: 400; }
+
+/* Page titles: outlines traced like a black pen, slightly uneven (assets/titles/), they stay still */
+.drawn-title { margin: 0; line-height: 0; }
+.drawn-title img { display: block; height: 60px; width: auto; max-width: 100%; margin: 0 auto; }
+@media (max-width: 640px) { .drawn-title img { height: 46px; } }

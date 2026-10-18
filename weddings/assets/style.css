@@ -1,5 +1,5 @@
 /* Weddings pages: standalone, not linked from the main site.
-   Background photo: assets/bg.jpg (swap for a real photo, same name). */
+   Background photo: assets/bg-film.jpg (+ bg-film-small.jpg), card paper: assets/tex/handmade.webp. */
 
 :root {
   --paper: #fbf8f1;
@@ -31,36 +31,32 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Fixed background: soft pastoral photo, a warm wash, then film grain */
+/* Fixed background: a film print of the meadow, gently out of focus like a camera lens, then film grain */
 .backdrop {
   position: fixed;
   inset: 0;
   z-index: -2;
-  background: url("bg-small.jpg") center / cover no-repeat;
+  background: url("bg-film-small.jpg") center / cover no-repeat;
 }
 .backdrop::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: url("bg.jpg") center / cover no-repeat;
-  filter: blur(6px) saturate(.9) sepia(.14);
-  transform: scale(1.06);
+  background: url("bg-film.jpg") center / cover no-repeat;
 }
 .backdrop::after {
   content: "";
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(120% 90% at 50% 40%, rgba(255, 244, 214, .18), rgba(40, 44, 28, .28)),
-    linear-gradient(rgba(242, 228, 196, .10), rgba(242, 228, 196, .10));
-  mix-blend-mode: soft-light;
+  background: radial-gradient(130% 100% at 50% 45%, transparent 55%, rgba(30, 20, 8, .32));
+  mix-blend-mode: multiply;
 }
 .grain {
   position: fixed;
   inset: -50%;
   z-index: -1;
   pointer-events: none;
-  opacity: .22;
+  opacity: .3;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 1.2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   animation: grain 1.2s steps(6) infinite;
@@ -87,12 +83,8 @@ body {
   width: 100%;
   max-width: 640px;
   padding: clamp(36px, 7vw, 64px) clamp(24px, 7vw, 64px);
-  background: var(--paper);
+  background: var(--paper) url("tex/handmade.webp") 0 0 / 760px;
   border-radius: 2px;
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, .6) inset,
-    0 2px 6px rgba(30, 32, 20, .10),
-    0 24px 60px -12px rgba(30, 32, 20, .35);
   animation: rise .9s cubic-bezier(.2, .7, .2, 1) both;
 }
 .card::before {
@@ -102,16 +94,6 @@ body {
   inset: 12px;
   border: 1px solid var(--line);
   pointer-events: none;
-}
-.card::after {
-  /* paper texture */
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: .5;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .5 0 0 0 0 .4 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
 }
 .card > * { position: relative; z-index: 1; }
 .card--narrow { max-width: 520px; text-align: center; }
@@ -243,7 +225,7 @@ textarea:focus { box-shadow: 0 0 0 3px var(--focus); }
   border: 1px solid #c9c0ab;
   border-radius: 50%;
   cursor: pointer;
-  transition: background .2s, color .2s, border-color .2s, transform .15s;
+  transition: background .2s, color .2s, border-color .2s;
 }
 .scale label:hover { border-color: var(--sage); transform: translateY(-1px); }
 .scale input:checked + label { background: var(--sage); border-color: var(--sage); color: var(--paper); }
@@ -303,7 +285,8 @@ textarea:focus { box-shadow: 0 0 0 3px var(--focus); }
   border: 0;
   border-radius: 999px;
   cursor: pointer;
-  transition: background .2s, transform .15s, box-shadow .2s;
+  /* the lift is instant so it lands together with the darker colour */
+  transition: background .2s, box-shadow .2s;
   box-shadow: 0 8px 20px -10px rgba(72, 84, 58, .8);
 }
 .btn:hover { background: var(--sage-dark); transform: translateY(-1px); }
@@ -382,8 +365,8 @@ textarea:focus { box-shadow: 0 0 0 3px var(--focus); }
   transition: background .3s, box-shadow .3s, backdrop-filter .3s;
 }
 .topbar.solid, .topbar.open {
-  background: var(--paper);
-  box-shadow: 0 1px 0 var(--line), 0 10px 30px -18px rgba(30, 32, 20, .5);
+  background: var(--paper) url("tex/handmade.webp") 0 0 / 760px;
+  box-shadow: 0 1px 0 var(--line);
 }
 .topbar-inner {
   display: flex;
@@ -512,7 +495,7 @@ textarea:focus { box-shadow: 0 0 0 3px var(--focus); }
   text-decoration: none;
   border: 1px solid rgba(90, 52, 24, .4);
   border-radius: 999px;
-  transition: background .2s, border-color .2s, transform .15s;
+  transition: background .2s, border-color .2s;
 }
 .insta svg { width: 24px; height: 24px; flex: none; }
 .insta span { direction: ltr; }
@@ -587,7 +570,7 @@ textarea:focus { box-shadow: 0 0 0 3px var(--focus); }
   text-decoration: none;
   transition: transform .25s cubic-bezier(.2, .7, .2, 1), box-shadow .25s;
 }
-.nav-card:hover { transform: translateY(-3px); box-shadow: 0 1px 0 rgba(255, 255, 255, .6) inset, 0 2px 6px rgba(30, 32, 20, .10), 0 30px 60px -14px rgba(30, 32, 20, .45); }
+.nav-card:hover { transform: translateY(-3px); }
 .nav-card:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
 .nav-card-title { font: 500 22px/1.2 var(--serif); color: var(--brown); }
 .nav-card-text { font-size: 15px; color: var(--ink-soft); }

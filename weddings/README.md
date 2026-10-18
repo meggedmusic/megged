@@ -11,7 +11,7 @@ Standalone pages on the same domain, not linked from the main MEGGED site and hi
 |---|---|
 | Colors, fonts, spacing | `assets/style.css` (variables at the top) |
 | Background photo | `assets/bg-film.jpg` (large) and `assets/bg-film-small.jpg` (loads first), shared by both pages: a film print, softly out of focus. Grain comes from the CSS. Card paper: `assets/tex/handmade.webp` |
-| Title (landing page) | Micha's drawing `assets/title/title.webp` plus the small drawings around it `assets/title/deco.webp`. The moving pieces are cut into `assets/title/t*.webp` (letters) and `d*.webp` (drawings), positioned by `LOGO_PIECES` and `DECO_PIECES` in `assets/landing.js`. "weddings" under it is text in Miriam Mono (`assets/fonts/`) |
+| Title (landing page) | Micha's drawing `assets/title/title.webp` plus the small drawings around it `assets/title/deco.webp`. The moving pieces are cut into `assets/title/t*.webp` (letters) and `d*.webp` (drawings), positioned by `LOGO_PIECES` and `DECO_PIECES` in `assets/landing.js`. |
 | Browser tab icon | `assets/icons/` (spiral from the logo) |
 | Title (feedback page) | `assets/title-feedback.webp` (transparent) |
 | Questions | `feedback/index.html`. If you add or rename a question, add its `name` to `COLUMNS` in `google-apps-script.js` too |

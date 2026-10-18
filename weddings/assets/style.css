@@ -468,7 +468,7 @@ textarea:focus { box-shadow: 0 0 0 3px var(--focus); }
 .page-card--form .sheet-form { max-width: 600px; margin: 0 auto; }
 
 /* Interactive title: Micha's drawing, each letter and small drawing is its own image (assets/title/) */
-.logo-wrap { position: relative; max-width: 430px; margin: 0 auto 78px; aspect-ratio: 1209 / 814; }
+.logo-wrap { position: relative; max-width: 430px; margin: 0 auto 34px; aspect-ratio: 1209 / 814; }
 .logo-wrap .logo { max-width: none; }
 .logo-wrap .piece {
   position: absolute;
@@ -481,9 +481,6 @@ textarea:focus { box-shadow: 0 0 0 3px var(--focus); }
 }
 .logo-wrap.split .piece { opacity: 1; }
 .logo-wrap.split .logo { opacity: 0; }
-/* "weddings" typed under the right side of the title */
-@font-face { font-family: "Miriam Mono"; src: url("fonts/miriam-mono-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
-.logo-sub { position: absolute; top: 100%; right: 0; margin: 10px -.3em 0 0; font: 700 28px/1 "Miriam Mono", "Courier New", monospace; letter-spacing: .3em; color: var(--brown); direction: ltr; white-space: nowrap; }
 /* the small drawings around the title on Micha's sheet (replaced by moving pieces once they load) */
 .title-deco { position: absolute; left: -10.32%; top: -1.18%; width: 120.55%; max-width: none; height: auto; pointer-events: none; }
 .logo-wrap.split .title-deco { opacity: 0; }
@@ -667,8 +664,7 @@ body.no-scroll { overflow: hidden; }
   .cards-nav { grid-template-columns: 1fr; }
   .nav-card { padding: 24px 18px !important; }
   .topbar-logo { width: 170px; }
-  .logo-wrap { max-width: 270px; margin-bottom: 60px; }
-  .logo-sub { font-size: 21px; }
+  .logo-wrap { max-width: 270px; margin-bottom: 26px; }
   .burger, .topbar-insta { width: 42px; height: 42px; }
   .hero-actions .btn, .hero-actions .insta { width: 100%; max-width: 320px; justify-content: center; }
   .player { gap: 14px; padding: 14px; }

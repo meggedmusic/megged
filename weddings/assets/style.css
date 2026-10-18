@@ -11,7 +11,7 @@
   --sage-dark: #48543a;
   --rose: #b4736a;
   --focus: rgba(95, 109, 75, .18);
-  --serif: "Frank Ruhl Libre", "David Libre", Georgia, serif;
+  --serif: "Noto Sans Hebrew", "Assistant", system-ui, sans-serif;
   --sans: "Assistant", "Heebo", system-ui, sans-serif;
 }
 
@@ -135,10 +135,11 @@ h1 {
 }
 .ornament {
   display: block;
-  width: 64px;
-  height: 14px;
+  width: 110px;
+  height: 16px;
   margin: 22px auto;
-  color: var(--rose);
+  color: var(--brown);
+  opacity: .8;
 }
 .head { text-align: center; margin-bottom: 36px; }
 
@@ -676,3 +677,6 @@ body.no-scroll { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .view, .lightbox, .menu a, .menu-shade { animation: none; }
 }
+
+/* Headings: Noto Sans Hebrew, narrow and light (close to "Millennial") */
+h1, h2, h3, .section-title, .nav-card-title, .player-title, .menu a { font-stretch: 75%; font-weight: 400; }

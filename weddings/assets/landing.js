@@ -38,8 +38,11 @@ var GALLERY = [
 // Google Apps Script web app (the same one the feedback form uses)
 var ENDPOINT = "https://script.google.com/macros/s/AKfycbzdjJjW_-rb8Xz3nFyhBNHT6ftBIYdvr-THiEoqJCrs3SLPmZX8RCPVVjxUDdrkKEmB4w/exec";
 
-// Letters of the logo, cut from assets/logo.webp into assets/logo/l0.webp ... (x, y, width, height in the 1400x439 logo)
-var LOGO_PIECES = [[1217,41,174,247],[1162,107,74,83],[1145,87,110,120],[1041,66,116,179],[954,35,118,221],[915,101,99,125],[815,17,174,261],[673,53,133,181],[507,26,140,226],[469,66,77,144],[378,62,95,156],[270,62,108,162],[192,58,92,164],[13,36,235,252],[1059,300,91,83],[980,281,79,142],[876,290,107,129],[785,281,98,151],[737,253,44,163],[673,285,75,132],[571,262,104,152],[507,282,79,133],[359,248,155,178],[253,297,94,87]];
+// Letters of Micha's new title, cut into assets/title/t0.webp ... (x, y, width, height in the 1209x814 title)
+var LOGO_W = 1209, LOGO_H = 814;
+var LOGO_PIECES = [[7,0,219,309],[375,49,248,265],[243,169,136,153],[637,142,133,157],[791,200,110,122],[0,529,144,191],[185,370,216,374],[194,541,580,272],[443,583,114,119],[754,584,103,173],[875,544,120,131],[1034,359,174,324]];
+// The small drawings around the title, cut from assets/title/deco.webp into d0.webp ... (same coordinates; they sit partly outside the title)
+var DECO_PIECES = [[888.5,29.4,86,43],[857.5,35.4,29,30],[817.5,47.4,30,28],[-121.8,107.4,37,34],[953.6,129.4,142,129],[-103.8,268.5,117,113],[1223.6,319.5,38,37],[1255.7,343.5,32,34],[1249.7,433.5,57,52],[1284.7,484.5,45,43]];
 
 (function () {
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -81,7 +84,7 @@ var LOGO_PIECES = [[1217,41,174,247],[1162,107,74,83],[1145,87,110,120],[1041,66
     });
     topbar.classList.toggle("inner", id !== "home");
     var title = document.getElementById("page-" + id).dataset.title;
-    document.title = id === "home" ? title : title + " · Megged & Katnoa Weddings";
+    document.title = id === "home" ? title : title + " · Katnoa & Megged Weddings";
     setMenu(false);
     window.scrollTo(0, 0);
   }
@@ -102,20 +105,23 @@ var LOGO_PIECES = [[1217,41,174,247],[1162,107,74,83],[1145,87,110,120],[1041,66
   var logo = document.getElementById("logo");
   var pieces = [];
   var loaded = 0;
-  LOGO_PIECES.forEach(function (p, i) {
+  var allPieces = LOGO_PIECES.map(function (p, i) { return { box: p, src: "assets/title/t" + i + ".webp" }; })
+    .concat(DECO_PIECES.map(function (p, i) { return { box: p, src: "assets/title/d" + i + ".webp" }; }));
+  allPieces.forEach(function (piece) {
+    var p = piece.box;
     var img = new Image();
     img.className = "piece";
     img.alt = "";
     img.setAttribute("aria-hidden", "true");
     img.draggable = false;
-    img.style.left = p[0] / 14 + "%";
-    img.style.top = p[1] / 4.39 + "%";
-    img.style.width = p[2] / 14 + "%";
-    img.onload = function () { if (++loaded === LOGO_PIECES.length) logo.classList.add("split"); };
-    img.src = "assets/logo/l" + i + ".webp?v=2";
+    img.style.left = p[0] / LOGO_W * 100 + "%";
+    img.style.top = p[1] / LOGO_H * 100 + "%";
+    img.style.width = p[2] / LOGO_W * 100 + "%";
+    img.onload = function () { if (++loaded === allPieces.length) logo.classList.add("split"); };
+    img.src = piece.src;
     logo.appendChild(img);
     // center of the letter as a fraction of the logo, plus spring state
-    pieces.push({ el: img, cx: (p[0] + p[2] / 2) / 1400, cy: (p[1] + p[3] / 2) / 439, x: 0, y: 0, r: 0, vx: 0, vy: 0, vr: 0 });
+    pieces.push({ el: img, cx: (p[0] + p[2] / 2) / LOGO_W, cy: (p[1] + p[3] / 2) / LOGO_H, x: 0, y: 0, r: 0, vx: 0, vy: 0, vr: 0 });
   });
 
   var pointer = null;

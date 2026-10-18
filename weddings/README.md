@@ -10,7 +10,7 @@ Standalone pages on the same domain, not linked from the main MEGGED site and hi
 | What | Where |
 |---|---|
 | Colors, fonts, spacing | `assets/style.css` (variables at the top) |
-| Background photo | `assets/bg.jpg` (large) and `assets/bg-small.jpg` (loads first), shared by both pages. The warm tone and grain come from the CSS; the feedback page also blurs it |
+| Background photo | `assets/bg-film.jpg` (large) and `assets/bg-film-small.jpg` (loads first), shared by both pages: a film print, softly out of focus. Grain comes from the CSS. Card paper: `assets/tex/handmade.webp` |
 | Logo (landing page) | `assets/logo.webp` (transparent). The moving letters are cut from it into `assets/logo/l0.webp`…`l23.webp`, positioned by `LOGO_PIECES` in `assets/landing.js`. If the logo changes, cut it again |
 | Browser tab icon | `assets/icons/` (spiral from the logo) |
 | Title (feedback page) | `assets/title-feedback.webp` (transparent) |

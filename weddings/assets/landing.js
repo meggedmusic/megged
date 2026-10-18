@@ -39,7 +39,7 @@ var GALLERY = [
 var ENDPOINT = "https://script.google.com/macros/s/AKfycbzdjJjW_-rb8Xz3nFyhBNHT6ftBIYdvr-THiEoqJCrs3SLPmZX8RCPVVjxUDdrkKEmB4w/exec";
 
 // Letters of the logo, cut from assets/logo.webp into assets/logo/l0.webp ... (x, y, width, height in the 1400x439 logo)
-var LOGO_PIECES = [[1217,33,177,256],[1165,111,68,75],[1148,89,106,116],[1044,65,114,184],[954,29,119,226],[917,99,93,127],[813,6,175,273],[675,53,129,183],[505,25,137,229],[472,68,74,143],[380,60,90,160],[274,59,101,165],[190,56,93,168],[6,12,245,285],[1061,303,85,77],[981,284,81,149],[878,290,102,130],[783,282,96,148],[736,251,43,170],[672,280,72,145],[566,255,103,174],[510,284,75,131],[354,247,156,186],[258,300,86,81]];
+var LOGO_PIECES = [[1217,41,174,247],[1162,107,74,83],[1145,87,110,120],[1041,66,116,179],[954,35,118,221],[915,101,99,125],[815,17,174,261],[673,53,133,181],[507,26,140,226],[469,66,77,144],[378,62,95,156],[270,62,108,162],[192,58,92,164],[13,36,235,252],[1059,300,91,83],[980,281,79,142],[876,290,107,129],[785,281,98,151],[737,253,44,163],[673,285,75,132],[571,262,104,152],[507,282,79,133],[359,248,155,178],[253,297,94,87]];
 
 (function () {
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -112,7 +112,7 @@ var LOGO_PIECES = [[1217,33,177,256],[1165,111,68,75],[1148,89,106,116],[1044,65
     img.style.top = p[1] / 4.39 + "%";
     img.style.width = p[2] / 14 + "%";
     img.onload = function () { if (++loaded === LOGO_PIECES.length) logo.classList.add("split"); };
-    img.src = "assets/logo/l" + i + ".webp";
+    img.src = "assets/logo/l" + i + ".webp?v=2";
     logo.appendChild(img);
     // center of the letter as a fraction of the logo, plus spring state
     pieces.push({ el: img, cx: (p[0] + p[2] / 2) / 1400, cy: (p[1] + p[3] / 2) / 439, x: 0, y: 0, r: 0, vx: 0, vy: 0, vr: 0 });

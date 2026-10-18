@@ -1,11 +1,19 @@
-/* Design experiment (weddings-test): typewriter type on rough paper, over a film photo.
+/* Design experiment (weddings-test): Fredoka on handmade paper, over a soft-focus film photo.
    Loaded after ../weddings/assets/style.css and only overrides it. */
 
 @font-face { font-family: "Miriam Mono"; src: url("fonts/miriam-mono-Book.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: "Miriam Mono"; src: url("fonts/miriam-mono-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+/* Fredoka (OFL, from Fontsource): Hebrew and Latin files, 400 / 500 / 600 */
+@font-face { font-family: "Fredoka"; src: url("fonts/fredoka-hebrew-400-normal.woff2") format("woff2"); font-weight: 400; unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F; font-display: swap; }
+@font-face { font-family: "Fredoka"; src: url("fonts/fredoka-latin-400-normal.woff2") format("woff2"); font-weight: 400; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; font-display: swap; }
+@font-face { font-family: "Fredoka"; src: url("fonts/fredoka-hebrew-500-normal.woff2") format("woff2"); font-weight: 500; unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F; font-display: swap; }
+@font-face { font-family: "Fredoka"; src: url("fonts/fredoka-latin-500-normal.woff2") format("woff2"); font-weight: 500; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; font-display: swap; }
+@font-face { font-family: "Fredoka"; src: url("fonts/fredoka-hebrew-600-normal.woff2") format("woff2"); font-weight: 600; unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F; font-display: swap; }
+@font-face { font-family: "Fredoka"; src: url("fonts/fredoka-latin-600-normal.woff2") format("woff2"); font-weight: 600; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; font-display: swap; }
 
 :root, .landing {
-  --type: "Miriam Mono", "Courier New", monospace;
+  --type: "Fredoka", "Varela Round", system-ui, sans-serif;
+  --typewriter: "Miriam Mono", "Courier New", monospace;
   --serif: var(--type);
   --sans: var(--type);
   --ink: #33261b;
@@ -25,9 +33,9 @@ body {
   color: var(--ink);
   background: #7d8a4f;
 }
-b, strong { font-weight: 700; }
+b, strong { font-weight: 600; }
 
-/* ---------- Background: sharp, like a late-90s film print ---------- */
+/* ---------- Background: a late-90s film print, gently out of focus ---------- */
 .backdrop { background-image: url("bg-film-small.jpg?v=2"); }
 .backdrop::before { background-image: url("bg-film.jpg?v=2"); filter: none; transform: none; }
 .backdrop::after {
@@ -54,9 +62,8 @@ b, strong { font-weight: 700; }
 
 /* ---------- Type ---------- */
 h1, h2, h3, .section-title, .player-title, .q legend, .q > label, .menu a, .nav-card-title { font-family: var(--type); }
-.section-title { font-weight: 400; font-size: clamp(26px, 3.6vw, 34px); letter-spacing: -.01em; line-height: 1.25; }
+.section-title { font-weight: 600; font-size: clamp(26px, 3.6vw, 34px); letter-spacing: -.01em; line-height: 1.25; }
 .set .section-title { font-size: clamp(24px, 3vw, 30px); }
-.section-title, .thanks h3, .menu a { filter: url(#ink); }
 .lead, .section-lead { color: var(--ink); }
 .hero .lead { font-size: clamp(16px, 1.9vw, 18.5px); line-height: 1.8; }
 .eyebrow, .set .eyebrow { font-size: 13px; letter-spacing: .12em; color: var(--rose); }
@@ -64,15 +71,12 @@ h1, h2, h3, .section-title, .player-title, .q legend, .q > label, .menu a, .nav-
 .lines span { text-wrap: pretty; }
 .opt, .hint { font-family: var(--type); color: var(--ink-soft); }
 .hint { font-size: 14px; }
-.q .num { font-family: var(--type); font-weight: 700; font-size: 14px; letter-spacing: 0; color: var(--brown); min-width: 2.4em; vertical-align: 0; }
+.q .num { font-family: var(--type); font-weight: 600; font-size: 14px; letter-spacing: 0; color: var(--brown); min-width: 2.4em; vertical-align: 0; }
 .q legend, .q > label { font-size: 18px; font-weight: 400; line-height: 1.5; }
 .fields label, .row label { font-size: 14px; color: var(--ink-soft); }
 
-/* Words and lines are nudged a little off their line (vintage.js) */
-.w, .lines .w { display: inline-block; white-space: pre; }
-
 /* ---------- Doodles ---------- */
-.doodle { position: absolute; z-index: 1; color: var(--brown); opacity: .55; pointer-events: none; filter: url(#ink); }
+.doodle { position: absolute; z-index: 1; color: var(--brown); opacity: .55; pointer-events: none; }
 .doodle.d1 { width: 34px; height: 34px; top: 26px; right: 30px; rotate: 18deg; }
 .doodle.d2 { width: 38px; height: 38px; bottom: 30px; left: 34px; rotate: -12deg; }
 .doodle.d3 { width: 20px; height: 20px; top: 40px; left: 46px; rotate: 8deg; opacity: .6; }
@@ -83,39 +87,7 @@ h1, h2, h3, .section-title, .player-title, .q legend, .q > label, .menu a, .nav-
 .doodle.d8 { width: 24px; height: 24px; top: 30px; left: 30px; rotate: -20deg; opacity: .65; }
 /* Fewer doodles: a quiet touch, not decoration */
 .doodle.d2, .doodle.d3, .doodle.d6, .doodle.d8 { display: none; }
-.ornament { width: 110px; height: 16px; color: var(--brown); opacity: .8; filter: url(#ink); }
-
-/* ---------- Buttons: an ink stamp, and a hand-drawn outline ---------- */
-.btn, .landing .btn {
-  min-height: 54px;
-  padding: 0 30px;
-  font: 700 17px/1 var(--type);
-  letter-spacing: .02em;
-  color: #f3e9d4;
-  background: var(--brown);
-  border-radius: 0;
-  box-shadow: none;
-  transition: background .2s, translate .2s;
-}
-.btn:hover, .landing .btn:hover { background: var(--brown-dark); transform: none; translate: 0 -1px; }
-.btn:active { translate: 0 1px; }
-.btn:focus-visible { outline: 2px dashed var(--brown); outline-offset: 5px; box-shadow: none; }
-
-.insta, .site-foot a {
-  min-height: 50px;
-  padding: 0 22px;
-  font: 400 16px/1 var(--type);
-  color: var(--brown);
-  border: 1.3px solid var(--brown);
-  border-radius: 0;
-  background: transparent;
-  transition: background-color .2s;
-}
-.insta:hover, .site-foot a:hover { background-color: rgba(90, 52, 24, .07); color: var(--brown); transform: none; }
-.insta:focus-visible, .site-foot a:focus-visible { outline: 2px dashed var(--brown); outline-offset: 4px; box-shadow: none; }
-.site-foot a { display: inline-flex; align-items: center; font-weight: 400; padding: 0 22px; background-color: #f8f3e7; }
-.site-foot a:hover { background-color: #f1e9d8; }
-.insta span { letter-spacing: .02em; }
+.ornament { width: 110px; height: 16px; color: var(--brown); opacity: .8; }
 
 /* ---------- Top bar: one flat paper strip, a thin line under it ---------- */
 .topbar, .topbar.solid, .topbar.open {
@@ -134,11 +106,11 @@ h1, h2, h3, .section-title, .player-title, .q legend, .q > label, .menu a, .nav-
 .burger:focus-visible, .topbar-insta:focus-visible { outline: 2px dashed var(--brown); outline-offset: 3px; box-shadow: none; }
 .burger span { width: 20px; height: 1.5px; border-radius: 0; }
 .menu a { font: 400 clamp(20px, 2.6vw, 24px)/1.3 var(--type); color: var(--ink); }
-.menu a[aria-current="page"] { font-weight: 700; color: var(--brown); }
+.menu a[aria-current="page"] { font-weight: 600; color: var(--brown); }
 .menu a::after { display: none; }
 /* Hover: bold, and a jump up with no in-between frames, like stop motion */
 .menu a { transition: translate .11s steps(1, end); }
-.menu a:hover, .menu a:focus-visible { font-weight: 700; translate: 0 -4px; background: none; }
+.menu a:hover, .menu a:focus-visible { font-weight: 600; translate: 0 -4px; background: none; }
 .menu-shade { background: rgba(30, 24, 10, .22); }
 
 /* ---------- Sample set player ---------- */
@@ -149,7 +121,7 @@ h1, h2, h3, .section-title, .player-title, .q legend, .q > label, .menu a, .nav-
   box-shadow: none;
 }
 .play:hover { background: var(--brown-dark); transform: none; }
-.player-title, .set .player-title { font-weight: 700; font-size: 15px; }
+.player-title, .set .player-title { font-weight: 500; font-size: 15px; }
 .bar { height: 2px; border-radius: 0; background: repeating-linear-gradient(90deg, rgba(90, 52, 24, .45) 0 5px, transparent 5px 9px); }
 .bar-fill { border-radius: 0; height: 2.4px; top: -.2px; background: var(--brown); }
 .player-time { font-family: var(--type); font-size: 12px; }
@@ -180,37 +152,6 @@ textarea:focus, .landing textarea:focus { box-shadow: none; background-color: rg
 .q::before { border-top: 0; height: 1px; background: linear-gradient(90deg, rgba(90, 52, 24, .3) 50%, transparent 50%) 0 0 / 10px 1px repeat-x; }
 .actions { border-top: 0; }
 
-/* Choices: a typed box that gets a scribbled X */
-.chips { gap: 6px 22px; }
-.chips label, .landing .chips label {
-  position: relative;
-  padding: 4px 0;
-  padding-inline-start: 26px;
-  font-size: 16px;
-  border: 0;
-  border-radius: 0;
-  background: none;
-}
-.chips label::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  inset-inline-start: 0;
-  width: 17px;
-  height: 17px;
-  margin-top: -9px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2.2 2.6 L13.6 1.8 L14.1 13.9 L1.9 14.2 Z' fill='none' stroke='%235a3418' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
-}
-.chips input:checked + label, .landing .chips input:checked + label { background: none; color: var(--brown); font-weight: 700; }
-.chips input:checked + label::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2.2 2.6 L13.6 1.8 L14.1 13.9 L1.9 14.2 Z' fill='none' stroke='%235a3418' stroke-width='1.2' stroke-linejoin='round'/%3E%3Cpath d='M3.4 3.8 Q8 8.6 13 12.8 M12.6 3.2 Q8.2 8.4 3.2 13.2' fill='none' stroke='%2343260f' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
-}
-.chips input:focus-visible + label { box-shadow: none; outline: 2px dashed var(--brown); outline-offset: 2px; }
-
-/* 1-5 scale (feedback page): typed numbers in hand-drawn boxes */
-.scale label { border-radius: 0; border: 0; font-family: var(--type); background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M1.4 1.8 L14.4 1.2 L14.8 14.6 L1.2 14.9 Z' fill='none' stroke='%235a3418' stroke-width='.7' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; }
-.scale input:checked + label { background-color: transparent; color: #f3e9d4; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M1.4 1.8 L14.4 1.2 L14.8 14.6 L1.2 14.9 Z' fill='%235a3418'/%3E%3C/svg%3E"); font-weight: 700; }
-.scale label:hover { transform: none; background-color: rgba(90, 52, 24, .07); }
 .check .box { border-radius: 0; }
 
 /* ---------- Gallery: drugstore prints, taped on ---------- */
@@ -237,7 +178,7 @@ textarea:focus, .landing textarea:focus { box-shadow: none; background-color: rg
 .lightbox-prev, .lightbox-next { font-family: var(--type); }
 
 /* ---------- Thank-you ---------- */
-.page-card .thanks h3, .thanks h3 { font-family: var(--type); font-weight: 400; }
+.page-card .thanks h3, .thanks h3 { font-family: var(--type); font-weight: 600; }
 
 @media (max-width: 640px) {
   body { font-size: 15.5px; }
@@ -256,11 +197,10 @@ textarea:focus, .landing textarea:focus { box-shadow: none; background-color: rg
   .card { animation: none; }
 }
 
-/* ---------- Readability on the inner pages: darker, a touch heavier, questions in bold ---------- */
-body { -webkit-text-stroke: .22px currentColor; }
-.q legend, .q > label { font-weight: 700; color: var(--ink); }
+/* ---------- Readability: only titles are bold; questions and labels a touch heavier ---------- */
+.q legend, .q > label { font-weight: 500; color: var(--ink); }
 .q legend .opt, .q > label .opt { font-weight: 400; }
-.fields label, .row label { font-size: 16px; font-weight: 700; color: var(--ink); }
+.fields label, .row label { font-size: 16px; font-weight: 500; color: var(--ink); }
 .fields label .opt, .row label .opt { font-weight: 400; }
 .opt { color: var(--ink-soft); font-size: 15px; }
 .hint { font-size: 16px; color: var(--ink-soft); }
@@ -273,89 +213,19 @@ input, textarea { font-size: 17px; }
 ::placeholder { color: #8a7660; }
 input, textarea { color: var(--ink); }
 
-/* Typewriter ink on all text (the same uneven edge as the titles, lighter for small text) */
-/* (only on text, never on boxes, so every edge stays straight) */
-.card p, .card legend, .card h3, .card .eyebrow, .fields label, .row label, .q > label, .menu a,
-.chips .w, .site-foot a .w, .insta .w, .insta span, .lightbox button { filter: url(#ink-sm); }
-.section-title, .thanks h3, .btn .w { filter: url(#ink); }
-.btn, .insta, .site-foot a, .scale label { filter: none; }
-
 /* Phones: the background stays put while scrolling (no resize jump when the browser bar hides) */
 @media (max-width: 640px) {
   .backdrop { bottom: auto; height: 100vh; height: 100lvh; }
   .grain { animation: none; }
 }
 
-/* ---------- Main buttons: typewriter brackets, no box ---------- */
-.btn, .landing .btn {
-  min-height: 48px;
-  padding: 0 6px;
-  font: 700 17px/1 var(--type);
-  color: var(--brown);
-  background: none;
-  border: 0;
-  box-shadow: none;
-}
-.btn, .landing .btn { gap: 0; }
-.btn::before { content: "["; margin-inline-end: .6em; font-weight: 400; }
-.btn::after { content: "]"; margin-inline-start: .45em; font-weight: 400; }
-/* Hover: the same stop-motion hop as the menu */
-.btn, .landing .btn { transition: translate .11s steps(1, end); }
-.btn:hover, .landing .btn:hover, .btn:focus-visible { background: none; translate: 0 -4px; }
-.btn[disabled]:hover { translate: none; }
-.btn[disabled] { opacity: .6; }
-
-/* ---------- Choices typed like on a typewriter: [ ] and [x] ---------- */
-.chips label, .landing .chips label { padding-inline-start: 0; }
-.chips label::before {
-  content: "[ ]";
-  position: static;
-  display: inline-block;
-  width: auto;
-  height: auto;
-  margin: 0 0 0 .5em; /* physical: the pseudo is LTR-isolated */
-  background: none;
-  direction: ltr;
-  unicode-bidi: isolate;
-  font-weight: 400;
-  white-space: pre;
-}
-.chips input:checked + label::before { content: "[x]"; background: none; font-weight: 700; color: var(--brown); }
-
-/* 1-5 scale (feedback page): [ 1 ] ... [ 5 ] */
-.scale { gap: 4px 14px; }
-.scale label, .scale input:checked + label {
-  display: inline-flex;
-  align-items: center;
-  width: auto;
-  height: 44px;
-  padding: 0 2px;
-  font-size: 19px;
-  background: none;
-  color: var(--ink);
-}
-.scale label::before { content: "["; margin-inline-end: .35em; font-weight: 400; }
-.scale label::after { content: "]"; margin-inline-start: .35em; font-weight: 400; }
-.scale input:checked + label { font-weight: 700; color: var(--brown); }
-.scale input:checked + label::before, .scale input:checked + label::after { font-weight: 700; }
-.scale label:hover { background: none; }
-.scale input:focus-visible + label { outline: 2px dashed var(--brown); outline-offset: 2px; box-shadow: none; }
-.scale-ends { max-width: 340px; }
-/* Brackets get the same typewriter ink as the letters */
-.btn::before, .btn::after { display: inline-block; filter: url(#ink); }
-.chips label::before, .scale label::before, .scale label::after { display: inline-block; filter: url(#ink-sm); }
-.scale label { filter: url(#ink-sm); }
-/* Choice text gets the ink too; the box is tighter, like a typed square, and a v when picked */
-.chips label { filter: url(#ink-sm); }
-.chips label::before { content: "[\2002]"; letter-spacing: -.1em; padding-left: .1em; filter: none; }
-.chips input:checked + label::before { content: "[v]"; letter-spacing: -.1em; padding-left: .1em; }
 /* No divider lines between questions or sections */
 .q::before, .landing .q::before { display: none; }
 .actions, .soon { border-top: 0; }
 
 /* Micha's hand-drawn title (Katnoa & Megged), "weddings" typed under its right side */
 .logo-wrap { aspect-ratio: 1209 / 814; max-width: 430px; margin-bottom: 78px; }
-.logo-sub { position: absolute; top: 100%; right: 0; margin: 10px -.3em 0 0; font: 700 28px/1 var(--type); letter-spacing: .3em; color: var(--brown); filter: url(#ink); direction: ltr; white-space: nowrap; }
+.logo-sub { position: absolute; top: 100%; right: 0; margin: 10px -.3em 0 0; font: 700 28px/1 var(--typewriter); letter-spacing: .3em; color: var(--brown); direction: ltr; white-space: nowrap; }
 /* the small drawings from around the title on Micha's sheet */
 .title-deco { position: absolute; left: -10.32%; top: -1.18%; width: 120.55%; max-width: none; height: auto; pointer-events: none; }
 .hero { overflow: hidden; }
@@ -382,10 +252,52 @@ img.doodle { height: auto; opacity: .8; filter: none; }
   .doodle.d8[src*="dots-pair"] { width: 18px; }
 }
 
-/* Hebrew text: FreeMono (Courier-style typewriter, Micha's pick). Only Hebrew letters, space and basic
-   punctuation use it; Latin, digits and brackets stay Miriam Mono */
-@font-face { font-family: "FreeMono Hebrew"; src: url("fonts/freemono-hebrew.woff2") format("woff2"); font-weight: 400; unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0020-0022, U+0027, U+002C, U+002E, U+003F; size-adjust: 112%; font-display: swap; }
-@font-face { font-family: "FreeMono Hebrew"; src: url("fonts/freemono-hebrew-bold.woff2") format("woff2"); font-weight: 700; unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0020-0022, U+0027, U+002C, U+002E, U+003F; size-adjust: 112%; font-display: swap; }
-:root, .landing { --type: "FreeMono Hebrew", "Miriam Mono", "Courier New", monospace; }
-/* FreeMono is thin, so its ink is a little heavier */
-body { -webkit-text-stroke: .45px currentColor; }
+/* ---------- Buttons: transparent, a straight brown outline; filled brown on hover ---------- */
+.btn, .landing .btn, .insta, .site-foot a {
+  min-height: 50px;
+  padding: 0 26px;
+  font: 500 17px/1 var(--type);
+  letter-spacing: 0;
+  color: var(--brown);
+  background: transparent;
+  border: 1.5px solid var(--brown);
+  border-radius: 0;
+  box-shadow: none;
+  transition: background-color .2s, color .2s;
+}
+.btn:hover, .landing .btn:hover, .insta:hover, .site-foot a:hover { background: var(--brown); color: #fcf9f1; transform: none; translate: none; }
+.btn:active { translate: none; }
+.btn[disabled] { opacity: .6; }
+.btn[disabled]:hover { background: transparent; color: var(--brown); }
+.site-foot a { background-color: rgba(252, 249, 241, .9); }
+
+/* ---------- Choices (genres etc.): small transparent buttons that fill brown when picked ---------- */
+.chips { gap: 6px; }
+.chips label, .landing .chips label {
+  padding: 5px 12px;
+  font-size: 15.5px;
+  line-height: 1.4;
+  color: var(--ink);
+  background: transparent;
+  border: 1.2px solid rgba(90, 52, 24, .55);
+  border-radius: 0;
+}
+.chips label::before { display: none; }
+.chips label:hover { border-color: var(--brown); background: rgba(90, 52, 24, .06); }
+.chips input:checked + label, .landing .chips input:checked + label { background: var(--brown); border-color: var(--brown); color: #fcf9f1; font-weight: 400; }
+.chips input:focus-visible + label { outline: 2px solid var(--brown); outline-offset: 2px; box-shadow: none; }
+
+/* 1-5 scale (feedback page): square boxes, filled brown when picked */
+.scale label {
+  width: 44px;
+  height: 44px;
+  font: 500 18px/1 var(--type);
+  color: var(--ink);
+  background: transparent;
+  border: 1.2px solid rgba(90, 52, 24, .55);
+  border-radius: 0;
+}
+.scale label:hover { border-color: var(--brown); background: rgba(90, 52, 24, .06); transform: none; }
+.scale input:checked + label { background: var(--brown); border-color: var(--brown); color: #fcf9f1; }
+.scale input:focus-visible + label { outline: 2px solid var(--brown); outline-offset: 2px; box-shadow: none; }
+.scale-ends { max-width: 270px; }

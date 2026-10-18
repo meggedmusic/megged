@@ -12,4 +12,4 @@ once the design is approved it moves into `weddings/` and this folder is removed
 
 ## Title and Hebrew font trial
 - Title: Micha's drawing "Katnoa & Megged" (source PNG kept in the project files), cut into assets/title/t0..t11.webp for the shy-letters effect; "weddings" is typed text. Corner drawings in assets/doodles/ come from the same sheet.
-- Hebrew font options, switched with `?font=1|2|3` (remembered in the browser; `?font=0` goes back): 1 FreeMono (GNU FreeFont, GPL with font exception), 2 Cousine (OFL), 3 Miriam Mono set heavier. Only Hebrew letters switch; Latin, digits and brackets stay in Miriam Mono.
+- Hebrew font: FreeMono (GNU FreeFont, GPL with font exception), subset to Hebrew in assets/fonts/freemono-hebrew*.woff2. Only Hebrew letters use it; Latin, digits and brackets stay in Miriam Mono.

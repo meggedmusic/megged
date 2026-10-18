@@ -3,17 +3,6 @@
 (function () {
   "use strict";
 
-  // Hebrew font trial: ?font=1|2|3 (remembered), ?font=0 goes back to the current one
-  try {
-    var m = location.search.match(/[?&]font=(\d)/);
-    if (m) localStorage.setItem("heb-font", m[1]);
-    var f = localStorage.getItem("heb-font");
-    if (f && f !== "0") document.documentElement.classList.add("font-" + f);
-  } catch (e) {
-    var m2 = location.search.match(/[?&]font=([1-3])/);
-    if (m2) document.documentElement.classList.add("font-" + m2[1]);
-  }
-
   // Seeded random, so the page looks the same on every visit
   function rng(seed) {
     var s = seed % 2147483647 || 1;

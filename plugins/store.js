@@ -22,7 +22,7 @@
       name: "SkaterPiitch",
       tag: "Pitch + formant shifter",
       text: "Throw vocals up or down in pitch and push the formant from deep pig to tiny alien. Three engines (Voice, Smooth, Crisp), an LFO for wobble, and a pixel skater kid who gets fatter, thinner and weirder with every knob turn.",
-      formats: ["AU", "VST3 (Mac)", "Max for Live"],
+      formats: ["AU", "VST3 (Mac + Windows)", "Max for Live"],
       img: "img/skaterpiitch.webp"
     },
     {
@@ -53,7 +53,7 @@
       name: "AutoFade",
       tag: "Auto fades for Ableton",
       text: "For Ableton users who want control over their automatic fades. Put it first on a track and every audio clip gets a fade in and a fade out, each with its own length control, while you play and export. No clicks, no drawing fades by hand.",
-      formats: ["Max for Live (Ableton only)"]
+      formats: ["Max for Live"]
     }
   ];
 

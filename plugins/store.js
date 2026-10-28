@@ -40,6 +40,7 @@
       tag: "303-style acid bass",
       text: "A TB-303 style mono synth for Ableton: diode ladder filter, accent and slide that behave like the original, and the classic six-knob panel.",
       formats: ["Max for Live instrument"],
+      img: "img/acidline.webp",
       payhip: "",
       crypto: ""
     },

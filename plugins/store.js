@@ -6,7 +6,8 @@
              calls after each payment; it emails the buyer the download link.
              Empty = PayPal only emails you, and you send the plugin by hand.
    key (per plugin): must match DOWNLOADS in plugins/google-apps-script.js.
-   crypto (per plugin): a NOWPayments payment link (full https URL). Empty = no crypto button. */
+   Buyers without a PayPal account pay by card on the same PayPal page
+   (turn on "PayPal account optional" in the PayPal business account settings). */
 (function () {
   "use strict";
 
@@ -22,8 +23,7 @@
       tag: "Pitch + formant shifter",
       text: "Throw vocals up or down in pitch and push the formant from deep pig to tiny alien. Three engines (Voice, Smooth, Crisp), an LFO for wobble, and a pixel skater kid who gets fatter, thinner and weirder with every knob turn.",
       formats: ["AU", "VST3 (Mac)", "Max for Live"],
-      img: "img/skaterpiitch.webp",
-      crypto: ""
+      img: "img/skaterpiitch.webp"
     },
     {
       key: "glare",
@@ -31,16 +31,14 @@
       tag: "Bright distortion",
       text: "A very bright, very compressed distortion for UK bass sound worlds. Eight shapers with 4x oversampling, a pre-filter, AM for texture, Redux and Erode style crush, and a 3-band OTT-style squash at the end.",
       formats: ["AU", "VST3 (Mac + Windows)", "Max for Live"],
-      img: "img/glare.webp",
-      crypto: ""
+      img: "img/glare.webp"
     },
     {
       key: "echoweave",
       name: "Echoweave",
       tag: "Repeat · grains · dub delay",
       text: "Beat repeat, granular smearing and dub delay in one playful sound design box. Reorder the chain, morph between random settings with Dice, and let the Warp LFO bend the grains and echoes.",
-      formats: ["Max for Live"],
-      crypto: ""
+      formats: ["Max for Live"]
     },
     {
       key: "acidline",
@@ -48,16 +46,14 @@
       tag: "303-style acid bass",
       text: "A TB-303 style mono synth for Ableton: diode ladder filter, accent and slide that behave like the original, and the classic six-knob panel.",
       formats: ["Max for Live instrument"],
-      img: "img/acidline.webp",
-      crypto: ""
+      img: "img/acidline.webp"
     },
     {
       key: "autofade",
       name: "AutoFade",
       tag: "Auto fades for Ableton",
       text: "For Ableton users who want control over their automatic fades. Put it first on a track and every audio clip gets a fade in and a fade out, each with its own length control, while you play and export. No clicks, no drawing fades by hand.",
-      formats: ["Max for Live (Ableton only)"],
-      crypto: ""
+      formats: ["Max for Live (Ableton only)"]
     }
   ];
 
@@ -96,13 +92,6 @@
       buy.appendChild(el("span", "btn off", "Soon"));
     }
 
-    if (p.crypto) {
-      var c = el("a", "btn alt", "Pay with crypto");
-      c.href = p.crypto;
-      c.target = "_blank";
-      c.rel = "noopener";
-      buy.appendChild(c);
-    }
     body.appendChild(buy);
     card.appendChild(body);
     list.appendChild(card);

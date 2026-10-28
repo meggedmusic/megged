@@ -24,7 +24,6 @@ The mouse glitch lens is `CONFIG.lens` in `fx/vhs-glitch.js` (set it to `null` t
 | Plugin names, texts, formats, pictures | `PRODUCTS` at the top of `plugins/store.js` (pictures in `plugins/img/`) |
 | PayPal / card buy button | `PAYPAL_EMAIL` at the top of `plugins/store.js` (the PayPal account the money goes to) and `MIN_PRICE`. Empty email = the buttons say "Soon" |
 | Automatic download email | `plugins/google-apps-script.js` (setup below). Its web app URL goes in `SEND_URL` in `plugins/store.js` |
-| Crypto button | `crypto:` per plugin = a NOWPayments payment link. Empty = no crypto button |
 | Look | `plugins/store.css` |
 
 The page is `noindex` and not linked from the home page until the buy buttons are live.
@@ -36,6 +35,7 @@ The page is `noindex` and not linked from the home page until the buy buttons ar
 3. At the top of the script fill in `PAYPAL_EMAIL` and the links in `DOWNLOADS`. Save.
 4. Choose `setup` in the toolbar and press Run. Approve the permissions. Two tabs appear: "מכירות" (sales) and "לבדיקה" (anything to check by hand, also emailed to you). Run `testEmail` to see the email a buyer gets.
 5. Deploy → New deployment → type "Web app". Execute as: Me. Who has access: Anyone. Copy the URL that ends in `/exec`.
-6. In `plugins/store.js` set `PAYPAL_EMAIL` and paste the URL into `SEND_URL`. Push.
+6. In PayPal (business account): Settings → Website payments → Website preferences → turn on "PayPal account optional", so buyers without PayPal can pay by card.
+7. In `plugins/store.js` set `PAYPAL_EMAIL` and paste the URL into `SEND_URL`. Push.
 
 To test without real money, make a PayPal sandbox account (developer.paypal.com) and set `SANDBOX = true` in both files. Set it back to `false` before going live. The emails go out from the Google account that owns the script (up to 100 a day on a regular Gmail account).

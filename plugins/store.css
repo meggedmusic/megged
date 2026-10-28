@@ -55,6 +55,11 @@
 
 .buy { margin-top: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .buy .price { flex-basis: 100%; margin: 0 0 2px; font-family: var(--mono); font-size: 20px; }
+.pay { display: flex; gap: 10px; align-items: stretch; }
+.amount { display: flex; align-items: center; border: 1px solid rgba(255, 255, 255, .4); padding: 0 0 0 10px; font-family: var(--mono); font-size: 22px; }
+.amount input { width: 64px; border: 0; background: transparent; color: var(--white); font: inherit; padding: 6px 6px 6px 2px; }
+.amount input:focus { outline: none; }
+.amount:focus-within { border-color: var(--white); }
 .btn {
   display: inline-block;
   padding: 8px 20px;
@@ -67,6 +72,7 @@
   text-decoration: none;
   cursor: pointer;
 }
+button.btn { font: inherit; font-family: var(--mono); font-size: 22px; }
 .btn:hover { background: var(--black); color: var(--white); }
 .btn.alt { background: transparent; color: var(--white); border-color: var(--blue); }
 .btn.alt:hover { background: var(--blue); }
@@ -75,3 +81,6 @@
 .store-notes { max-width: 760px; margin: 0 auto; padding: 10px 16px 80px; line-height: 1.55; color: var(--dim); }
 .store-notes h2 { font-family: var(--display); font-weight: 400; font-size: 28px; color: var(--white); }
 .store-notes b { color: var(--white); font-weight: 600; }
+
+.thanks { display: none; max-width: 760px; margin: 0 auto 30px; padding: 16px 20px; border: 1px solid var(--orange); line-height: 1.5; }
+.thanks:target { display: block; }

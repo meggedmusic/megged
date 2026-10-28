@@ -44,18 +44,10 @@
       crypto: ""
     },
     {
-      name: "RefMatch",
-      tag: "Match a reference mix",
-      text: "Drop in a reference song and RefMatch learns its tone: a 31-band match EQ, compression and stereo width, with a focus mode for just the bass or any band you pick.",
-      formats: ["Max for Live"],
-      payhip: "",
-      crypto: ""
-    },
-    {
       name: "AutoFade",
-      tag: "Clip end fades",
-      text: "Put it first on a track and every audio clip gets a clean fade out at its end while you play and export. No more clicks, no drawing fades by hand.",
-      formats: ["Max for Live"],
+      tag: "Auto fades for Ableton",
+      text: "For Ableton users who want control over their automatic fades. Put it first on a track and every audio clip gets a fade in and a fade out, each with its own length control, while you play and export. No clicks, no drawing fades by hand.",
+      formats: ["Max for Live (Ableton only)"],
       payhip: "",
       crypto: ""
     }

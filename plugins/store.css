@@ -1,0 +1,86 @@
+/* MEGGED plugins page. Fonts + colours come from ../css/site.css */
+.store-nav {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: space-between;
+  padding: calc(16px + env(safe-area-inset-top, 0px)) clamp(16px, 4vw, 40px) 16px;
+  background: linear-gradient(var(--black) 60%, rgba(18, 18, 18, 0));
+  font-family: var(--mono);
+  font-size: 22px;
+  letter-spacing: .06em;
+}
+.store-nav a { text-decoration: none; color: var(--dim); }
+.store-nav a:hover { color: var(--white); }
+
+.store-head {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(40px, 10vh, 110px) 16px 40px;
+  text-align: center;
+}
+.store-head h1 {
+  margin: 0 0 18px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(48px, 11vw, 112px);
+  line-height: 1;
+  letter-spacing: .04em;
+  filter: drop-shadow(0 0 2px rgba(var(--glow), .55)) drop-shadow(0 0 18px rgba(var(--glow), .4));
+}
+.store-head p { margin: 0; color: var(--dim); font-size: 18px; line-height: 1.5; }
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  gap: 22px;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 16px 60px;
+}
+.product {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, .16);
+  background: rgba(255, 255, 255, .03);
+}
+.product .shot { display: block; width: 100%; aspect-ratio: 3.4 / 1; object-fit: contain; background: #000; }
+.product .body { display: flex; flex-direction: column; flex: 1; padding: 20px 20px 22px; }
+.product h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 32px; letter-spacing: .03em; }
+.product .tag { margin: 4px 0 12px; font-family: var(--mono); font-size: 20px; color: var(--orange); }
+.product .text { margin: 0 0 14px; line-height: 1.5; color: var(--dim); }
+.formats { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 18px; padding: 0; list-style: none; }
+.formats li { padding: 2px 8px; border: 1px solid rgba(255, 255, 255, .25); font-family: var(--mono); font-size: 17px; }
+
+.buy { margin-top: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.buy .price { flex-basis: 100%; margin: 0 0 2px; font-family: var(--mono); font-size: 20px; }
+.pay { display: flex; gap: 10px; align-items: stretch; }
+.amount { display: flex; align-items: center; border: 1px solid rgba(255, 255, 255, .4); padding: 0 0 0 10px; font-family: var(--mono); font-size: 22px; }
+.amount input { width: 64px; border: 0; background: transparent; color: var(--white); font: inherit; padding: 6px 6px 6px 2px; }
+.amount input:focus { outline: none; }
+.amount:focus-within { border-color: var(--white); }
+.btn {
+  display: inline-block;
+  padding: 8px 20px;
+  border: 1px solid var(--white);
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--mono);
+  font-size: 22px;
+  line-height: 1.1;
+  text-decoration: none;
+  cursor: pointer;
+}
+button.btn { font: inherit; font-family: var(--mono); font-size: 22px; }
+.btn:hover { background: var(--black); color: var(--white); }
+.btn.alt { background: transparent; color: var(--white); border-color: var(--blue); }
+.btn.alt:hover { background: var(--blue); }
+.btn.off { background: transparent; color: var(--dim); border-color: rgba(255, 255, 255, .25); cursor: default; }
+
+.store-notes { max-width: 760px; margin: 0 auto; padding: 10px 16px 80px; line-height: 1.55; color: var(--dim); }
+.store-notes h2 { font-family: var(--display); font-weight: 400; font-size: 28px; color: var(--white); }
+.store-notes b { color: var(--white); font-weight: 600; }
+
+.thanks { display: none; max-width: 760px; margin: 0 auto 30px; padding: 16px 20px; border: 1px solid var(--orange); line-height: 1.5; }
+.thanks:target { display: block; }

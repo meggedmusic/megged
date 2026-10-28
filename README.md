@@ -16,3 +16,14 @@ The FX layer sits on top of everything inside `#stage`, so anything added to the
 Sections marked `data-fx="calm"` (bio, media, contact) get a softer version so text stays readable.
 Turn it off for editing with `?fx=off` at the end of the URL.
 The mouse glitch lens is `CONFIG.lens` in `fx/vhs-glitch.js` (set it to `null` to turn it off).
+
+## Plugins page (`megged.music/plugins/`)
+
+| What | Where |
+|---|---|
+| Plugin names, texts, formats, pictures | `PRODUCTS` at the top of `plugins/store.js` (pictures in `plugins/img/`) |
+| PayPal / card buy button | `payhip:` per plugin = the code from its Payhip link (`payhip.com/b/CODE`). Price on Payhip: "Pay what you want", minimum $10. Empty = the button says "Soon" |
+| Crypto button | `crypto:` per plugin = a NOWPayments payment link. Empty = no crypto button |
+| Look | `plugins/store.css` |
+
+The page is `noindex` and not linked from the home page until the buy buttons are live.

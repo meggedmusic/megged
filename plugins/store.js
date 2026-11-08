@@ -19,7 +19,7 @@
       tag: "Pitch + formant shifter",
       text: "Throw vocals up or down in pitch and push the formant from deep pig to tiny alien. Three engines (Voice, Smooth, Crisp), an LFO for wobble, and a pixel skater kid who gets fatter, thinner and weirder with every knob turn.",
       formats: ["AU", "VST3 (Mac + Windows)", "Max for Live"],
-      img: "img/skaterpiitch.webp"
+      img: "img/skaterpiitch.webp?v=2"
     },
     {
       key: "glare",

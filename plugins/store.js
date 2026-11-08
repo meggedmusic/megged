@@ -44,8 +44,8 @@
       key: "acidline",
       name: "AcidLine",
       tag: "303-style acid bass",
-      text: "A TB-303 style mono synth for Ableton: diode ladder filter, accent and slide that behave like the original, and the classic six-knob panel.",
-      formats: ["Max for Live instrument"],
+      text: "A TB-303 style acid bass synth with a 16-step pattern: diode ladder filter, accent and slide that behave like the original, per-step envelope control and a Dice button. Hold one note in a MIDI clip and the pattern plays (the note transposes it), or drag the pattern out as a MIDI clip. A yellow acid smiley gets happier as you open the cutoff and melts as you push the resonance.",
+      formats: ["AU", "VST3 (Mac + Windows)", "Max for Live"],
       img: "img/acidline.webp"
     },
     {

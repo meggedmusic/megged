@@ -1,24 +1,31 @@
 /**
- * Google Apps Script that sends each plugin to its buyer automatically.
- * Setup steps are in the "Plugins page" section of README.md.
+ * Google Apps Script behind the plugins store. Setup steps are in the "Plugins page" section of README.md.
  *
- * PayPal calls this script after every payment (PayPal IPN). The script:
- *   1. asks PayPal to confirm the message is real ("VERIFIED"),
- *   2. checks it is a completed payment to PAYPAL_EMAIL, in USD, of at least MIN_PRICE,
- *      for a plugin listed in DOWNLOADS, and not already handled (same txn_id),
- *   3. emails the buyer the download link and adds a row to the "מכירות" sheet.
- * Anything that fails a check goes to the "לבדיקה" sheet and is emailed to you,
- * so you can send that one by hand.
+ * Download page (doGet): after paying, PayPal sends the buyer back to megged.music/plugins/download/
+ * with the payment id (tx). That page asks this script for the link. The script asks PayPal
+ * about that payment (Payment Data Transfer), checks it, writes the sale to the "מכירות" sheet
+ * (with the buyer's email) and hands the page the download link. The link never sits in the site's code.
+ *
+ * PayPal IPN (doPost): PayPal also tells this script about every payment in the background.
+ * It writes the sale to the sheet if the download page did not already, and, only when
+ * SEND_EMAIL is true, also emails the buyer the link (a backup for buyers who close the tab early).
+ *
+ * Every payment is checked: completed, to PAYPAL_EMAIL, in USD, at least MIN_PRICE, for a plugin
+ * in DOWNLOADS. Anything that fails goes to the "לבדיקה" sheet and is emailed to you.
  */
 
-// Same email as PAYPAL_EMAIL in plugins/store.js
+// Same email as PAYPAL_EMAIL in plugins/config.js
 var PAYPAL_EMAIL = "";
+// PayPal → Website preferences → Payment data transfer → "Identity token"
+var PDT_TOKEN = "";
 var MIN_PRICE = 10;   // USD
-// true while testing with a PayPal sandbox account (also set SANDBOX in plugins/store.js)
+// true while testing with a PayPal sandbox account (also set SANDBOX in plugins/config.js)
 var SANDBOX = false;
+// true = also email the buyer the link after paying (a backup to the download page)
+var SEND_EMAIL = false;
 
 // Download link for each plugin (key = the `key` in plugins/store.js).
-// A Google Drive folder or file shared as "Anyone with the link can view".
+// A Google Drive file or folder shared as "Anyone with the link can view".
 var DOWNLOADS = {
   skaterpiitch: "",
   glare: "",
@@ -30,16 +37,64 @@ var DOWNLOADS = {
 var FROM_NAME = "MEGGED";
 var REPLY_TO = "yoav.megged@gmail.com";
 
-var SALES_COLUMNS = ["תאריך", "פלאגין", "סכום", "מטבע", "קונה", "אימייל", "txn_id", "נשלח"];
+var SALES_COLUMNS = ["תאריך", "פלאגין", "סכום", "מטבע", "קונה", "אימייל", "txn_id", "דרך", "מזהה פלאגין"];
 var REVIEW_COLUMNS = ["תאריך", "סיבה", "פלאגין", "סכום", "אימייל", "txn_id", "סטטוס", "הודעה מלאה"];
 
+var PAYPAL = SANDBOX ? "https://www.sandbox.paypal.com/cgi-bin/webscr" : "https://www.paypal.com/cgi-bin/webscr";
+var IPN_VERIFY = SANDBOX ? "https://ipnpb.sandbox.paypal.com/cgi-bin/webscr" : "https://ipnpb.paypal.com/cgi-bin/webscr";
+
+// ---------- download page: ?tx=<PayPal payment id> → {ok, name, link} ----------
+function doGet(e) {
+  var tx = String((e && e.parameter && e.parameter.tx) || "").replace(/[^A-Za-z0-9]/g, "");
+  var out;
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    out = tx ? download_(tx) : { ok: false, error: "missing" };
+  } catch (err) {
+    review_("שגיאה בסקריפט (דף הורדה): " + err, { txn_id: tx }, "");
+    out = { ok: false, error: "error" };
+  } finally {
+    lock.releaseLock();
+  }
+  return ContentService.createTextOutput(JSON.stringify(out)).setMimeType(ContentService.MimeType.JSON);
+}
+
+function download_(tx) {
+  var sale = saleRow_(tx);
+  if (sale) return answer_(sale.key, sale.name);
+
+  var res = UrlFetchApp.fetch(PAYPAL, {
+    method: "post",
+    payload: { cmd: "_notify-synch", tx: tx, at: PDT_TOKEN },
+    muteHttpExceptions: true
+  }).getContentText();
+  var lines = res.split("\n");
+  if (lines[0].trim() !== "SUCCESS") return { ok: false, error: "unknown" };
+  var p = {};
+  lines.slice(1).forEach(function (l) {
+    var i = l.indexOf("=");
+    if (i > 0) p[decodeURIComponent(l.slice(0, i))] = decodeURIComponent(l.slice(i + 1).replace(/\+/g, " "));
+  });
+  if (p.payment_status === "Pending") return { ok: false, error: "pending" };
+  var problem = check_(p);
+  if (problem) { review_(problem, p, res); return { ok: false, error: "check" }; }
+  record_(p, "דף הורדה");
+  return answer_(p.item_number, p.item_name);
+}
+
+function answer_(key, itemName) {
+  return { ok: true, name: plainName_(itemName), link: DOWNLOADS[key] };
+}
+
+// ---------- PayPal IPN: every payment, in the background ----------
 function doPost(e) {
   var p = (e && e.parameter) || {};
   var raw = (e && e.postData && e.postData.contents) || "";
   var lock = LockService.getScriptLock();
   lock.waitLock(20000);
   try {
-    handle_(p, raw);
+    ipn_(p, raw);
   } catch (err) {
     review_("שגיאה בסקריפט: " + err, p, raw);
   } finally {
@@ -48,9 +103,8 @@ function doPost(e) {
   return ContentService.createTextOutput("OK");
 }
 
-function handle_(p, raw) {
-  var verifyUrl = SANDBOX ? "https://ipnpb.sandbox.paypal.com/cgi-bin/webscr" : "https://ipnpb.paypal.com/cgi-bin/webscr";
-  var answer = UrlFetchApp.fetch(verifyUrl, {
+function ipn_(p, raw) {
+  var answer = UrlFetchApp.fetch(IPN_VERIFY, {
     method: "post",
     payload: "cmd=_notify-validate&" + raw,
     contentType: "application/x-www-form-urlencoded",
@@ -63,24 +117,37 @@ function handle_(p, raw) {
     if (p.payment_status === "Refunded" || p.payment_status === "Reversed") review_("החזר כספי", p, raw);
     return;
   }
-  if (sold_(p.txn_id)) return;   // PayPal resends the same notice; handle it once
+  if (saleRow_(p.txn_id)) return;   // already handled by the download page or an earlier notice
+  var problem = check_(p);
+  if (problem) return review_(problem, p, raw);
+  if (SEND_EMAIL) sendPlugin_(p, DOWNLOADS[p.item_number]);
+  record_(p, SEND_EMAIL ? "מייל" : "IPN");
+}
 
+// ---------- shared ----------
+function check_(p) {
+  if (p.payment_status !== "Completed") return "תשלום לא הושלם (" + p.payment_status + ")";
   var to = String(p.receiver_email || p.business || "").toLowerCase();
-  if (to !== PAYPAL_EMAIL.toLowerCase()) return review_("התשלום לא הגיע לחשבון PAYPAL_EMAIL", p, raw);
-  if (p.mc_currency !== "USD") return review_("מטבע לא USD", p, raw);
-  if (!(parseFloat(p.mc_gross) >= MIN_PRICE)) return review_("סכום מתחת למינימום", p, raw);
-  var link = DOWNLOADS[p.item_number];
-  if (!link) return review_("אין לינק הורדה לפלאגין הזה ב-DOWNLOADS", p, raw);
+  if (to !== PAYPAL_EMAIL.toLowerCase()) return "התשלום לא הגיע לחשבון PAYPAL_EMAIL";
+  if (p.mc_currency !== "USD") return "מטבע לא USD";
+  if (!(parseFloat(p.mc_gross) >= MIN_PRICE)) return "סכום מתחת למינימום";
+  if (!DOWNLOADS[p.item_number]) return "אין לינק הורדה לפלאגין הזה ב-DOWNLOADS";
+  return "";
+}
 
-  sendPlugin_(p, link);
+function record_(p, how) {
   sheet_("מכירות", SALES_COLUMNS).appendRow([
-    new Date(), p.item_name, p.mc_gross, p.mc_currency,
-    [p.first_name, p.last_name].join(" ").trim(), p.payer_email, p.txn_id, "כן"
+    new Date(), plainName_(p.item_name), p.mc_gross, p.mc_currency,
+    [p.first_name, p.last_name].join(" ").trim(), p.payer_email, p.txn_id, how, p.item_number
   ]);
 }
 
+function plainName_(itemName) {
+  return String(itemName || "").replace(/ \(MEGGED plugin\)$/, "");
+}
+
 function sendPlugin_(p, link) {
-  var name = String(p.item_name || "").replace(/ \(MEGGED plugin\)$/, "");
+  var name = plainName_(p.item_name);
   var hi = p.first_name ? "Hi " + p.first_name + "," : "Hi,";
   var text = [
     hi,
@@ -109,13 +176,16 @@ function sendPlugin_(p, link) {
   });
 }
 
-function sold_(txn) {
-  if (!txn) return false;
+function saleRow_(txn) {
+  if (!txn) return null;
   var sheet = sheet_("מכירות", SALES_COLUMNS);
-  var col = SALES_COLUMNS.indexOf("txn_id") + 1;
-  if (sheet.getLastRow() < 2) return false;
-  return sheet.getRange(2, col, sheet.getLastRow() - 1, 1).getValues()
-    .some(function (r) { return String(r[0]) === String(txn); });
+  if (sheet.getLastRow() < 2) return null;
+  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, SALES_COLUMNS.length).getValues();
+  var col = SALES_COLUMNS.indexOf("txn_id"), keyCol = SALES_COLUMNS.indexOf("מזהה פלאגין");
+  for (var i = 0; i < rows.length; i++) {
+    if (String(rows[i][col]) === String(txn)) return { name: rows[i][1], key: rows[i][keyCol] };
+  }
+  return null;
 }
 
 function review_(reason, p, raw) {

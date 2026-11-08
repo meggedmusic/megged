@@ -82,5 +82,7 @@ button.btn { font: inherit; font-family: var(--mono); font-size: 22px; }
 .store-notes h2 { font-family: var(--display); font-weight: 400; font-size: 28px; color: var(--white); }
 .store-notes b { color: var(--white); font-weight: 600; }
 
-.thanks { display: none; max-width: 760px; margin: 0 auto 30px; padding: 16px 20px; border: 1px solid var(--orange); line-height: 1.5; }
-.thanks:target { display: block; }
+/* download page */
+.dl { max-width: 640px; margin: 0 auto; padding: 0 16px 80px; text-align: center; line-height: 1.55; color: var(--dim); }
+.dl .btn { margin: 10px 0 18px; }
+.dl b { color: var(--white); }

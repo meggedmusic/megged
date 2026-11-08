@@ -1,20 +1,16 @@
-/* MEGGED plugins — product list + buy buttons.
-   PAYPAL_EMAIL: the email of the PayPal account the money goes to.
-                 Empty = every buy button shows "Soon".
-   Each buyer types an amount (MIN_PRICE or more) and pays on PayPal.
-   SEND_URL: the Google Apps Script web app (plugins/google-apps-script.js) that PayPal
-             calls after each payment; it emails the buyer the download link.
-             Empty = PayPal only emails you, and you send the plugin by hand.
+/* MEGGED plugins — product list + buy buttons. Settings (PayPal email, ...) are in plugins/config.js.
+   Each buyer types an amount (MIN_PRICE or more) and pays on PayPal, then lands on
+   plugins/download/, which shows the download link.
    key (per plugin): must match DOWNLOADS in plugins/google-apps-script.js.
    Buyers without a PayPal account pay by card on the same PayPal page
    (turn on "PayPal account optional" in the PayPal business account settings). */
 (function () {
   "use strict";
 
-  var PAYPAL_EMAIL = "";
-  var SEND_URL = "";
-  var SANDBOX = false;  // true while testing with a PayPal sandbox account
-  var MIN_PRICE = 10;   // USD
+  var PAYPAL_EMAIL = MEGGED_STORE.PAYPAL_EMAIL;
+  var SEND_URL = MEGGED_STORE.SEND_URL;
+  var SANDBOX = MEGGED_STORE.SANDBOX;
+  var MIN_PRICE = MEGGED_STORE.MIN_PRICE;
 
   var PRODUCTS = [
     {
@@ -112,10 +108,10 @@
       charset: "utf-8",
       currency_code: "USD",
       no_shipping: "1",
-      return: location.origin + location.pathname + "#thanks",
+      return: location.origin + "/plugins/download/",
       cancel_return: location.origin + location.pathname
     };
-    if (SEND_URL) fields.notify_url = SEND_URL;
+    if (SEND_URL) fields.notify_url = SEND_URL;   // PayPal IPN: logs every sale, even if the buyer closes the tab
     Object.keys(fields).forEach(function (k) {
       var h = el("input");
       h.type = "hidden"; h.name = k; h.value = fields[k];

@@ -165,9 +165,10 @@
   var root = document.documentElement;
   if (reduce) { setSplit("fx-vhs", CONFIG.calm.split); return; }
 
-  // calm mode: on while the hero is mostly off screen
-  var calm = false;
+  // calm mode: on while the hero is mostly off screen; always on for pages without a hero (plugins store)
   var hero = document.querySelector(".hero");
+  var calm = !hero;
+  root.classList.toggle("fx-calm", calm);
   var stage = document.getElementById("stage");
   if (hero && "IntersectionObserver" in window) {
     new IntersectionObserver(function (entries) {
@@ -205,7 +206,7 @@
   setTimeout(burst, 900);
 
   // ---- mouse glitch lens ------------------------------------------------------
-  var L = CONFIG.lens;
+  var L = hero ? CONFIG.lens : null;   // no mouse lens on the reading pages
   if (L && window.matchMedia && matchMedia("(hover: hover) and (pointer: fine)").matches) {
     var discs = svg.querySelectorAll("feImage[result='Ldisc']");
     var alphas = svg.querySelectorAll("feComponentTransfer[result='Lmask'] feFuncA");

@@ -38,7 +38,7 @@ After paying, PayPal sends the buyer to `megged.music/plugins/download/` with th
    - Payment data transfer: On. Copy the Identity token it shows (keep it private).
    - PayPal account optional: On (buyers without PayPal pay by card).
 3. Create a new Google Sheet (for example "מכירות פלאגינים"). In the sheet: Extensions → Apps Script. Delete what is there and paste the contents of `plugins/google-apps-script.js`.
-4. At the top of the script fill in `PAYPAL_EMAIL`, `PDT_TOKEN` (the Identity token) and the links in `DOWNLOADS`. Save. `SEND_EMAIL = true` also emails the buyer the link (off by default).
+4. At the top of the script fill in `PAYPAL_EMAIL`, `PDT_TOKEN` (the Identity token) and the links in `DOWNLOADS` (`bundle` = a Drive folder with every plugin). Save. `SEND_EMAIL = true` also emails the buyer the link (off by default).
 5. Choose `setup` in the toolbar and press Run. Approve the permissions. Two tabs appear: "מכירות" (sales) and "לבדיקה" (anything to check by hand, also emailed to you).
 6. Deploy → New deployment → type "Web app". Execute as: Me. Who has access: Anyone. Copy the URL that ends in `/exec`.
 7. In `plugins/config.js` set `PAYPAL_EMAIL` and paste the URL into `SEND_URL`. Push.

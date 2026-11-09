@@ -18,7 +18,9 @@
 var PAYPAL_EMAIL = "";
 // PayPal → Website preferences → Payment data transfer → "Identity token"
 var PDT_TOKEN = "";
-var MIN_PRICE = 10;   // USD
+var MIN_PRICE = 10;   // USD, per plugin
+// The whole pack: every plugin at MIN_PRICE, 20% off (same as BUNDLE_OFF in plugins/config.js)
+var BUNDLE_PRICE = Math.round(6 * MIN_PRICE * 0.8);   // 6 plugins → $48
 // true while testing with a PayPal sandbox account (also set SANDBOX in plugins/config.js)
 var SANDBOX = false;
 // true = also email the buyer the link after paying (a backup to the download page)
@@ -27,6 +29,7 @@ var SEND_EMAIL = false;
 // Download link for each plugin (key = the `key` in plugins/store.js).
 // A Google Drive file or folder shared as "Anyone with the link can view".
 var DOWNLOADS = {
+  bundle: "",   // a Drive folder with all the plugins
   skaterpiitch: "",
   glare: "",
   acidline: "",
@@ -131,7 +134,7 @@ function check_(p) {
   var to = String(p.receiver_email || p.business || "").toLowerCase();
   if (to !== PAYPAL_EMAIL.toLowerCase()) return "התשלום לא הגיע לחשבון PAYPAL_EMAIL";
   if (p.mc_currency !== "USD") return "מטבע לא USD";
-  if (!(parseFloat(p.mc_gross) >= MIN_PRICE)) return "סכום מתחת למינימום";
+  if (!(parseFloat(p.mc_gross) >= (p.item_number === "bundle" ? BUNDLE_PRICE : MIN_PRICE))) return "סכום מתחת למינימום";
   if (!DOWNLOADS[p.item_number]) return "אין לינק הורדה לפלאגין הזה ב-DOWNLOADS";
   return "";
 }
@@ -144,7 +147,7 @@ function record_(p, how) {
 }
 
 function plainName_(itemName) {
-  return String(itemName || "").replace(/ \((MEGGED|Pixel Park) plugin\)$/, "");
+  return String(itemName || "").replace(/ \((MEGGED plugin|Pixel Park plugin|all plugins)\)$/, "");
 }
 
 function sendPlugin_(p, link) {

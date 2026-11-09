@@ -112,7 +112,7 @@
     var fields = {
       cmd: "_xclick",
       business: PAYPAL_EMAIL,
-      item_name: name + " (MEGGED plugin)",
+      item_name: name + " (Pixel Park plugin)",
       item_number: p.key,
       charset: "utf-8",
       currency_code: "USD",

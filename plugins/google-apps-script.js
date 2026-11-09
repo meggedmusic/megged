@@ -35,7 +35,7 @@ var DOWNLOADS = {
   kickform: ""
 };
 
-var FROM_NAME = "MEGGED";
+var FROM_NAME = "Pixel Park by MEGGED";
 var REPLY_TO = "yoav.megged@gmail.com";
 
 var SALES_COLUMNS = ["תאריך", "פלאגין", "סכום", "מטבע", "קונה", "אימייל", "txn_id", "דרך", "מזהה פלאגין"];
@@ -144,7 +144,7 @@ function record_(p, how) {
 }
 
 function plainName_(itemName) {
-  return String(itemName || "").replace(/ \(MEGGED plugin\)$/, "");
+  return String(itemName || "").replace(/ \((MEGGED|Pixel Park) plugin\)$/, "");
 }
 
 function sendPlugin_(p, link) {
@@ -230,7 +230,7 @@ function setup() {
 // Run from the toolbar to see the buyer's email: sends the SkaterPiitch email to you
 function testEmail() {
   sendPlugin_({
-    item_name: "SkaterPiitch (MEGGED plugin)",
+    item_name: "SkaterPiitch (Pixel Park plugin)",
     first_name: "Test",
     payer_email: Session.getEffectiveUser().getEmail()
   }, DOWNLOADS.skaterpiitch || "https://megged.music/plugins/");

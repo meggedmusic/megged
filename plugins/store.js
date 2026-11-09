@@ -17,7 +17,7 @@
       key: "skaterpiitch",
       name: "SkaterPiitch",
       tag: "Pitch + formant shifter",
-      text: "Turn any voice into a giant, a chipmunk, a pig or an alien, with a little pixel skater riding along to every move.",
+      text: "Throw vocals up or down in pitch and push the formant from deep pig to tiny alien, while a pixel skater kid gets fatter, thinner and weirder with every knob turn.",
       formats: ["AU", "VST3 (Mac + Windows)", "Max for Live"],
       img: "img/skaterpiitch.webp?v=2"
     },
@@ -41,7 +41,7 @@
       key: "blipsynth",
       name: "blipsynth",
       tag: "Arcade sound machine",
-      text: "Insert coin. Bleeps, lasers and power-ups straight out of a 1987 arcade. Press a button, get a new sound, try not to lose all your lives.",
+      text: "Nostalgia at the push of a button. Classic video-game sound effects in seconds, and every one is easy to tweak until it is exactly yours.",
       formats: ["AU", "VST3 (Mac + Windows)", "Max for Live"],
       img: "img/blipsynth.webp"
     },

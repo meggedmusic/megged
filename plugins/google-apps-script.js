@@ -31,7 +31,7 @@ var DOWNLOADS = {
   glare: "",
   acidline: "",
   autofade: "",
-  blipsynth: "",
+  blipsy: "",
   kickform: ""
 };
 

@@ -38,12 +38,12 @@
       img: "img/acidline.webp?v=4"
     },
     {
-      key: "blipsynth",
-      name: "blipsynth",
+      key: "blipsy",
+      name: "blipsy",
       tag: "Arcade sound machine",
       text: "Nostalgia at the push of a button. Classic video-game sound effects in seconds, and each one is easy to tweak until it is exactly yours.",
       formats: ["AU", "VST3 (Mac + Windows)", "Max for Live"],
-      img: "img/blipsynth.webp"
+      img: "img/blipsy.webp"
     },
     {
       key: "kickform",

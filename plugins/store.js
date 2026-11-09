@@ -17,7 +17,7 @@
       key: "skaterpiitch",
       name: "SkaterPiitch",
       tag: "Pitch + formant shifter",
-      text: "Throw vocals up or down in pitch and push the formant from deep pig to tiny alien. Three engines (Voice, Smooth, Crisp), an LFO for wobble, and a pixel skater kid who gets fatter, thinner and weirder with every knob turn.",
+      text: "Turn any voice into a giant, a chipmunk, a pig or an alien, with a little pixel skater riding along to every move.",
       formats: ["AU", "VST3 (Mac + Windows)", "Max for Live"],
       img: "img/skaterpiitch.webp?v=2"
     },
@@ -25,31 +25,31 @@
       key: "glare",
       name: "Glare",
       tag: "Bright distortion",
-      text: "A very bright, very compressed distortion for UK bass sound worlds. Eight shapers with 4x oversampling, a pre-filter, AM for texture, Redux and Erode style crush, and a 3-band OTT-style squash at the end.",
+      text: "Loud, bright and shiny. A distortion for UK bass that makes sounds glow, crunch and jump out of the speakers.",
       formats: ["AU", "VST3 (Mac + Windows)", "Max for Live"],
       img: "img/glare.webp"
     },
     {
       key: "acidline",
       name: "AcidLine",
-      tag: "303-style acid bass",
-      text: "A TB-303 style acid bass synth with a 16-step pattern: diode ladder filter, accent and slide that behave like the original, per-step envelope control and a Dice button. Hold one note in a MIDI clip and the pattern plays (the note transposes it), or drag the pattern out as a MIDI clip. A yellow acid smiley gets happier as you open the cutoff and melts as you push the resonance.",
+      tag: "303-style acid sequencer",
+      text: "A TB-303 style acid bass with its own 16-step sequencer. Squelchy, rubbery, and full of surprises.",
       formats: ["AU", "VST3 (Mac + Windows)", "Max for Live"],
-      img: "img/acidline.webp"
+      img: "img/acidline.webp?v=3"
     },
     {
       key: "blipsynth",
       name: "blipsynth",
-      tag: "Video-game sound effects synth",
-      text: "Coins, jumps, lasers, hits and explosions in one click. A chip-style voice (pulse, triangle, saw, noise and a drawn wave) driven by one-shot step lanes for pitch, volume and timbre that can run very fast. Add sweep, vibrato, repeats, a noise hit, bit and sample-rate crush and a crunchy ping-pong delay. Sound buttons and Mutate make new sounds every time, and Blip the little critter dances to every note.",
+      tag: "Arcade sound machine",
+      text: "Insert coin. Bleeps, lasers and power-ups straight out of a 1987 arcade. Press a button, get a new sound, try not to lose all your lives.",
       formats: ["AU", "VST3 (Mac + Windows)", "Max for Live"],
       img: "img/blipsynth.webp"
     },
     {
       key: "kickform",
       name: "Kickform",
-      tag: "Kick drum synth",
-      text: "A kick synth for every genre. A clean sine body with its own pitch and amp envelopes, a tail layer for sub weight, and a transient layer with its own factory clicks or any sample you drag in. Then drive, glue and clip shape it into anything from a soft house thump to a hard techno punch.",
+      tag: "Custom kick maker",
+      text: "Make the exact kick your track needs, in any genre. No more digging through sample packs.",
       formats: ["Max for Live"],
       img: "img/kickform.webp"
     },

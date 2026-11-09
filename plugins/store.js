@@ -1,7 +1,8 @@
 /* MEGGED plugins — product list + buy buttons. Settings (PayPal email, ...) are in plugins/config.js.
    Each buyer types an amount (MIN_PRICE or more) and pays on PayPal, then lands on
    plugins/download/, which shows the download link.
-   key (per plugin): must match DOWNLOADS in plugins/google-apps-script.js.
+   The whole pack ("bundle") costs every plugin at MIN_PRICE minus BUNDLE_OFF.
+   key (per plugin, and "bundle"): must match DOWNLOADS in plugins/google-apps-script.js.
    Buyers without a PayPal account pay by card on the same PayPal page
    (turn on "PayPal account optional" in the PayPal business account settings). */
 (function () {
@@ -11,6 +12,7 @@
   var SEND_URL = MEGGED_STORE.SEND_URL;
   var SANDBOX = MEGGED_STORE.SANDBOX;
   var MIN_PRICE = MEGGED_STORE.MIN_PRICE;
+  var BUNDLE_OFF = MEGGED_STORE.BUNDLE_OFF || 0;
 
   var PRODUCTS = [
     {
@@ -71,6 +73,22 @@
 
   var list = document.getElementById("products");
 
+  // whole pack, 20% off
+  var BUNDLE_PRICE = Math.round(PRODUCTS.length * MIN_PRICE * (1 - BUNDLE_OFF));
+  var bundleBox = document.getElementById("bundle");
+  if (bundleBox) {
+    var bb = el("div", "body");
+    bb.appendChild(el("h2", null, "The whole pack"));
+    bb.appendChild(el("p", "tag", "All " + PRODUCTS.length + " plugins · " + Math.round(BUNDLE_OFF * 100) + "% off"));
+    bb.appendChild(el("p", "text", PRODUCTS.map(function (p) { return p.name; }).join(", ") + ". Every format, every future update."));
+    var bbuy = el("div", "buy");
+    bbuy.appendChild(el("p", "price", "$" + BUNDLE_PRICE + "+ · instead of $" + PRODUCTS.length * MIN_PRICE));
+    if (PAYPAL_EMAIL) bbuy.appendChild(paypalForm({ key: "bundle", name: "Pixel Park pack" }, BUNDLE_PRICE));
+    else bbuy.appendChild(el("span", "btn off", "Soon"));
+    bb.appendChild(bbuy);
+    bundleBox.appendChild(bb);
+  }
+
   PRODUCTS.forEach(function (p) {
     var card = el("article", "product");
     if (p.img) {
@@ -103,8 +121,9 @@
   });
 
   // PayPal "Buy Now" form: the buyer picks the amount, PayPal handles card or PayPal account
-  function paypalForm(p) {
+  function paypalForm(p, min) {
     var name = p.name;
+    min = min || MIN_PRICE;
     var f = el("form", "pay");
     f.action = SANDBOX ? "https://www.sandbox.paypal.com/cgi-bin/webscr" : "https://www.paypal.com/cgi-bin/webscr";
     f.method = "post";
@@ -112,7 +131,7 @@
     var fields = {
       cmd: "_xclick",
       business: PAYPAL_EMAIL,
-      item_name: name + " (Pixel Park plugin)",
+      item_name: p.key === "bundle" ? name + " (all plugins)" : name + " (Pixel Park plugin)",
       item_number: p.key,
       charset: "utf-8",
       currency_code: "USD",
@@ -129,8 +148,8 @@
     var label = el("label", "amount");
     label.appendChild(el("span", null, "$"));
     var amt = el("input");
-    amt.type = "number"; amt.name = "amount"; amt.min = MIN_PRICE; amt.step = "1";
-    amt.value = MIN_PRICE; amt.required = true;
+    amt.type = "number"; amt.name = "amount"; amt.min = min; amt.step = "1";
+    amt.value = min; amt.required = true;
     amt.setAttribute("aria-label", "Amount in US dollars for " + name);
     label.appendChild(amt);
     f.appendChild(label);
@@ -139,7 +158,7 @@
     f.appendChild(go);
     f.addEventListener("submit", function (e) {
       var v = Math.round(parseFloat(amt.value));
-      if (!(v >= MIN_PRICE)) { e.preventDefault(); amt.value = MIN_PRICE; amt.focus(); return; }
+      if (!(v >= min)) { e.preventDefault(); amt.value = min; amt.focus(); return; }
       amt.value = v;
     });
     return f;

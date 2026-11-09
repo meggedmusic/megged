@@ -35,7 +35,7 @@
       tag: "303-style acid sequencer",
       text: "A TB-303 style acid bass with its own 16-step sequencer. Squelchy, rubbery, and full of surprises.",
       formats: ["AU", "VST3 (Mac + Windows)", "Max for Live"],
-      img: "img/acidline.webp?v=3"
+      img: "img/acidline.webp?v=4"
     },
     {
       key: "blipsynth",

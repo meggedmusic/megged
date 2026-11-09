@@ -30,19 +30,28 @@
       img: "img/glare.webp"
     },
     {
-      key: "echoweave",
-      name: "Echoweave",
-      tag: "Repeat · grains · dub delay",
-      text: "Beat repeat, granular smearing and dub delay in one playful sound design box. Reorder the chain, morph between random settings with Dice, and let the Warp LFO bend the grains and echoes.",
-      formats: ["Max for Live"]
-    },
-    {
       key: "acidline",
       name: "AcidLine",
       tag: "303-style acid bass",
       text: "A TB-303 style acid bass synth with a 16-step pattern: diode ladder filter, accent and slide that behave like the original, per-step envelope control and a Dice button. Hold one note in a MIDI clip and the pattern plays (the note transposes it), or drag the pattern out as a MIDI clip. A yellow acid smiley gets happier as you open the cutoff and melts as you push the resonance.",
       formats: ["AU", "VST3 (Mac + Windows)", "Max for Live"],
       img: "img/acidline.webp"
+    },
+    {
+      key: "blipsynth",
+      name: "blipsynth",
+      tag: "Video-game sound effects synth",
+      text: "Coins, jumps, lasers, hits and explosions in one click. A chip-style voice (pulse, triangle, saw, noise and a drawn wave) driven by one-shot step lanes for pitch, volume and timbre that can run very fast. Add sweep, vibrato, repeats, a noise hit, bit and sample-rate crush and a crunchy ping-pong delay. Sound buttons and Mutate make new sounds every time, and Blip the little critter dances to every note.",
+      formats: ["AU", "VST3 (Mac + Windows)", "Max for Live"],
+      img: "img/blipsynth.webp"
+    },
+    {
+      key: "kickform",
+      name: "Kickform",
+      tag: "Kick drum synth",
+      text: "A kick synth for every genre. A clean sine body with its own pitch and amp envelopes, a tail layer for sub weight, and a transient layer with its own factory clicks or any sample you drag in. Then drive, glue and clip shape it into anything from a soft house thump to a hard techno punch.",
+      formats: ["Max for Live"],
+      img: "img/kickform.webp"
     },
     {
       key: "autofade",

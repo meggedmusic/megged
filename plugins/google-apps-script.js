@@ -29,9 +29,10 @@ var SEND_EMAIL = false;
 var DOWNLOADS = {
   skaterpiitch: "",
   glare: "",
-  echoweave: "",
   acidline: "",
-  autofade: ""
+  autofade: "",
+  blipsynth: "",
+  kickform: ""
 };
 
 var FROM_NAME = "MEGGED";

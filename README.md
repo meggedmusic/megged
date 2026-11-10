@@ -28,6 +28,8 @@ The mouse glitch lens is `CONFIG.lens` in `fx/vhs-glitch.js` (set it to `null` t
 
 The page is `noindex` and not linked from the home page until the buy buttons are live.
 
+The live Apps Script (with the real Drive links and the PayPal Identity token) lives only in Google Apps Script, in the "Pixel Park sales" sheet. The copy here keeps those fields empty on purpose. After changing the script there: Deploy → Manage deployments → pencil → New version → Deploy (the `/exec` URL stays the same).
+
 ### Download page after a PayPal payment
 
 After paying, PayPal sends the buyer to `megged.music/plugins/download/` with the payment id. That page asks the Apps Script (`plugins/google-apps-script.js`) for the link; the script checks the payment with PayPal, writes the sale (with the buyer's email) to a Google Sheet and returns the link. The links live only in the script, never in the site's code.

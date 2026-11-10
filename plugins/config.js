@@ -7,8 +7,8 @@
    MIN_PRICE: the lowest amount a buyer can type, in USD.
    BUNDLE_OFF: discount on the whole pack (0.2 = 20% off all plugins at MIN_PRICE). */
 var MEGGED_STORE = {
-  PAYPAL_EMAIL: "",
-  SEND_URL: "",
+  PAYPAL_EMAIL: "yoav.megged@gmail.com",
+  SEND_URL: "https://script.google.com/macros/s/AKfycbzIuVmCy7KBlEkKC6vcDcLsVr0PbmXeOTkPaQWcO6t5WYbIYYpAYcgV8Q-DjXXw9baP5g/exec",
   SANDBOX: false,
   MIN_PRICE: 10,
   BUNDLE_OFF: 0.2

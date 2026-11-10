@@ -6,7 +6,10 @@
 
   var CONTACT = "yoav.megged@gmail.com";
   var box = document.getElementById("dl");
-  var tx = new URLSearchParams(location.search).get("tx") || "";
+  var q = new URLSearchParams(location.search);
+  var order = q.get("order") || "";            // PayPal buttons (order id)
+  var tx = order || q.get("tx") || "";         // older PayPal page (payment id)
+  var param = order ? "order" : "tx";
   var tries = 0;
 
   function show(parts) {
@@ -33,7 +36,7 @@
 
   function ask() {
     tries++;
-    fetch(MEGGED_STORE.SEND_URL + "?tx=" + encodeURIComponent(tx))
+    fetch(MEGGED_STORE.SEND_URL + "?" + param + "=" + encodeURIComponent(tx))
       .then(function (r) { return r.json(); })
       .then(function (d) {
         if (d.ok && d.link) {

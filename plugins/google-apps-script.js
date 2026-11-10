@@ -18,6 +18,10 @@
 var PAYPAL_EMAIL = "";
 // PayPal → Website preferences → Payment data transfer → "Identity token"
 var PDT_TOKEN = "";
+// PayPal buttons with the card option: developer.paypal.com → Apps & Credentials → Live → your app.
+// Client ID (also in plugins/config.js as PAYPAL_CLIENT_ID) and Secret (only here, never on the site).
+var CLIENT_ID = "";
+var CLIENT_SECRET = "";
 var MIN_PRICE = 10;   // USD, per plugin
 // The whole pack: every plugin at MIN_PRICE, 20% off (same as BUNDLE_OFF in plugins/config.js)
 var BUNDLE_PRICE = Math.round(6 * MIN_PRICE * 0.8);   // 6 plugins → $48
@@ -45,16 +49,19 @@ var SALES_COLUMNS = ["תאריך", "פלאגין", "סכום", "מטבע", "קו
 var REVIEW_COLUMNS = ["תאריך", "סיבה", "פלאגין", "סכום", "אימייל", "txn_id", "סטטוס", "הודעה מלאה"];
 
 var PAYPAL = SANDBOX ? "https://www.sandbox.paypal.com/cgi-bin/webscr" : "https://www.paypal.com/cgi-bin/webscr";
+var API = SANDBOX ? "https://api-m.sandbox.paypal.com" : "https://api-m.paypal.com";
 var IPN_VERIFY = SANDBOX ? "https://ipnpb.sandbox.paypal.com/cgi-bin/webscr" : "https://ipnpb.paypal.com/cgi-bin/webscr";
 
 // ---------- download page: ?tx=<PayPal payment id> → {ok, name, link} ----------
 function doGet(e) {
-  var tx = String((e && e.parameter && e.parameter.tx) || "").replace(/[^A-Za-z0-9]/g, "");
+  var prm = (e && e.parameter) || {};
+  var order = String(prm.order || "").replace(/[^A-Za-z0-9]/g, "");
+  var tx = order || String(prm.tx || "").replace(/[^A-Za-z0-9]/g, "");
   var out;
   var lock = LockService.getScriptLock();
   lock.waitLock(20000);
   try {
-    out = tx ? download_(tx) : { ok: false, error: "missing" };
+    out = !tx ? { ok: false, error: "missing" } : order ? orderDownload_(order) : download_(tx);
   } catch (err) {
     review_("שגיאה בסקריפט (דף הורדה): " + err, { txn_id: tx }, "");
     out = { ok: false, error: "error" };
@@ -84,6 +91,46 @@ function download_(tx) {
   var problem = check_(p);
   if (problem) { review_(problem, p, res); return { ok: false, error: "check" }; }
   record_(p, "דף הורדה");
+  return answer_(p.item_number, p.item_name);
+}
+
+// PayPal buttons: the page captured order <id>; ask PayPal's API about it
+function orderDownload_(id) {
+  var sale = saleRow_(id);
+  if (sale) return answer_(sale.key, sale.name);
+  if (!CLIENT_ID || !CLIENT_SECRET) { review_("חסרים CLIENT_ID / CLIENT_SECRET בסקריפט", { txn_id: id }, ""); return { ok: false, error: "error" }; }
+  var tok = JSON.parse(UrlFetchApp.fetch(API + "/v1/oauth2/token", {
+    method: "post",
+    headers: { Authorization: "Basic " + Utilities.base64Encode(CLIENT_ID + ":" + CLIENT_SECRET) },
+    payload: { grant_type: "client_credentials" },
+    muteHttpExceptions: true
+  }).getContentText()).access_token;
+  if (!tok) { review_("פייפאל לא נתן גישה (בדוק CLIENT_ID / CLIENT_SECRET)", { txn_id: id }, ""); return { ok: false, error: "error" }; }
+  var res = UrlFetchApp.fetch(API + "/v2/checkout/orders/" + id, {
+    headers: { Authorization: "Bearer " + tok }, muteHttpExceptions: true
+  });
+  if (res.getResponseCode() !== 200) return { ok: false, error: "unknown" };
+  var o = JSON.parse(res.getContentText());
+  var pu = (o.purchase_units || [])[0] || {};
+  var cap = ((pu.payments || {}).captures || [])[0] || {};
+  var key = pu.custom_id || pu.reference_id || "";
+  var payer = o.payer || {}, nm = payer.name || {};
+  // the same fields the PayPal page sends, so check_ / record_ work unchanged
+  var p = {
+    payment_status: o.status === "COMPLETED" && cap.status === "COMPLETED" ? "Completed" : (cap.status === "PENDING" ? "Pending" : String(o.status)),
+    receiver_email: (pu.payee || {}).email_address || "",
+    mc_currency: (cap.amount || pu.amount || {}).currency_code,
+    mc_gross: (cap.amount || pu.amount || {}).value,
+    item_number: key,
+    item_name: key === "bundle" ? "Pixel Park pack (all plugins)" : String(pu.description || key).replace(/ - Pixel Park plugins by MEGGED$/, ""),
+    first_name: nm.given_name || "", last_name: nm.surname || "",
+    payer_email: payer.email_address || "",
+    txn_id: id
+  };
+  if (p.payment_status === "Pending") return { ok: false, error: "pending" };
+  var problem = check_(p);
+  if (problem) { review_(problem, p, res.getContentText()); return { ok: false, error: "check" }; }
+  record_(p, "כפתורי PayPal");
   return answer_(p.item_number, p.item_name);
 }
 

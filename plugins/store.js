@@ -34,8 +34,8 @@
     {
       key: "acidline",
       name: "AcidLine",
-      tag: "303-style acid sequencer",
-      text: "A TB-303 style acid bass with its own 16-step sequencer. Squelchy, rubbery, and full of surprises.",
+      tag: "Acid bass sequencer",
+      text: "A classic acid bass line synth with its own 16-step sequencer. Squelchy, rubbery, and full of surprises.",
       formats: ["AU", "VST3 (Mac + Windows)", "Max for Live"],
       img: "img/acidline.webp?v=4"
     },

@@ -12,7 +12,7 @@
 var MEGGED_STORE = {
   PAYPAL_EMAIL: "yoav.megged@gmail.com",
   SEND_URL: "https://script.google.com/macros/s/AKfycbzIuVmCy7KBlEkKC6vcDcLsVr0PbmXeOTkPaQWcO6t5WYbIYYpAYcgV8Q-DjXXw9baP5g/exec",
-  PAYPAL_CLIENT_ID: "",
+  PAYPAL_CLIENT_ID: "BAAZoqcUi58lBjLYdV5_Qq_FdTY8Z46hZ30-y1VHpKNYKr5--jLcAWZm2SPAcKbwCXdAJPn1clnBbDVMXI",
   SANDBOX: false,
   MIN_PRICE: 10,
   BUNDLE_OFF: 0.2

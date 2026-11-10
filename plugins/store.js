@@ -12,6 +12,7 @@
   var SEND_URL = MEGGED_STORE.SEND_URL;
   var SANDBOX = MEGGED_STORE.SANDBOX;
   var MIN_PRICE = MEGGED_STORE.MIN_PRICE;
+  var CLIENT_ID = MEGGED_STORE.PAYPAL_CLIENT_ID || "";
   var BUNDLE_OFF = MEGGED_STORE.BUNDLE_OFF || 0;
 
   var PRODUCTS = [
@@ -160,7 +161,66 @@
       var v = Math.round(parseFloat(amt.value));
       if (!(v >= min)) { e.preventDefault(); amt.value = min; amt.focus(); return; }
       amt.value = v;
+      if (CLIENT_ID) { e.preventDefault(); openPay(p, v); }
     });
     return f;
+  }
+
+  // ---------- PayPal buttons (PayPal + "Debit or Credit Card", no account needed) ----------
+  var sdk = null, dlg = null;
+  function loadSdk() {
+    if (!sdk) sdk = new Promise(function (ok, bad) {
+      var s = document.createElement("script");
+      s.src = "https://www.paypal.com/sdk/js?client-id=" + encodeURIComponent(CLIENT_ID) +
+        "&currency=USD&intent=capture&enable-funding=card&disable-funding=paylater,venmo,credit";
+      s.onload = function () { ok(window.paypal); };
+      s.onerror = function () { sdk = null; bad(); };
+      document.head.appendChild(s);
+    });
+    return sdk;
+  }
+  function openPay(p, amount) {
+    if (!dlg) {
+      dlg = el("dialog", "paybox");
+      dlg.innerHTML = '<button class="x" type="button" aria-label="Close">×</button><h2></h2><p class="sum"></p><div class="pp"></div><p class="note">Pay with PayPal, or with a card (no PayPal account needed). Your download opens right after.</p>';
+      dlg.querySelector(".x").addEventListener("click", function () { dlg.close(); });
+      dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
+      document.body.appendChild(dlg);
+    }
+    var title = p.key === "bundle" ? p.name + " (all plugins)" : p.name;
+    dlg.querySelector("h2").textContent = title;
+    dlg.querySelector(".sum").textContent = "$" + amount + " USD";
+    var box = dlg.querySelector(".pp");
+    box.textContent = "Loading PayPal…";
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
+    loadSdk().then(function (paypal) {
+      box.textContent = "";
+      paypal.Buttons({
+        style: { layout: "vertical", shape: "rect", label: "pay", height: 45 },
+        createOrder: function (d, actions) {
+          return actions.order.create({
+            intent: "CAPTURE",
+            purchase_units: [{
+              reference_id: p.key,
+              custom_id: p.key,
+              description: (title + " - Pixel Park plugins by MEGGED").slice(0, 127),
+              amount: { currency_code: "USD", value: String(amount) }
+            }],
+            application_context: { shipping_preference: "NO_SHIPPING", brand_name: "Pixel Park" }
+          });
+        },
+        onApprove: function (d, actions) {
+          box.textContent = "Finishing your payment…";
+          return actions.order.capture().then(function (o) {
+            location.href = "/plugins/download/?order=" + encodeURIComponent(o.id);
+          });
+        },
+        onError: function () {
+          box.textContent = "PayPal had a problem. Please try again, or write to yoav.megged@gmail.com.";
+        }
+      }).render(box);
+    }).catch(function () {
+      box.textContent = "PayPal didn't load. Check your connection (or an ad blocker) and try again.";
+    });
   }
 })();

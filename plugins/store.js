@@ -21,7 +21,7 @@
       tag: "Pitch + formant shifter",
       text: "Throw vocals up or down in pitch and push the formant up and down.",
       formats: ["AU", "VST3 (Mac + Windows)", "Max for Live"],
-      img: "img/skaterpiitch.webp?v=2"
+      img: "img/skaterpiitch.webp?v=3"
     },
     {
       key: "glare",
@@ -29,7 +29,7 @@
       tag: "Bright distortion",
       text: "Loud, bright and shiny. A distortion for UK bass that makes sounds glow, crunch and jump out of the speakers.",
       formats: ["AU", "VST3 (Mac + Windows)", "Max for Live"],
-      img: "img/glare.webp"
+      img: "img/glare.webp?v=2"
     },
     {
       key: "acidline",
@@ -37,7 +37,7 @@
       tag: "Acid bass sequencer",
       text: "A classic acid bass line synth with its own 16-step sequencer. Squelchy, rubbery, and full of surprises.",
       formats: ["AU", "VST3 (Mac + Windows)", "Max for Live"],
-      img: "img/acidline.webp?v=4"
+      img: "img/acidline.webp?v=5"
     },
     {
       key: "blipsy",
@@ -52,8 +52,8 @@
       name: "Kickform",
       tag: "Custom kick maker",
       text: "Make the exact kick your track needs, in any genre. No more digging through sample packs.",
-      formats: ["Max for Live"],
-      img: "img/kickform.webp"
+      formats: ["AU", "VST3 (Mac + Windows)", "Max for Live"],
+      img: "img/kickform.webp?v=2"
     },
     {
       key: "autofade",

@@ -103,3 +103,4 @@ button.btn { font: inherit; font-family: var(--mono); font-size: 22px; }
 .paybox .pp { min-height: 120px; }
 .paybox .note { margin: 10px 0 0; font-size: 14px; line-height: 1.4; color: #555; }
 .paybox .x { position: absolute; top: 8px; right: 12px; border: 0; background: none; font-size: 30px; line-height: 1; cursor: pointer; color: #111; }
+.paybox .err { font-family: var(--mono); font-size: 14px; word-break: break-all; color: #a00; }

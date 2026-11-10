@@ -179,6 +179,19 @@
     });
     return sdk;
   }
+  // show PayPal's own error text, so a failed payment can be traced
+  function payError(box, err, orderId, debugId) {
+    var text = String((err && err.message) || err || "unknown");
+    var m = text.match(/"issue"\s*:\s*"([A-Z_]+)"/), dbg = text.match(/"debug_id"\s*:\s*"([a-z0-9]+)"/);
+    var short = m ? m[1] : text.split("\n")[0].slice(0, 160);
+    if (window.console) console.error("PayPal error", err);
+    box.textContent = "";
+    box.appendChild(el("p", null, "The payment didn't go through. You were not charged unless PayPal sends you a receipt."));
+    box.appendChild(el("p", "err", "PayPal said: " + short +
+      (orderId ? " · order " + orderId : "") + ((debugId || (dbg && dbg[1])) ? " · ref " + (debugId || dbg[1]) : "")));
+    box.appendChild(el("p", null, "Close this window to try again, or write to yoav.megged@gmail.com with the line above."));
+  }
+
   function openPay(p, amount) {
     if (!dlg) {
       dlg = el("dialog", "paybox");
@@ -212,12 +225,14 @@
         onApprove: function (d, actions) {
           box.textContent = "Finishing your payment…";
           return actions.order.capture().then(function (o) {
+            var issue = o && o.details && o.details[0] && o.details[0].issue;
+            if (issue === "INSTRUMENT_DECLINED") return actions.restart();   // card refused: let the buyer try another
+            if (issue || !o || !o.id) return payError(box, issue || "no order", d.orderID, o && o.debug_id);
             location.href = "/plugins/download/?order=" + encodeURIComponent(o.id);
-          });
+          }).catch(function (err) { payError(box, err, d.orderID); });
         },
-        onError: function () {
-          box.textContent = "PayPal had a problem. Please try again, or write to yoav.megged@gmail.com.";
-        }
+        onCancel: function () { box.textContent = "Payment cancelled. Close this window and press Buy to try again."; },
+        onError: function (err) { payError(box, err); }
       }).render(box);
     }).catch(function () {
       box.textContent = "PayPal didn't load. Check your connection (or an ad blocker) and try again.";

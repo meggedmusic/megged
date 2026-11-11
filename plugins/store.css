@@ -53,11 +53,11 @@
 .formats { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 18px; padding: 0; list-style: none; }
 .formats li { padding: 2px 8px; border: 1px solid rgba(255, 255, 255, .25); font-family: var(--mono); font-size: 17px; }
 
-.buy { margin-top: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-.buy .price { flex-basis: 100%; margin: 0 0 2px; font-family: var(--mono); font-size: 20px; }
-.pay { display: flex; gap: 10px; align-items: stretch; }
-.amount { display: flex; align-items: center; border: 1px solid rgba(255, 255, 255, .4); padding: 0 0 0 10px; font-family: var(--mono); font-size: 22px; }
-.amount input { width: 64px; border: 0; background: transparent; color: var(--white); font: inherit; padding: 6px 6px 6px 2px; }
+.buy { margin-top: auto; display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
+.buy .price { flex-basis: 100%; margin: 0 0 2px; font-family: var(--mono); font-size: 16px; }
+.pay { display: flex; gap: 8px; align-items: stretch; }
+.amount { display: flex; align-items: center; border: 1px solid rgba(255, 255, 255, .4); padding: 0 0 0 8px; font-family: var(--mono); font-size: 17px; }
+.amount input { width: 52px; border: 0; background: transparent; color: var(--white); font: inherit; padding: 6px 6px 6px 2px; }
 .amount input:focus { outline: none; }
 .amount:focus-within { border-color: var(--white); }
 .btn {
@@ -77,12 +77,12 @@ button.btn { font: inherit; font-family: var(--mono); font-size: 22px; }
 .btn.alt { background: transparent; color: var(--white); border-color: var(--blue); }
 .btn.alt:hover { background: var(--blue); }
 .buy .gift { flex-basis: 100%; margin: 0 0 4px; color: var(--dim); }
-.btn.card { font-size: 18px; display: inline-flex; align-items: center; gap: 8px; }
-.btn .ico { width: 24px; height: 16px; flex: none; }
-.btn.paypal { background: #ffc439; border-color: #ffc439; padding: 6px 18px; font-family: Verdana, "Helvetica Neue", Arial, sans-serif; font-size: 21px; font-weight: 700; font-style: italic; letter-spacing: -.02em; }
+.buy .btn { font-size: 16px; padding: 6px 12px; }
+.btn.card { display: inline-flex; align-items: center; gap: 7px; }
+.btn .ico { width: 20px; height: 14px; flex: none; }
+.btn.paypal { display: inline-flex; align-items: center; justify-content: center; background: #ffc439; border-color: #ffc439; padding: 4px 14px; }
 .btn.paypal:hover { background: #f2b52a; border-color: #f2b52a; }
-.pp-pay { color: #003087; }
-.pp-pal { color: #0079c1; }
+.pp-ico { width: 20px; height: 20px; display: block; }
 @media (min-width: 900px) {
   .store-head { max-width: 1000px; }
   .store-head p:not(.sub) { white-space: nowrap; font-size: 16px; }

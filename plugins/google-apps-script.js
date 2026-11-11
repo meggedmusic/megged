@@ -23,8 +23,8 @@ var PDT_TOKEN = "";
 var CLIENT_ID = "";
 var CLIENT_SECRET = "";
 var MIN_PRICE = 10;   // USD, per plugin
-// The whole pack: every plugin at MIN_PRICE, 20% off (same as BUNDLE_OFF in plugins/config.js)
-var BUNDLE_PRICE = Math.round(6 * MIN_PRICE * 0.8);   // 6 plugins → $48
+// The whole pack: every paid plugin at MIN_PRICE, 20% off (same as BUNDLE_OFF in plugins/config.js)
+var BUNDLE_PRICE = Math.round(5 * MIN_PRICE * 0.8);   // 5 paid plugins (AutoFade is free) → $40
 // true while testing with a PayPal sandbox account (also set SANDBOX in plugins/config.js)
 var SANDBOX = false;
 // true = also email the buyer the link after paying (a backup to the download page)

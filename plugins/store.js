@@ -15,6 +15,7 @@
   var CLIENT_ID = MEGGED_STORE.PAYPAL_CLIENT_ID || "";
   var BUNDLE_OFF = MEGGED_STORE.BUNDLE_OFF || 0;
   var CARD_LINKS = MEGGED_STORE.CARD_LINKS || {};
+  var CARD_ICON = '<svg class="ico" viewBox="0 0 24 16" aria-hidden="true"><rect x="1" y="1" width="22" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="1" y="4.5" width="22" height="3" fill="currentColor"/></svg>';
 
   var PRODUCTS = [
     {
@@ -131,11 +132,14 @@
     list.appendChild(card);
   });
 
+
   // Lemon Squeezy checkout (card, Apple Pay, Google Pay): the buyer types the amount there, files come by email
   function cardBtn(box, key, text, main) {
     var url = CARD_LINKS[key];
     if (!url) return null;
-    var a = el("a", main ? "btn card" : "btn alt card", text);
+    var a = el("a", main ? "btn card" : "btn alt card");
+    a.innerHTML = CARD_ICON;
+    a.appendChild(document.createTextNode(text));
     a.href = url;
     a.target = "_blank";
     a.rel = "noopener";
@@ -176,8 +180,10 @@
     amt.setAttribute("aria-label", "Amount in US dollars for " + name);
     label.appendChild(amt);
     f.appendChild(label);
-    var go = el("button", "btn", "Buy");
+    var go = el("button", "btn paypal");
     go.type = "submit";
+    go.setAttribute("aria-label", "Pay with PayPal");
+    go.innerHTML = '<span class="pp-pay">Pay</span><span class="pp-pal">Pal</span>';
     f.appendChild(go);
     f.addEventListener("submit", function (e) {
       var v = Math.round(parseFloat(amt.value));

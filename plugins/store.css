@@ -77,7 +77,16 @@ button.btn { font: inherit; font-family: var(--mono); font-size: 22px; }
 .btn.alt { background: transparent; color: var(--white); border-color: var(--blue); }
 .btn.alt:hover { background: var(--blue); }
 .buy .gift { flex-basis: 100%; margin: 0 0 4px; color: var(--dim); }
-.btn.card { font-size: 18px; }
+.btn.card { font-size: 18px; display: inline-flex; align-items: center; gap: 8px; }
+.btn .ico { width: 24px; height: 16px; flex: none; }
+.btn.paypal { background: #ffc439; border-color: #ffc439; padding: 6px 18px; font-family: Verdana, "Helvetica Neue", Arial, sans-serif; font-size: 21px; font-weight: 700; font-style: italic; letter-spacing: -.02em; }
+.btn.paypal:hover { background: #f2b52a; border-color: #f2b52a; }
+.pp-pay { color: #003087; }
+.pp-pal { color: #0079c1; }
+@media (min-width: 900px) {
+  .store-head { max-width: 1000px; }
+  .store-head p:not(.sub) { white-space: nowrap; font-size: 16px; }
+}
 .btn.off { background: transparent; color: var(--dim); border-color: rgba(255, 255, 255, .25); cursor: default; }
 
 .store-notes { max-width: 760px; margin: 0 auto; padding: 10px 16px 80px; line-height: 1.55; color: var(--dim); }

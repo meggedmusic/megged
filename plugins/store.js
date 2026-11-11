@@ -3,8 +3,8 @@
    plugins/download/, which shows the download link.
    The whole pack ("bundle") costs every plugin at MIN_PRICE minus BUNDLE_OFF.
    key (per plugin, and "bundle"): must match DOWNLOADS in plugins/google-apps-script.js.
-   Buyers without a PayPal account pay by card on the same PayPal page
-   (turn on "PayPal account optional" in the PayPal business account settings). */
+   Buyers without a PayPal account use "Pay by card" (Lemon Squeezy, CARD_LINKS in config.js),
+   which emails them the download. */
 (function () {
   "use strict";
 
@@ -14,6 +14,7 @@
   var MIN_PRICE = MEGGED_STORE.MIN_PRICE;
   var CLIENT_ID = MEGGED_STORE.PAYPAL_CLIENT_ID || "";
   var BUNDLE_OFF = MEGGED_STORE.BUNDLE_OFF || 0;
+  var CARD_LINKS = MEGGED_STORE.CARD_LINKS || {};
 
   var PRODUCTS = [
     {
@@ -61,7 +62,9 @@
       name: "AutoFade",
       tag: "Auto fades for Ableton",
       text: "For Ableton users who want control over their automatic fades. Put it first on a track and every audio clip gets a fade in and a fade out, each with its own length control, while you play and export. No clicks, no drawing fades by hand.",
-      formats: ["Max for Live"]
+      formats: ["Max for Live"],
+      min: 0,
+      free: "A gift from me. Pay what you want if you like it."
     }
   ];
 
@@ -75,7 +78,9 @@
   var list = document.getElementById("products");
 
   // whole pack, 20% off
-  var BUNDLE_PRICE = Math.round(PRODUCTS.length * MIN_PRICE * (1 - BUNDLE_OFF));
+  function minOf(p) { return p.min === undefined ? MIN_PRICE : p.min; }
+  var FULL_PRICE = PRODUCTS.reduce(function (s, p) { return s + minOf(p); }, 0);
+  var BUNDLE_PRICE = Math.round(FULL_PRICE * (1 - BUNDLE_OFF));
   var bundleBox = document.getElementById("bundle");
   if (bundleBox) {
     var bb = el("div", "body");
@@ -83,9 +88,10 @@
     bb.appendChild(el("p", "tag", "All " + PRODUCTS.length + " plugins · " + Math.round(BUNDLE_OFF * 100) + "% off"));
     bb.appendChild(el("p", "text", PRODUCTS.map(function (p) { return p.name; }).join(", ") + ". Every format, every future update."));
     var bbuy = el("div", "buy");
-    bbuy.appendChild(el("p", "price", "$" + BUNDLE_PRICE + "+ · instead of $" + PRODUCTS.length * MIN_PRICE));
+    bbuy.appendChild(el("p", "price", "$" + BUNDLE_PRICE + "+ · instead of $" + FULL_PRICE));
     if (PAYPAL_EMAIL) bbuy.appendChild(paypalForm({ key: "bundle", name: "Pixel Park pack" }, BUNDLE_PRICE));
     else bbuy.appendChild(el("span", "btn off", "Soon"));
+    cardBtn(bbuy, "bundle", "Pay by card");
     bb.appendChild(bbuy);
     bundleBox.appendChild(bb);
   }
@@ -108,18 +114,34 @@
     body.appendChild(fm);
 
     var buy = el("div", "buy");
-    buy.appendChild(el("p", "price", "$" + MIN_PRICE + "+ · pay what you want"));
-
-    if (PAYPAL_EMAIL) {
-      buy.appendChild(paypalForm(p));
+    var min = minOf(p);
+    if (min === 0) {
+      buy.appendChild(el("p", "price", "Free · pay what you want"));
+      if (p.free) buy.appendChild(el("p", "gift", p.free));
+      if (!cardBtn(buy, p.key, "Get it free", true)) buy.appendChild(el("span", "btn off", "Soon"));
     } else {
-      buy.appendChild(el("span", "btn off", "Soon"));
+      buy.appendChild(el("p", "price", "$" + min + "+ · pay what you want"));
+      if (PAYPAL_EMAIL) buy.appendChild(paypalForm(p, min));
+      else buy.appendChild(el("span", "btn off", "Soon"));
+      cardBtn(buy, p.key, "Pay by card");
     }
 
     body.appendChild(buy);
     card.appendChild(body);
     list.appendChild(card);
   });
+
+  // Lemon Squeezy checkout (card, Apple Pay, Google Pay): the buyer types the amount there, files come by email
+  function cardBtn(box, key, text, main) {
+    var url = CARD_LINKS[key];
+    if (!url) return null;
+    var a = el("a", main ? "btn card" : "btn alt card", text);
+    a.href = url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    box.appendChild(a);
+    return a;
+  }
 
   // PayPal "Buy Now" form: the buyer picks the amount, PayPal handles card or PayPal account
   function paypalForm(p, min) {
@@ -172,7 +194,7 @@
     if (!sdk) sdk = new Promise(function (ok, bad) {
       var s = document.createElement("script");
       s.src = "https://www.paypal.com/sdk/js?client-id=" + encodeURIComponent(CLIENT_ID) +
-        "&currency=USD&intent=capture&enable-funding=card&disable-funding=paylater,venmo,credit";
+        "&currency=USD&intent=capture&disable-funding=card,paylater,venmo,credit";
       s.onload = function () { ok(window.paypal); };
       s.onerror = function () { sdk = null; bad(); };
       document.head.appendChild(s);
@@ -195,7 +217,7 @@
   function openPay(p, amount) {
     if (!dlg) {
       dlg = el("dialog", "paybox");
-      dlg.innerHTML = '<button class="x" type="button" aria-label="Close">×</button><h2></h2><p class="sum"></p><div class="pp"></div><p class="note">Pay with PayPal, or with a card (no PayPal account needed). Your download opens right after.</p>';
+      dlg.innerHTML = '<button class="x" type="button" aria-label="Close">×</button><h2></h2><p class="sum"></p><div class="pp"></div><p class="note">Pay with your PayPal account. Your download opens right after. No PayPal? Close this and use "Pay by card".</p>';
       dlg.querySelector(".x").addEventListener("click", function () { dlg.close(); });
       dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
       document.body.appendChild(dlg);

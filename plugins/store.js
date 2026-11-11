@@ -3,7 +3,7 @@
    plugins/download/, which shows the download link.
    The whole pack ("bundle") costs every plugin at MIN_PRICE minus BUNDLE_OFF.
    key (per plugin, and "bundle"): must match DOWNLOADS in plugins/google-apps-script.js.
-   Buyers without a PayPal account use "Pay by card" (Lemon Squeezy, CARD_LINKS in config.js),
+   Buyers without a PayPal account use the "Card" button (Lemon Squeezy, CARD_LINKS in config.js),
    which emails them the download. */
 (function () {
   "use strict";
@@ -92,7 +92,7 @@
     bbuy.appendChild(el("p", "price", "$" + BUNDLE_PRICE + "+ · instead of $" + FULL_PRICE));
     if (PAYPAL_EMAIL) bbuy.appendChild(paypalForm({ key: "bundle", name: "Pixel Park pack" }, BUNDLE_PRICE));
     else bbuy.appendChild(el("span", "btn off", "Soon"));
-    cardBtn(bbuy, "bundle", "Pay by card");
+    cardBtn(bbuy, "bundle", "Card");
     bb.appendChild(bbuy);
     bundleBox.appendChild(bb);
   }
@@ -124,7 +124,7 @@
       buy.appendChild(el("p", "price", "$" + min + "+ · pay what you want"));
       if (PAYPAL_EMAIL) buy.appendChild(paypalForm(p, min));
       else buy.appendChild(el("span", "btn off", "Soon"));
-      cardBtn(buy, p.key, "Pay by card");
+      cardBtn(buy, p.key, "Card");
     }
 
     body.appendChild(buy);
@@ -183,7 +183,8 @@
     var go = el("button", "btn paypal");
     go.type = "submit";
     go.setAttribute("aria-label", "Pay with PayPal");
-    go.innerHTML = '<span class="pp-pay">Pay</span><span class="pp-pal">Pal</span>';
+    go.innerHTML = '<svg class="pp-ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="#003087" d="M7.016 19.198h-4.2a.562.562 0 0 1-.555-.65L5.093.584A.692.692 0 0 1 5.776 0h7.222c3.417 0 5.904 2.488 5.846 5.5-.006.25-.027.5-.066.747A6.794 6.794 0 0 1 12.071 12H8.743a.69.69 0 0 0-.682.583l-.325 2.056-.013.083-.692 4.39-.015.087z"/><path fill="#0079c1" d="M19.79 6.142c-.01.087-.01.175-.023.261a7.76 7.76 0 0 1-7.695 6.598H9.007l-.283 1.795-.013.083-.692 4.39-.134.843-.014.088H6.86l-.497 3.15a.562.562 0 0 0 .555.65h3.612c.34 0 .63-.249.683-.585l.952-6.031a.692.692 0 0 1 .683-.584h2.126a6.793 6.793 0 0 0 6.707-5.752c.306-1.95-.466-3.744-1.89-4.906z"/></svg>';
+    go.title = "Pay with PayPal";
     f.appendChild(go);
     f.addEventListener("submit", function (e) {
       var v = Math.round(parseFloat(amt.value));
@@ -223,7 +224,7 @@
   function openPay(p, amount) {
     if (!dlg) {
       dlg = el("dialog", "paybox");
-      dlg.innerHTML = '<button class="x" type="button" aria-label="Close">×</button><h2></h2><p class="sum"></p><div class="pp"></div><p class="note">Pay with your PayPal account. Your download opens right after. No PayPal? Close this and use "Pay by card".</p>';
+      dlg.innerHTML = '<button class="x" type="button" aria-label="Close">×</button><h2></h2><p class="sum"></p><div class="pp"></div><p class="note">Pay with your PayPal account. Your download opens right after. No PayPal? Close this and use the Card button.</p>';
       dlg.querySelector(".x").addEventListener("click", function () { dlg.close(); });
       dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
       document.body.appendChild(dlg);

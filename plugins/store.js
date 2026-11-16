@@ -59,6 +59,16 @@
       img: "img/kickform.webp?v=2"
     },
     {
+      key: "duckinaround",
+      name: "Duckin' Around",
+      tag: "Spectral sidechain ducker",
+      text: "Make room for the vocal without killing the beat. It turns down only the frequencies that clash with the sidechain, and a rubber duck gets squeezed while it works.",
+      formats: ["AU", "VST3 (Mac + Windows)"],
+      img: "img/duckinaround.webp",
+      pack: false,   // not in the pack installer yet
+      soon: true     // buy buttons off until the download is in Drive + Apps Script
+    },
+    {
       key: "autofade",
       name: "AutoFade",
       tag: "Auto fades for Ableton",
@@ -80,14 +90,15 @@
 
   // whole pack, 20% off
   function minOf(p) { return p.min === undefined ? MIN_PRICE : p.min; }
-  var FULL_PRICE = PRODUCTS.reduce(function (s, p) { return s + minOf(p); }, 0);
+  var PACK = PRODUCTS.filter(function (p) { return p.pack !== false; });
+  var FULL_PRICE = PACK.reduce(function (s, p) { return s + minOf(p); }, 0);
   var BUNDLE_PRICE = Math.round(FULL_PRICE * (1 - BUNDLE_OFF));
   var bundleBox = document.getElementById("bundle");
   if (bundleBox) {
     var bb = el("div", "body");
     bb.appendChild(el("h2", null, "The whole pack"));
-    bb.appendChild(el("p", "tag", "All " + PRODUCTS.length + " plugins · " + Math.round(BUNDLE_OFF * 100) + "% off"));
-    bb.appendChild(el("p", "text", PRODUCTS.map(function (p) { return p.name; }).join(", ") + ". Every format, every future update."));
+    bb.appendChild(el("p", "tag", "All " + PACK.length + " plugins · " + Math.round(BUNDLE_OFF * 100) + "% off"));
+    bb.appendChild(el("p", "text", PACK.map(function (p) { return p.name; }).join(", ") + ". Every format, every future update."));
     var bbuy = el("div", "buy");
     bbuy.appendChild(el("p", "price", "$" + BUNDLE_PRICE + "+ · instead of $" + FULL_PRICE));
     if (PAYPAL_EMAIL) bbuy.appendChild(paypalForm({ key: "bundle", name: "Pixel Park pack" }, BUNDLE_PRICE));
@@ -122,9 +133,9 @@
       if (!cardBtn(buy, p.key, "Get it free", true)) buy.appendChild(el("span", "btn off", "Soon"));
     } else {
       buy.appendChild(el("p", "price", "$" + min + "+ · pay what you want"));
-      if (PAYPAL_EMAIL) buy.appendChild(paypalForm(p, min));
+      if (PAYPAL_EMAIL && !p.soon) buy.appendChild(paypalForm(p, min));
       else buy.appendChild(el("span", "btn off", "Soon"));
-      cardBtn(buy, p.key, "Card");
+      if (!p.soon) cardBtn(buy, p.key, "Card");
     }
 
     body.appendChild(buy);

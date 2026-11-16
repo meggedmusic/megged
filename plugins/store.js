@@ -63,7 +63,7 @@
       name: "Duckin' Around",
       tag: "Spectral sidechain ducker",
       text: "Make room for the vocal without killing the beat. It turns down only the frequencies that clash with the sidechain, and a rubber duck gets squeezed while it works.",
-      formats: ["AU", "VST3 (Mac + Windows)"],
+      formats: ["AU", "VST3 (Mac only)"],
       img: "img/duckinaround.webp",
       pack: false,   // not in the pack installer yet
       soon: true     // buy buttons off until the download is in Drive + Apps Script

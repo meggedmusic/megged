@@ -25,6 +25,7 @@ var MEGGED_STORE = {
     blipsy: "https://pixelpark.lemonsqueezy.com/checkout/buy/3c4262bd-b6a1-4f82-8c84-806aaa5bb563",
     kickform: "https://pixelpark.lemonsqueezy.com/checkout/buy/96b2ee33-a4bb-44b3-931b-00fb3d564654",
     autofade: "https://pixelpark.lemonsqueezy.com/checkout/buy/a07e1c02-379f-458a-a561-f917c10e59a3",
+    duckinaround: "https://pixelpark.lemonsqueezy.com/checkout/buy/18a58b14-a224-497e-8165-d80e24394165",
     bundle: "https://pixelpark.lemonsqueezy.com/checkout/buy/e37b2e41-19b7-4d85-a490-d18ab1e72553"
   }
 };

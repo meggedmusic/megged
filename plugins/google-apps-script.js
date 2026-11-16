@@ -277,10 +277,10 @@ function setup() {
   MailApp.getRemainingDailyQuota();
 }
 
-// Run from the toolbar to see the buyer's email: sends the SkaterPiitch email to you
+// Run from the toolbar to see the buyer's email: sends the Pitchflip email to you
 function testEmail() {
   sendPlugin_({
-    item_name: "SkaterPiitch (Pixel Park plugin)",
+    item_name: "Pitchflip (Pixel Park plugin)",
     first_name: "Test",
     payer_email: Session.getEffectiveUser().getEmail()
   }, DOWNLOADS.skaterpiitch || "https://megged.music/plugins/");

@@ -20,11 +20,11 @@
   var PRODUCTS = [
     {
       key: "skaterpiitch",
-      name: "SkaterPiitch",
+      name: "Pitchflip",
       tag: "Pitch + formant shifter",
-      text: "Throw vocals up or down in pitch and push the formant up and down.",
+      text: "Throw vocals up or down in pitch and push the formant up and down. The skater on screen gets bigger, thinner, older or younger with your knobs and lands a kickflip on the beat.",
       formats: ["AU", "VST3 (Mac + Windows)", "Max for Live"],
-      img: "img/skaterpiitch.webp?v=3"
+      img: "img/pitchflip.webp?v=1"
     },
     {
       key: "glare",

@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /plugins/download/
+
+Sitemap: https://megged.music/sitemap.xml

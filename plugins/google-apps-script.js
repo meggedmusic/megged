@@ -42,6 +42,9 @@ var DOWNLOADS = {
   kickform: ""
 };
 
+// Lemon Squeezy webhook secret: any long random text, also at the end of the webhook URL (?lsq=...)
+var LEMON_KEY = "";
+
 var FROM_NAME = "Pixel Park by MEGGED";
 var REPLY_TO = "yoav.megged@gmail.com";
 
@@ -142,6 +145,7 @@ function answer_(key, itemName) {
 function doPost(e) {
   var p = (e && e.parameter) || {};
   var raw = (e && e.postData && e.postData.contents) || "";
+  if (p.lsq !== undefined) return lemonPost_(p, raw);   // Lemon Squeezy webhook, not PayPal
   var lock = LockService.getScriptLock();
   lock.waitLock(20000);
   try {
@@ -284,4 +288,40 @@ function testEmail() {
     first_name: "Test",
     payer_email: Session.getEffectiveUser().getEmail()
   }, DOWNLOADS.skaterpiitch || "https://megged.music/plugins/");
+}
+
+// ---------- Lemon Squeezy (card payments) ----------
+// Lemon Squeezy → Settings → Webhooks: URL = this web app's /exec URL + "?lsq=" + LEMON_KEY,
+// event "order_created" (and "order_refunded"). Each paid order is written to "מכירות" like a PayPal sale.
+function lemonPost_(p, raw) {
+  if (!LEMON_KEY || p.lsq !== LEMON_KEY) return ContentService.createTextOutput("no");
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    var body = JSON.parse(raw || "{}");
+    var event = body.meta && body.meta.event_name;
+    var a = (body.data && body.data.attributes) || {};
+    var item = a.first_order_item || {};
+    var txn = "LS-" + (a.order_number || (body.data && body.data.id) || "");
+    var row = {
+      item_name: item.product_name || "", mc_gross: (a.total || 0) / 100, mc_currency: a.currency || "",
+      first_name: a.user_name || "", last_name: "", payer_email: a.user_email || "", txn_id: txn,
+      item_number: lemonKey_(item.product_name), payment_status: a.status || ""
+    };
+    if (event === "order_refunded") { review_("החזר כספי (Lemon Squeezy)", row, raw); }
+    else if (event === "order_created" && a.status === "paid" && !saleRow_(txn)) {
+      record_(row, a.test_mode ? "Lemon Squeezy (בדיקה)" : "Lemon Squeezy (כרטיס)");
+    }
+  } catch (err) {
+    review_("שגיאה בסקריפט (Lemon Squeezy): " + err, {}, raw);
+  } finally {
+    lock.releaseLock();
+  }
+  return ContentService.createTextOutput("OK");
+}
+
+function lemonKey_(name) {
+  name = String(name || "").toLowerCase();
+  if (name.indexOf("pixel park pack") === 0) return "bundle";
+  return name.replace(/[^a-z0-9]/g, "");
 }

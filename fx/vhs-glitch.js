@@ -223,6 +223,8 @@
     };
     window.addEventListener("pointermove", function (e) {
       if (e.pointerType && e.pointerType !== "mouse") return;
+      // no lens over buttons marked data-fx-clear, so their text stays readable
+      if (e.target.closest && e.target.closest("[data-fx-clear]")) { root.classList.remove("fx-lens"); return; }
       mx = e.clientX; my = e.clientY; place();
       root.classList.add("fx-lens");
       clearTimeout(idle);   // drop the heavier filter once the mouse rests

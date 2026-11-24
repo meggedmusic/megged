@@ -77,6 +77,7 @@ button.btn { font: inherit; font-family: var(--mono); font-size: 22px; }
 .btn.alt { background: transparent; color: var(--white); border-color: var(--blue); }
 .btn.alt:hover { background: var(--blue); }
 .buy .gift { flex-basis: 100%; margin: 0 0 4px; color: var(--dim); }
+.product .note { margin: 0 0 12px; color: var(--dim); font-size: .92em; }
 .buy .btn { font-size: 16px; padding: 6px 12px; }
 .btn.card { display: inline-flex; align-items: center; gap: 7px; }
 .btn .ico { width: 20px; height: 14px; flex: none; }
@@ -115,3 +116,5 @@ button.btn { font: inherit; font-family: var(--mono); font-size: 22px; }
 .paybox .note { margin: 10px 0 0; font-size: 14px; line-height: 1.4; color: #555; }
 .paybox .x { position: absolute; top: 8px; right: 12px; border: 0; background: none; font-size: 30px; line-height: 1; cursor: pointer; color: #111; }
 .paybox .err { font-family: var(--mono); font-size: 14px; word-break: break-all; color: #a00; }
+
+.dl-links { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }

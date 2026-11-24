@@ -46,9 +46,23 @@
           a.target = "_blank";
           a.rel = "noopener";
           a.textContent = "Download " + d.name;
+          var links = [a];
+          (d.extra || []).forEach(function (x) {
+            if (!x.link) return;
+            var b = document.createElement("a");
+            b.className = "btn";
+            b.href = x.link;
+            b.target = "_blank";
+            b.rel = "noopener";
+            b.textContent = "Download " + x.name;
+            links.push(b);
+          });
+          var box = document.createElement("div");
+          box.className = "dl-links";
+          links.forEach(function (l) { box.appendChild(l); });
           show([
             p("Your payment went through.", "Thank you!"),
-            a,
+            box,
             p("Save this page (bookmark it): the same link works again later, for updates too."),
             mail()
           ]);

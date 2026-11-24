@@ -24,7 +24,7 @@ var CLIENT_ID = "";
 var CLIENT_SECRET = "";
 var MIN_PRICE = 10;   // USD, per plugin
 // The whole pack: every paid plugin at MIN_PRICE, 20% off (same as BUNDLE_OFF in plugins/config.js)
-var BUNDLE_PRICE = Math.round(5 * MIN_PRICE * 0.8);   // 5 paid plugins (AutoFade is free) → $40
+var BUNDLE_PRICE = Math.round(6 * MIN_PRICE * 0.8);   // 6 paid plugins (AutoFade is free) → $48
 // true while testing with a PayPal sandbox account (also set SANDBOX in plugins/config.js)
 var SANDBOX = false;
 // true = also email the buyer the link after paying (a backup to the download page)
@@ -137,8 +137,13 @@ function orderDownload_(id) {
   return answer_(p.item_number, p.item_name);
 }
 
+// Plugins in the pack that are not in the pack installer yet get their own download button
+var PACK_EXTRAS = [{ name: "Duckin' Around (Mac)", key: "duckinaround" }];
+
 function answer_(key, itemName) {
-  return { ok: true, name: plainName_(itemName), link: DOWNLOADS[key] };
+  var out = { ok: true, name: plainName_(itemName), link: DOWNLOADS[key] };
+  if (key === "bundle") out.extra = PACK_EXTRAS.map(function (x) { return { name: x.name, link: DOWNLOADS[x.key] }; });
+  return out;
 }
 
 // ---------- PayPal IPN: every payment, in the background ----------

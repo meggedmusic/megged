@@ -63,9 +63,9 @@
       name: "Duckin' Around",
       tag: "Spectral sidechain ducker",
       text: "Make room for the vocal without killing the beat. It turns down only the frequencies that clash with the sidechain, and a rubber duck gets squeezed while it works.",
-      formats: ["AU", "VST3 (Mac only)"],
+      formats: ["AU", "VST3 (Mac only for now)"],
       img: "img/duckinaround.webp",
-      pack: false    // not in the pack installer yet
+      note: "Mac only for now. The Windows version is on the way, and everyone who bought it or the pack gets it free."
     },
     {
       key: "autofade",
@@ -97,7 +97,7 @@
     var bb = el("div", "body");
     bb.appendChild(el("h2", null, "The whole pack"));
     bb.appendChild(el("p", "tag", "All " + PACK.length + " plugins · " + Math.round(BUNDLE_OFF * 100) + "% off"));
-    bb.appendChild(el("p", "text", PACK.map(function (p) { return p.name; }).join(", ") + ". Every format, every future update."));
+    bb.appendChild(el("p", "text", PACK.map(function (p) { return p.name; }).join(", ") + ". Every format, every future update (Duckin' Around is Mac only for now, its Windows version comes free when it's ready)."));
     var bbuy = el("div", "buy");
     bbuy.appendChild(el("p", "price", "$" + BUNDLE_PRICE + "+ · instead of $" + FULL_PRICE));
     if (PAYPAL_EMAIL) bbuy.appendChild(paypalForm({ key: "bundle", name: "Pixel Park pack" }, BUNDLE_PRICE));
@@ -126,6 +126,7 @@
 
     var buy = el("div", "buy");
     var min = minOf(p);
+    if (p.note) body.appendChild(el("p", "note", p.note));
     if (min === 0) {
       buy.appendChild(el("p", "price", "Free · pay what you want"));
       if (p.free) buy.appendChild(el("p", "gift", p.free));
